@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="http://ajax.cdnjs.com/ajax/libs/underscore.js/1.4.3/underscore-min.js"></script>
+    <script src="http://ajax.cdnjs.com/ajax/libs/backbone.js/0.9.9/backbone-min.js"></script>  
+	<script type="text/javascript" src="js/app.js"></script>
+	
+	<!== container of the templates ==>
+	<span id="templat"></span>
+	
+	<script type="text/javascript">
+	// include the templates
+	$(function() {
+    	$('#templat').load('templates/index_tpl.html');
+	});
+
+	$(document).ready(function() {
+		var Indx = Backbone.Model.extend({
+			// cross-domain needs a callback to work properly
+			urlRoot: DEM.domain + "categories?callback=?"
+		});
+		
+		var indx = new Indx();
+		
+		
+		
+		// get the video categories from the server
+		indx.fetch({
+			success: function (indx) {
+				// assign server response to var json
+				var json = indx.toJSON(),
+					rvalue = '',
+					embedlyKey = json.key;
+				var SelectForm = Backbone.View.extend({
+					events: {
+						"click input[type=radio]": "onRadioClick",
+						'click #choose_cat': 'showSelect',
+						'click #hide_cat': 'hideSelect',
+						'change #url': 'embedly',
+					},
+					initialize: function () {
+						this.render();
+					},
+					render: function () {
+						var template = _.template( $('#select_form').html(), json);
+						//render the template
+						this.$('#sf').html( template );
+					},
+					
+					showSelect: function() {
+						// display the radio buttons
+						this.$('#sf').fadeIn();
+						this.$('#b1').hide();
+						this.$('#b2').show();
+					},
+					
+					hideSelect: function() {
+						// hide the radio buttons
+						this.$('#sf').fadeOut();
+						this.$('#b1').show();
+						this.$('#b2').hide();
+					},
+					
+					onRadioClick: function() {
+						// if radio button clicked
+						this.hideSelect();
+						// assign the value of the 'checked' radio to rvalue;
+						rvalue = $("input:radio[name=category]:checked").val();
+						// update the span #disp_cat
+						this.$('#disp_cat').html(rvalue);
+					},
+					
+					embedly: function() {
+						var url = this.$('#url').val();
+						var api = 'http://api.embed.ly/1/oembed?key=' + embedlyKey + '&url=' + url;
+						$.get(api, function(data) {
+  							alert(data);
+						});
+					}
+				});
+		
+				var select_form = new SelectForm({ el: $("body")});
+			}
+		});
+	});
+	</script>
+</head>
+<body>
+<h2>Add Embed</h2>
+	<span id="b1">Category: <span id="disp_cat">choose...</span> <button id="choose_cat">>></button></span>
+	<span id="b2" style="display:none">Category: choose... <button id="hide_cat"><<</button></span>
+	<div id="sf" style="display:none"></div>
+	<div>URL: <input type="text" id="url" name="url" size="35"/></div>
+	<div id="test"></div>
+	<input type="submit" name="submit" value="Send"/>
+</body>
+</html>

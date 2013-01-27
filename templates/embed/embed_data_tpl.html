@@ -1,0 +1,8 @@
+Provider: <%= provider_url %><br/>
+Description: <%= description %><br/>
+<%= html %><br/>
+<input type="hidden" id="provider" value="<%= encodeURIComponent(provider_url) %>"/>
+<input type="hidden" id="description" value="<%= encodeURIComponent(description) %>"/>
+<input type="hidden" id="xframe" value="<%= encodeURIComponent(html) %>"/>
+<input type="hidden" id="thumbnail" value="<%= encodeURIComponent(thumbnail_url) %>"/>
+<input type="submit" name="save" id="save" value="Save"/>

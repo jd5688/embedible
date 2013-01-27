@@ -1,0 +1,19 @@
+	<h2>Add Embed</h2>
+	<span id="b1">Category: <span id="disp_cat">choose...</span> <button id="choose_cat">>></button></span>
+	<span id="b2" style="display:none">Category: choose... <button id="hide_cat"><<</button></span>
+	<div id="sf" style="display:none">
+		<% _.each(data, function(c) { %> 
+			<input type="radio" id="category" name="category" value="<%= c.name %>"/><%= c.name %><br/>
+		<% }); %>
+	</div>
+	<div>URL: <input type="text" id="url" name="url" size="35"/></div>
+	<div>
+		<p>This video is:</p>
+		<p>
+			<input type="radio" id="is_public" name="is_public" value="1" checked="checked"/> public &nbsp;
+			<input type="radio" id="is_public" name="is_public" value="0"/> private
+		</p>
+	</div>
+	<div id="embedible">
+		<input type="submit" id="submit" name="submit" value="Send"/>
+	</div>
