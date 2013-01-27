@@ -1,0 +1,48 @@
+Traceback (most recent call last):
+  File "main.py", line 4, in <module>
+    from resource_layer.rest import application as rest_application
+  File "/Users/admin/Desktop/dev/resource_layer/rest.py", line 6, in <module>
+    from business_layer import main as r_main
+  File "/Users/admin/Desktop/dev/business_layer/main.py", line 4, in <module>
+    from data_layer.classes.Videos import Videos
+  File "/Users/admin/Desktop/dev/data_layer/classes/Videos.py", line 2, in <module>
+    import Db
+  File "/Users/admin/Desktop/dev/data_layer/classes/Db.py", line 2, in <module>
+    import MySQLdb
+  File "/Library/Python/2.7/site-packages/MySQL_python-1.2.4b4-py2.7-macosx-10.7-intel.egg/MySQLdb/__init__.py", line 19, in <module>
+    import _mysql
+ImportError: dlopen(/Library/Python/2.7/site-packages/MySQL_python-1.2.4b4-py2.7-macosx-10.7-intel.egg/_mysql.so, 2): Library not loaded: libmysqlclient.18.dylib
+  Referenced from: /Library/Python/2.7/site-packages/MySQL_python-1.2.4b4-py2.7-macosx-10.7-intel.egg/_mysql.so
+  Reason: image not found
+Traceback (most recent call last):
+  File "main.py", line 4, in <module>
+    from resource_layer.rest import application as rest_application
+  File "/Users/admin/Desktop/dev/resource_layer/rest.py", line 6, in <module>
+    from business_layer import main as r_main
+  File "/Users/admin/Desktop/dev/business_layer/main.py", line 4, in <module>
+    from data_layer.classes.Videos import Videos
+  File "/Users/admin/Desktop/dev/data_layer/classes/Videos.py", line 2, in <module>
+    import Db
+  File "/Users/admin/Desktop/dev/data_layer/classes/Db.py", line 2, in <module>
+    import MySQLdb
+  File "/Library/Python/2.7/site-packages/MySQL_python-1.2.4b4-py2.7-macosx-10.7-intel.egg/MySQLdb/__init__.py", line 19, in <module>
+    import _mysql
+ImportError: dlopen(/Library/Python/2.7/site-packages/MySQL_python-1.2.4b4-py2.7-macosx-10.7-intel.egg/_mysql.so, 2): Library not loaded: libmysqlclient.18.dylib
+  Referenced from: /Library/Python/2.7/site-packages/MySQL_python-1.2.4b4-py2.7-macosx-10.7-intel.egg/_mysql.so
+  Reason: image not found
+Traceback (most recent call last):
+  File "main.py", line 4, in <module>
+    from resource_layer.rest import application as rest_application
+  File "/Users/admin/Desktop/dev/resource_layer/rest.py", line 6, in <module>
+    from business_layer import main as r_main
+  File "/Users/admin/Desktop/dev/business_layer/main.py", line 4, in <module>
+    from data_layer.classes.Videos import Videos
+  File "/Users/admin/Desktop/dev/data_layer/classes/Videos.py", line 2, in <module>
+    from data_layer.classes import Db
+  File "/Users/admin/Desktop/dev/data_layer/classes/Db.py", line 2, in <module>
+    import MySQLdb
+  File "/Library/Python/2.7/site-packages/MySQL_python-1.2.4b4-py2.7-macosx-10.7-intel.egg/MySQLdb/__init__.py", line 19, in <module>
+    import _mysql
+ImportError: dlopen(/Library/Python/2.7/site-packages/MySQL_python-1.2.4b4-py2.7-macosx-10.7-intel.egg/_mysql.so, 2): Library not loaded: libmysqlclient.18.dylib
+  Referenced from: /Library/Python/2.7/site-packages/MySQL_python-1.2.4b4-py2.7-macosx-10.7-intel.egg/_mysql.so
+  Reason: image not found
