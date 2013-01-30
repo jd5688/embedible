@@ -8,8 +8,5 @@ define([
 		url: DEM.domain + "categories?callback=?"
 	});
 	
-	var cat = new Cat();
-	cat.fetch();
-	
-	return cat;
+	return Cat;
 });

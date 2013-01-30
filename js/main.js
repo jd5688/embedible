@@ -7,7 +7,8 @@ require.config({
     backbone: 'libs/backbone', // this version of backbone is AMD enabled, downloaded at https://github.com/amdjs
     templates: '../templates', // the templates folder
     text: 'text', // required for require-ing templates
-    DEM: 'namespace' // set globals here
+    DEM: 'namespace', // set globals here
+    mysession: 'models/session_m' // user session
   }
 });
 

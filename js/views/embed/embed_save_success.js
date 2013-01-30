@@ -21,7 +21,8 @@ define([
 			this.$el.html( template );
 		},
 		
-		gotoPage: function() {
+		gotoPage: function(e) {	
+			e.preventDefault();
 			Backbone.history.navigate('embed', true); // redirect to the embed main page
 		}
 	})

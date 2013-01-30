@@ -4,20 +4,28 @@ define([
 	'jcrypt',
   	'backbone',
   	'DEM',
-  	'models/session_m',
+  	'mysession',
   	'models/login_m',
-	'text!templates/login/login_tpl.html'
-], function($, _, jcrypt, Backbone, DEM, session, Login, tmplate){
-	var login = new Login();
+	'text!templates/login/login_tpl.html',
+	'text!templates/login/login_fail_tpl.html'
+], function($, _, jcrypt, Backbone, DEM, session, login, tmplate, fail_tmplate){
+	//var login = new Login();
 
 	var LoginView = Backbone.View.extend({
 		model: login,
 		events: {
-			'click #submit': 'do_login',
+			'click #signin': 'do_login'
 		},
 		initialize: function () {
-			// when the document body has been fully loaded, render this
-			this.render();
+			// check if logged
+			var logged = session.checkCookie();
+			if (logged) {
+				// no need to go to the login page.
+				// navigate to the index page
+				Backbone.history.navigate('', true);
+			} else {
+				this.render();
+			};
 		},
 		render: function () {
 			//var attributes = this.json();
@@ -29,21 +37,61 @@ define([
 		json: function () {
 			return this.model.toJSON();
 		},
+
 		do_login: function () {
 			var username = this.$('#username').val();
 			var password = this.$('#password').val();
 			var ckey = username + password;
-			if (username !== '' && password !== '') {
+			if (this._user_validate(username) && password !== '') {
 				// user jcrypt to encrypt
 				var password = $().crypt({
 					method: "md5",
 					source: ckey}
 				);
+				
+				// contact the server and authenticate the user
 				this.model.fetch({url : DEM.domain + "login?u=" + username + "&p=" + password + "&callback=?"});
-				//this.model.fetch();
+
+				if (this.model.has('result')) {
+					// model already updated
+					this._catch();
+				} else {
+					// wait for the model to update
+					this.model.on('change', this._catch, this);
+				}
 			} else {
-				// all fields should be filled up
-				alert('Please fill up your username and password');
+				// all fields should be filled up and username must be valid email
+				alert('Please enter valid username and password.');
+			}
+			
+			return true;
+		},
+		
+		_catch: function () {
+			var attributes = this.json();
+			if (attributes.result === 'success') {
+				var username = this.$('#username').val();
+				session.setCookie("username", username, 1);
+				Backbone.history.navigate('', true);
+			} else {
+				// authentication failed
+				var bool = session.delCookie("username");
+				if (bool === true) {
+					Backbone.history.navigate('login/failed', true);
+				};
+			};
+			
+			return true;
+		},
+		
+		_user_validate: function (user) {
+			if (user !== '') {
+				// test if valid email
+				var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+				return regex.test(user);
+			} else {
+				// username can't be blank
+				return false;
 			}
 		}
 		
