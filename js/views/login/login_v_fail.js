@@ -26,7 +26,7 @@ define([
 			this.$el.html( template );
 		},
 		reauth: function (e) {
-			//e.preventDefault();
+			e.preventDefault();
 			Backbone.history.navigate('login', true);
 		}
 	});

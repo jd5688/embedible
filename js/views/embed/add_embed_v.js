@@ -8,8 +8,7 @@ define([
 	'mysession'
 ], function($, _, Backbone, Cat, tmplate, embed_result, session){
 	var cat = new Cat();
-	cat.fetch();
-
+	
 	var EmbedView = Backbone.View.extend({
 		model: cat,
 		events: {
@@ -88,7 +87,13 @@ define([
 					// data in firefox is 'string'. in chrome it's an 'object'
 					// so convert to jSON obj if not yet an object
 					if (typeof data !== 'object') {
-						data = $.parseJSON(data);
+						var strData = data; // assign the 'string' type data
+						data = $.parseJSON(data); // then parse
+						data.data = strData; // finally, assign the original 'string' data to a property
+					} else {
+						// data is already an object
+						var strData = JSON.stringify(data); // assign as a string
+						data.data = strData;
 					}
 					var template = _.template( embed_result, data );
 					$('#embedible').html( template );
@@ -116,5 +121,14 @@ define([
 		}
 	});
 	
-	return EmbedView;
+	var Embed = {
+		'fetchCat'	: function() {
+			cat.fetch();
+		},
+		'View'	: function(obj) {
+			return new EmbedView(obj);
+		}
+	};
+	
+	return Embed;
 });

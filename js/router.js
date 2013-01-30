@@ -15,7 +15,7 @@ define([
 	'views/login/login_v_fail',
 	'views/index/index_v',
 	'views/heading_v'
-], function($, _, Backbone, session, EmbedView, SaveEmbed, EmbedSucFail, LoginView, LoginViewFail, IndexView, HeadView){
+], function($, _, Backbone, session, Embed, SaveEmbed, EmbedSucFail, Login, LoginViewFail, IndexView, HeadView){
 
 	var Router = Backbone.Router.extend({
 		routes: {
@@ -52,7 +52,8 @@ define([
 		// user submitting content
 		embed: function() {	
 			var headView = new HeadView({ el: $("#head") });
-			var embedView = new EmbedView({ el: $("#main") });
+			Embed.fetchCat();
+			var embedView = Embed.View({ el: $("#main") });
 		},
 		
 		// saving the user-submitted content to the db
@@ -94,7 +95,9 @@ define([
 			if (failed) {
 				var loginViewFail = new LoginViewFail({ el: $("#main") });
 			} else {
-				var loginView = new LoginView({ el: $("#main") });
+				var login = Login.login(); // create a login model 
+				var LoginView = Login.View();
+				var loginView = new LoginView({ el: $("#main"), model : login });
 			}
 		},
 		

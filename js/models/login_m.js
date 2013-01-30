@@ -6,6 +6,6 @@ define([
   	var Login = Backbone.Model.extend({
 	});
 	
-	var login = new Login();
-	return login;
+	//var login = new Login();
+	return Login;
 });

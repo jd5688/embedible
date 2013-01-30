@@ -7,13 +7,11 @@ define([
 	var EmbedSave = Backbone.Model.extend({
 		url: DEM.domain + "save_embed",
 		defaults: {
-			provider	:	'',
-			description	:	'',
-			xframe		:	'',
+			data		:	'',
 			is_public	:	'',
-			user_id		:	'',
+			username	:	'',
 			category	:	'',
-			thumbnail	:	''
+			tags		:	''
 		}
 	});
 	

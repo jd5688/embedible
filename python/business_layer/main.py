@@ -50,13 +50,11 @@ def embed_data(param):
 	
 	#param arrived 'encodeURIcomponent' from the front end so use urllib.unquote_plus to decode
 	data = {
-		'xframe': urllib.unquote_plus(param['xframe']),
-		'provider' : urllib.unquote_plus(param['provider']),
-		'description' : urllib.unquote_plus(param['description']),
-		'user_id' : param['user_id'],
+		'data': urllib.unquote_plus(param['data']),
+		'username' : param['username'],
 		'is_public' : param['is_public'],
 		'category' : param['category'],
-		'thumbnail': urllib.unquote_plus(param['thumbnail']),
+		'tags' : param['tags'],
 		'is_approved' : 0
 	}
 	

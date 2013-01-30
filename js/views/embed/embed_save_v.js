@@ -3,7 +3,8 @@ define([
 	'underscore',
   	'backbone',
   	'models/embed_save_m',
-], function($, _, Backbone, embedSave){
+  	'mysession'
+], function($, _, Backbone, embedSave, session){
 	var SaveEmbed = Backbone.View.extend({
 		model: embedSave,
 		
@@ -12,13 +13,11 @@ define([
 		},
 		
 		render: function () {
-			this.data.provider = this.$("#provider").val();
-			this.data.description = this.$("#description").val();
-			this.data.xframe = this.$("#xframe").val();
+			this.data.data = this.$("#data").val();
+			this.data.tags = this.$("#tags").val();
 			this.data.is_public = this.$("#is_public").val();
 			this.data.category = $("input:radio[name=category]:checked").val();
-			this.data.thumbnail = this.$("#thumbnail").val();
-			this.data.user_id = 1;
+			this.data.username = session.getCookie("username");
 			this.model.set(this.data);
 		},
 		

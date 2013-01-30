@@ -4,9 +4,6 @@ from data_layer.classes import Db
 class Videos:
 	def embed(self, param):
 		# param is an object
-		str = param['xframe']
-		desc = param['description']
-		provider = param['provider']
 		
 		db = Db.con()
 		cur = db.cursor()
@@ -15,9 +12,9 @@ class Videos:
 		# not approved means that the video is not yet verified by admin
 		# but by default is visible from the user -- until junked by admin
 		q = """
-			INSERT INTO videos (embed, user_id, is_public, category, is_approved, description, img_src, provider) 
+			INSERT INTO videos (data, username, is_public, category, is_approved, tags) 
 			VALUES 
-			(%(xframe)s, %(user_id)s, %(is_public)s, %(category)s, %(is_approved)s, %(description)s, %(thumbnail)s, %(provider)s)
+			(%(data)s, %(username)s, %(is_public)s, %(category)s, %(is_approved)s, %(tags)s)
 			"""
 		cur.execute(q, param)
 		db.commit()
