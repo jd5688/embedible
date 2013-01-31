@@ -11,7 +11,7 @@ define([
 ], function($, _, jcrypt, Backbone, DEM, session, Log_in, tmplate, fail_tmplate){
 	var Login = {
 		'login' : function () {
-			return new Log_in;
+			return new Log_in();
 		},
 		'View' : function() {
 			return Backbone.View.extend({
@@ -122,7 +122,34 @@ define([
 				}
 				
 			});
-		}
+		},
+		
+		'ViewFail' : function () {
+			return Backbone.View.extend({
+				events: {
+					'click #reauth': 'reauth'
+				},
+				initialize: function () {
+					// check if logged
+					var logged = session.checkCookie();
+					if (logged) {
+						// no need to go to the login page.
+						// navigate to the index page
+						Backbone.history.navigate('', true);
+					} else {
+						this.render();
+					};
+				},
+				render: function () {
+					var template = _.template( fail_tmplate );
+					this.$el.html( template );
+				},
+				reauth: function (e) {
+					e.preventDefault();
+					Backbone.history.navigate('login', true);
+				}
+			});
+		} 
 	};
 	
 	return Login;

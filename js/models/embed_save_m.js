@@ -15,7 +15,7 @@ define([
 		}
 	});
 	
-	var embedSave = new EmbedSave();
+	//var embedSave = new EmbedSave();
 	
-	return embedSave;
+	return EmbedSave;
 });

@@ -9,13 +9,10 @@ define([
 	'backbone',
 	'mysession',
 	'views/embed/add_embed_v',
-	'views/embed/embed_save_v',
-	'views/embed/embed_save_success',
 	'views/login/login_v',
-	'views/login/login_v_fail',
 	'views/index/index_v',
 	'views/heading_v'
-], function($, _, Backbone, session, Embed, SaveEmbed, EmbedSucFail, Login, LoginViewFail, IndexView, HeadView){
+], function($, _, Backbone, session, Embed, Login, IndexView, HeadView){
 
 	var Router = Backbone.Router.extend({
 		routes: {
@@ -52,8 +49,10 @@ define([
 		// user submitting content
 		embed: function() {	
 			var headView = new HeadView({ el: $("#head") });
-			Embed.fetchCat();
-			var embedView = Embed.View({ el: $("#main") });
+			var cat = Embed.Cat(); // category model
+			cat.fetch(); // fetch data from the server
+			var EmbedView = Embed.View();
+			var embedView = new EmbedView({ el: $("#main"), model : cat });
 		},
 		
 		// saving the user-submitted content to the db
@@ -69,14 +68,20 @@ define([
 			};
 				
 			// else, do the following
-			if (opt === 'success') {
+			if (opt === 'success' || opt === 'fail') {
+				var EmbedSucFail = Embed.SuccessFail();
 				var embedSucFail = new EmbedSucFail({ el: $("#main") });
-				embedSucFail.success();
-			} else if (opt === 'fail') {
-				var embedSucFail = new EmbedSucFail({ el: $("#main") });
-				embedSucFail.fail();
+				
+				if (opt === 'success') {
+					embedSucFail.success();
+				} else if (opt === 'fail') {			
+					embedSucFail.fail();
+				}
 			} else if (opt === undefined) {
-				var saveEmbed = new SaveEmbed({ el: $("#main") });
+				var embedSave = Embed.SaveM(); // create the model
+				
+				var SaveEmbed = Embed.Save(); // the view constructor
+				var saveEmbed = new SaveEmbed({ el: $("#main"), model: embedSave });
 				saveEmbed.save();
 			} else {
 				Backbone.history.navigate('404', true);
@@ -93,6 +98,7 @@ define([
 		login: function(failed) {
 			var headView = new HeadView({ el: $("#head") });
 			if (failed) {
+				var LoginViewFail = Login.ViewFail();
 				var loginViewFail = new LoginViewFail({ el: $("#main") });
 			} else {
 				var login = Login.login(); // create a login model 
