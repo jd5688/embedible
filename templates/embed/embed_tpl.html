@@ -6,10 +6,15 @@
 			<input type="radio" id="category" name="category" value="<%= c.name %>"/><%= c.name %><br/>
 		<% }); %>
 	</div>
-	<div>URL: <input type="text" id="url" name="url" size="35"/></div>
 	<div>
 		<p>
-			This video is:<br/>
+			Paste your link:<br/>
+			<input type="text" id="url" name="url" size="50"/>
+		</p>
+	</div>
+	<div>
+		<p>
+			This content is:<br/>
 			<input type="radio" id="is_public" name="is_public" value="1" checked="checked"/> public &nbsp;
 			<input type="radio" id="is_public" name="is_public" value="0"/> private
 		</p>

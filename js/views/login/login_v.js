@@ -26,9 +26,22 @@ define([
 						// navigate to the index page
 						Backbone.history.navigate('', true);
 					} else {
+						// initialize the counter;
+						// this counter is used to prevent 'do_login' from doing unexpected and unwanted loops when user authenticates. 
+						// a bug from my script? or require.js? or a bug from backbone? not yet known as of writing this
+						this.counter = this.inc(); 
+						
 						this.render();
 					};
 				},
+				'inc' : function () {
+					var i = 0;
+					return function (j) {
+						return j !== undefined ? j : i += 1;
+					};
+				},
+				
+				'counter' : '',
 				render: function () {
 					//var attributes = this.json();
 					//var embedlyKey = attributes.key;
@@ -45,25 +58,36 @@ define([
 					var password = this.$('#password').val();
 					var ckey = username + password;
 					if (this._user_validate(username) && password !== '') {
-						// user jcrypt to encrypt
-						var password = $().crypt({
-							method: "md5",
-							source: ckey}
-						);
-						
-						// contact the server and authenticate the user
-						this.model.fetch({url : DEM.domain + "login?u=" + username + "&p=" + password + "&callback=?"});
-		
-						if (this.model.has('result')) {
-							// model already updated
-							this._catch();
-						} else {
-							// wait for the model to update
-							this.model.on('change', this._catch, this);
-						}
+						// increment and make sure it's 1
+						// if more than one, it's looping/creating another instance-- so ignore
+						if (this.counter() === 1) {
+							// use jcrypt to encrypt
+							var password = $().crypt({
+								method: "md5",
+								source: ckey}
+							);
+							
+							// contact the server and authenticate the user
+							this.model.fetch({url : DEM.domain + "login?u=" + username + "&p=" + password + "&callback=?"});
+			
+							if (this.model.has('result')) {
+								// model already updated
+								this._catch();
+							} else {
+								// wait for the model to update
+								this.model.on('change', this._catch, this);
+							}
+							this.counter();
+						};
 					} else {
-						// all fields should be filled up and username must be valid email
-						alert('Please enter valid username and password.');
+						// increment and make sure it's 1
+						// if more than one, it's looping so ignore
+						if (this.counter() === 1) {
+							// auth failure
+							// all fields should be filled up and username must be valid email
+							this.counter(); // increment to prevent script loop
+							Backbone.history.navigate('login/failed', true);
+						};
 					}
 					
 					return true;

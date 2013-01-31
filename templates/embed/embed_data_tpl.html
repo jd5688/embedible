@@ -5,7 +5,14 @@ Type: <%= type %><br/>
 	<%= html %>
 <% } else if (type === 'photo') { %>
 	<img src="<%= url %>"/>
-<% } else if (type === 'link') { %>
+<% 
+} else if (type === 'link') { 
+	if (thumbnail_url !== '') {
+%>
+	<img src="<%= thumbnail_url %>"/><br/>
+<%	
+	}
+%>
 	<a href="<%= url %>" target="_blank"><%= url %></a>
 <% } %>
 <br/>

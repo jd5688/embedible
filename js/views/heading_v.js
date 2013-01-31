@@ -37,7 +37,7 @@ define([
 		},
 		
 		logout: function(e) {
-			//e.preventDefault();
+			e.preventDefault();
 			Backbone.history.navigate('logout', true);
 		},
 		
