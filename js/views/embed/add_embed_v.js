@@ -33,7 +33,10 @@ define([
 						return true;
 					}
 				
-				
+					// initialize the counter;
+					// this counter is used to prevent the functions from doing unexpected and unwanted loops. 
+					// a bug from my script? or require.js? or a bug from backbone? not yet known as of writing this
+					this.counter = this.inc(); 
 					if (this.model.has("key")) {
 						// if model has attribute named 'key', render immediately.
 						// means that the model has already been preloaded before and no need to
@@ -48,6 +51,15 @@ define([
 						this.model.on('change', this.render, this);
 					}
 				},
+				
+				'inc' : function () {
+					var i = 0;
+					return function (j) {
+						return j !== undefined ? j : i += 1;
+					};
+				},
+				
+				'counter' : '',
 		
 				render: function () {			
 					var attributes = this.json();
@@ -86,40 +98,50 @@ define([
 					var embedlyKey = this.json().key;
 					var url = this.$('#url').val();
 		
-					if (embedlyKey !== undefined && url !== '') {
-						var api = 'http://api.embed.ly/1/oembed?key=' + embedlyKey + '&url=' + url + '&format=json';
-						$.get(api, function(data) {
-							// data in firefox is 'string'. in chrome it's an 'object'
-							// so convert to jSON obj if not yet an object
-							if (typeof data !== 'object') {
-								var strData = data; // assign the 'string' type data
-								data = $.parseJSON(data); // then parse
-								data.data = strData; // finally, assign the original 'string' data to a property
-							} else {
-								// data is already an object
-								var strData = JSON.stringify(data); // assign as a string
-								data.data = strData;
-							}
-							var template = _.template( embed_result, data );
-							$('#embedible').html( template );
-						});
+					if (typeof embedlyKey !== "undefined" && url !== '') {
+						if (this.counter() === 1) {
+							var api = 'http://api.embed.ly/1/oembed?key=' + embedlyKey + '&url=' + url + '&format=json';
+							$.get(api, function(data) {
+								// data in firefox is 'string'. in chrome it's an 'object'
+								// so convert to jSON obj if not yet an object
+								if (typeof data !== 'object') {
+									var strData = data; // assign the 'string' type data
+									data = $.parseJSON(data); // then parse
+									data.data = strData; // finally, assign the original 'string' data to a property
+								} else {
+									// data is already an object
+									var strData = JSON.stringify(data); // assign as a string
+									data.data = strData;
+								}
+								var template = _.template( embed_result, data );
+								$('#embedible').html( template );
+							});
+						}
 					} else {
-						// display an error message. user did not input any URL
-						alert('Please enter your URL');
+						if (this.counter() === 1) {
+							// display an error message. user did not input any URL
+							alert('Please enter your URL');
+							this.counter = this.inc();  // re-initialize counter
+						}
 					}
 				},
 				
 				navi: function() {
-					var categ = $("input:radio[name=category]:checked").val();
-					
-					if (categ !== undefined) {
-						Backbone.history.navigate('embed/save', true);
-					} else {
-						alert('You need to choose category');
+					if (this.counter() === 2) {
+						var categ = $("input:radio[name=category]:checked").val();
+						
+						if (categ !== undefined) {
+							Backbone.history.navigate('embed/save', true);
+						} else {
+							alert('You need to choose category');
+						}
+						this.counter = this.inc();  // re-initialize counter
+						this.counter();
 					}
 				},
 				
 				redir: function(e) {
+					this.counter = this.inc();  // re-initialize counter
 					this.$('#url').val('');
 					$('#embedible').html( '<input type="submit" id="submit" name="submit" value="Send"/>' );
 					//$('#embedible')

@@ -72,6 +72,12 @@ def application(environ, start_response):
         		}
         	response = b_user.login(data);
         	response = callback + "(" + json.dumps(response) + ");"
+        elif requested_resource == 'getembed':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			response = b_main.main()
+			response = callback + "(" + json.dumps(response) + ");"
 
 	elif method == 'OPTIONS':
 		#somehow, OPTIONS requests are not getting in here but at the 'else' statement

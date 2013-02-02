@@ -5,21 +5,23 @@ from data_layer.classes.Videos import Videos
 import urllib
 #from cgi import escape
 
+# fetch the main body files
 def main():
 	x = Videos()
-	data = x.getOne(12345)
+	data = x.getNew()
 
 	obj = {}
 	i = 0
 	for item in data:
 		obj[i] = {
 			'id' : item[0],
-			'mkey' : item[1],
-			'embed' : item[2],
-			'user_id' : item[3]
+			'category' : item[1],
+            'tags' : item[2],
+            'data' : item[3]
+			#'date_added': item[4]
 		}
 		i = i + 1
-		
+	
 	return obj
 	
 def cat_data():

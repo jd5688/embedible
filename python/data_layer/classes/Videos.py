@@ -21,21 +21,22 @@ class Videos:
 		return 'success'
 		
 	def getAll(uid):
-		cur = Db.con()
+		db = Db.con()
+		cur = db.cursor()
 		cur.execute("SELECT embed FROM videos WHERE user_id = 'uid'")
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
 			return rows
 			
-	def getOne(self, key):
-		cur = Db.con()
-		qry = "SELECT * FROM videos WHERE mkey = %s" % key
-		#qry = "SELECT * FROM videos WHERE user_id = %s" % 1
+	def getNew(self):
+		db = Db.con()
+		cur = db.cursor()
+		qry = "SELECT id,category,tags,data,date_added FROM videos WHERE is_public = '1' ORDER BY id DESC LIMIT 0, 100"
 		cur.execute(qry)
 		if cur.rowcount > 0:
-			row = cur.fetchall()
-			return row
-		return false
+			rows = cur.fetchall()
+			return rows
+		#return false
 			
 	def publicize(key):
 		cur = Db.con()

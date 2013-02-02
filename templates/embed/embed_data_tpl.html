@@ -1,13 +1,13 @@
 Provider: <%= provider_url %><br/>
 Description: <%= description %><br/>
 Type: <%= type %><br/>
-<% if (type === 'video') { %>
+<% if (type === 'video' || type === 'rich') { %>
 	<%= html %>
 <% } else if (type === 'photo') { %>
 	<img src="<%= url %>"/>
 <% 
 } else if (type === 'link') { 
-	if (thumbnail_url !== '') {
+	if (typeof thumbnail_url !== "undefined" && thumbnail_url !== "") {
 %>
 	<img src="<%= thumbnail_url %>"/><br/>
 <%	

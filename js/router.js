@@ -12,7 +12,7 @@ define([
 	'views/login/login_v',
 	'views/index/index_v',
 	'views/heading_v'
-], function($, _, Backbone, session, Embed, Login, IndexView, HeadView){
+], function($, _, Backbone, session, Embed, Login, Index, HeadView){
 
 	var Router = Backbone.Router.extend({
 		routes: {
@@ -37,9 +37,13 @@ define([
 			Backbone.history.start({ pushState: true, root: "/~admin" });
 		},
 		
+		// the index or home page
 		index: function () {
 			var headView = new HeadView({ el: $("#head") });
-			var indexView = new IndexView({ el: $("#main") });
+			var indexMain = Index.Main(); // create the model
+			indexMain.fetch();
+            var IndexView = Index.View();
+			var indexView = new IndexView({ el: $("#main"), model: indexMain });
 		},
 		
 		defaultRoute: function(anything) {
