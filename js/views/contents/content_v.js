@@ -19,8 +19,12 @@ define([
 					//render the template
 					this.$el.html( template );
 					if (this.model.has("id") || this.model.has("username")) {
-						// if model has attribute named 'id' or 'username', load main_body immediately.
-						this.main_body();
+						if (this.model.hasChanged) {
+							this.model.on('change', this.main_body, this);
+						} else {
+							// if model has attribute named 'id' or 'username', and it hasn't changed value, load main_body immediately.
+							this.main_body();
+						}
 					} else {
 						// Otherwise, wait. if change happens, then load main_body.
 						this.model.on('change', this.main_body, this);

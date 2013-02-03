@@ -30,15 +30,8 @@ define([
 					var data = {};
 					data.data = this.json();
 					data.website = DEM.website;
-					var detail = data.data.detail;
 					
-					if (typeof detail !== "undefined") {
-						// this is the detail page
-						var template = _.template( detail_tpl, data );
-					} else {
-						// this is the list page
-						var template = _.template( body_tpl, data );
-					}
+					var template = _.template( body_tpl, data );
 					//render the template
 					this.$el.html( template );
 				},

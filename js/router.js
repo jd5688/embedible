@@ -102,7 +102,7 @@ define([
 			var headView = new HeadView({ el: $("#head") });
 			
 			if (id) {
-				var contentModel = Content.Model();
+				var contentModel = Content.Model({ noCache: true });
 				contentModel.fetch({ url : DEM.domain + "contents_video?id=" + id +"&callback=?"}); // fetch data from the server
 				var ContentView = Content.View(); // the view constructor
 				var contentView = new ContentView({ el: $("#main"), model: contentModel });

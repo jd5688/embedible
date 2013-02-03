@@ -1,6 +1,8 @@
 <% 
+var i = 0;
 _.each(data.data, function(c) { 
+	i += 1;
 	var dat = JSON.parse(c.data);
 %>
-	<a href="<%= website + dat.type + "/" + c.id %>" style="text-decoration:none"><img src="<%= dat.thumbnail_url %>" width="100" height="100"/></a>
+	<input type="image" src="<%= dat.thumbnail_url %>" width="100" height="100" id="ithumb<%= c.id %>" value="<%= dat.type + "/" + c.id %>" />
 <% }); %>
