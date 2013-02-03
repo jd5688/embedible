@@ -27,8 +27,9 @@ class Videos:
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
 			return rows
-			
-	def getNew(self):
+	
+	# get all contents that are marked as public
+	def allPublic(self):
 		db = Db.con()
 		cur = db.cursor()
 		qry = "SELECT id,category,tags,data,date_added FROM videos WHERE is_public = '1' ORDER BY id DESC LIMIT 0, 100"
@@ -37,7 +38,28 @@ class Videos:
 			rows = cur.fetchall()
 			return rows
 		#return false
-			
+	
+	# get all public contents by type (photo, video, link, rich)
+	def allPublicByType(self,type):
+		type = '"type": "' + type + '"'
+		db = Db.con()
+		cur = db.cursor()
+		qry = "SELECT id,category,tags,data,date_added FROM videos WHERE is_public = '1' AND data like %s ORDER BY id DESC LIMIT 0, 100"
+		cur.execute(qry, ('%' + type + '%',))
+		if cur.rowcount > 0:
+			rows = cur.fetchall()
+			return rows
+	
+	# get public content by id
+	def allPublicById(self,id):
+		db = Db.con()
+		cur = db.cursor()
+		qry = "SELECT id,category,tags,data,date_added FROM videos WHERE is_public = '1' AND id = %s"
+		cur.execute(qry, id)
+		if cur.rowcount > 0:
+			row = cur.fetchall()
+			return row
+	
 	def publicize(key):
 		cur = Db.con()
 		cur.execute("UPDATE videos SET is_public = 1 WHERE mkey = 'key'")
@@ -47,13 +69,6 @@ class Videos:
 		cur = Db.con()
 		cur.execute("UPDATE videos SET is_public = 0 WHERE mkey = 'key'")
 		return true
-		
-	def allPublic():
-		cur = Db.con()
-		cur.execute("SELECT embed FROM videos")
-		if cur.rowcount > 0:
-			rows = cur.fetchall()
-			return rows
 			
 	def allPublicByCategory(cat):
 		cur = Db.con()
@@ -61,7 +76,7 @@ class Videos:
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
 			return rows
-			
+
 	def allCategories(self):
 	    db = Db.con()
 	    cur = db.cursor()

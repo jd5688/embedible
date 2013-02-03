@@ -78,6 +78,17 @@ def application(environ, start_response):
 			start_response(status, headers)
 			response = b_main.main()
 			response = callback + "(" + json.dumps(response) + ");"
+        elif requested_resource == 'contents_video':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			id = d.get('id', [''])[0]
+			if id:
+				response = b_main.contentById(id);
+			else:
+				response = b_main.contents('video');
+
+			response = callback + "(" + json.dumps(response) + ");"
 
 	elif method == 'OPTIONS':
 		#somehow, OPTIONS requests are not getting in here but at the 'else' statement

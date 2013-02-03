@@ -11,8 +11,11 @@ define([
 	'views/embed/add_embed_v',
 	'views/login/login_v',
 	'views/index/index_v',
-	'views/heading_v'
-], function($, _, Backbone, session, Embed, Login, Index, HeadView){
+	'views/contents/contents_v',
+	'views/contents/content_v',
+	'views/heading_v',
+	'DEM',
+], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, HeadView, DEM){
 
 	var Router = Backbone.Router.extend({
 		routes: {
@@ -26,6 +29,9 @@ define([
 			"login"				: "login",
 			"login/"			: "login",
 			"login/:failed"		: "login",
+			"video"				: "video",
+			"video/"			: "video",
+			"video/:id"			: "video",
 			"logout"			: "logout",
 			"404"				: "fourfour",
 			"*anything"			: "defaultRoute"
@@ -34,7 +40,7 @@ define([
 		start: function () {
 			// declare your root URL if located in a folder other than the main
 			// folder - http://example.com/~admin/
-			Backbone.history.start({ pushState: true, root: "/~admin" });
+			Backbone.history.start({ pushState: true, root: DEM.root });
 		},
 		
 		// the index or home page
@@ -90,6 +96,24 @@ define([
 			} else {
 				Backbone.history.navigate('404', true);
 			}
+		},
+		
+		video: function (id) {
+			var headView = new HeadView({ el: $("#head") });
+			
+			if (id) {
+				var contentModel = Content.Model();
+				contentModel.fetch({ url : DEM.domain + "contents_video?id=" + id +"&callback=?"}); // fetch data from the server
+				var ContentView = Content.View(); // the view constructor
+				var contentView = new ContentView({ el: $("#main"), model: contentModel });
+			} else {
+				var contentsModel = Contents.Model();
+				contentsModel.fetch({ url : DEM.domain + "contents_video?callback=?"}); // fetch data from the server
+				var ContentsView = Contents.View(); // the view constructor
+				var contentsView = new ContentsView({ el: $("#main"), model: contentsModel });
+			}
+			
+			
 		},
 		
 		//nowhere to go

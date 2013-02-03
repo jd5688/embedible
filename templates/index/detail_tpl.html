@@ -1,0 +1,17 @@
+<% 
+	var dat = JSON.parse(data.data);
+	var showThis = '';
+	if (dat.type === 'video' || dat.type === 'rich') {
+		showThis = dat.html;
+	} else if (dat.type === 'photo') {
+		showThis = '<a href="' + dat.thumbnail_url + '"><img src="' + dat.url + '" border="0"/></a>'
+	} else if (dat.type === 'link') {
+		if (typeof thumbnail_url !== "undefined" && thumbnail_url !== "") {
+			showThis = '<a href="' + dat.url + '" target="_blank"><img src="' + dat.thumbnail_url + '"/></a>'
+		} else {
+			showThis = '<a href="' + dat.url + '" target="_blank">' + dat.url + '</a>'
+		}
+	}
+%>
+
+<%= showThis %>

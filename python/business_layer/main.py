@@ -8,7 +8,7 @@ import urllib
 # fetch the main body files
 def main():
 	x = Videos()
-	data = x.getNew()
+	data = x.allPublic()
 
 	obj = {}
 	i = 0
@@ -61,6 +61,48 @@ def embed_data(param):
 	}
 	
 	return x.embed(data)
+
+def contentById(id):
+	x = Videos()
+	obj = {}
+	
+	data = x.allPublicById(id)
+	obj = {
+		'detail': 1, # this is a detail page
+		'id': data[0][0],
+		'category':	data[0][1],
+		'tags':	data[0][2],
+		'data':	data[0][3]
+		#'date_added'	:	data[0][4]
+	}
+	
+	dat = {
+		'id': 1234, # just a random id
+		'data' : obj
+	}
+	return obj
+	
+def contents(type):
+	x = Videos()
+	data = x.allPublicByType(type)
+	
+	obj = {}
+	i = 0
+	for item in data:
+		obj[i] = {
+			'id' : item[0],
+			'category' : item[1],
+            'tags' : item[2],
+            'data' : item[3]
+			#'date_added': item[4]
+		}
+		i = i + 1
+	
+	dat = {
+		'id': 1234, # just a random id
+		'data': obj
+	}
+	return dat
 	
 	
 	
