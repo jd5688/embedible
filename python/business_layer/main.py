@@ -22,7 +22,11 @@ def main():
 		}
 		i = i + 1
 	
-	return obj
+	dat = {
+		'data': obj,
+		'id': 1234
+	}
+	return dat
 	
 def cat_data():
 	x = Videos()
