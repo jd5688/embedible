@@ -2,6 +2,7 @@ require.config({
   paths: {   
     //baseURL is /js/
     jquery: 'libs/jquery',
+	tooltipster: 'libs/jquery.tooltipster.min',
     jcrypt: 'libs/jquery.crypt',
     underscore: 'libs/underscore',
     backbone: 'libs/backbone', // this version of backbone is AMD enabled, downloaded at https://github.com/amdjs

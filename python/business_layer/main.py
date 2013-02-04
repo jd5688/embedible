@@ -54,7 +54,7 @@ def cat_data():
 def embed_data(param):
 	x = Videos()
 	
-	#param arrived 'encodeURIcomponent' from the front end so use urllib.unquote_plus to decode
+	#param arrived 'encodeURIComponent' from the front end so use urllib.unquote_plus to decode
 	data = {
 		'data': urllib.unquote_plus(param['data']),
 		'username' : param['username'],
@@ -71,19 +71,21 @@ def contentById(id):
 	obj = {}
 	
 	data = x.allPublicById(id)
-	obj = {
-		'detail': 1, # this is a detail page
-		'id': data[0][0],
-		'category':	data[0][1],
-		'tags':	data[0][2],
-		'data':	data[0][3]
-		#'date_added'	:	data[0][4]
-	}
 	
-	dat = {
-		'id': 1234, # just a random id
-		'data' : obj
-	}
+	if data:
+		obj = {
+			'detail': 1, # this is a detail page
+			'id': data[0][0],
+			'category':	data[0][1],
+			'tags':	data[0][2],
+			'data':	data[0][3]
+			#'date_added'	:	data[0][4]
+		}
+	else:
+		obj = {
+			'message': 'no record found'
+		}
+		
 	return obj
 	
 def contents(type):

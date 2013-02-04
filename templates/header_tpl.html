@@ -1,8 +1,16 @@
-<img src="/~admin/images/embedible_logo.png" border="0"/><br/>
-<a href="" id="home">Home</a>&nbsp;
-<% if (username !== '') { %>
-	<a href="" id="embed">Embed</a>&nbsp;
-	<%= username %> <a href="" id="logout">Logout</a>&nbsp;
-<% } else { %>
-	<a href="" id="login">Login</a>&nbsp;
-<% } %>
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr>
+	<td width="10%">
+		<img src="/~admin/images/embedible_logo.png" border="0"/><br/>
+	</td>
+	<td align="right">
+		<a href="" id="home">Home</a>&nbsp;
+		<% if (username !== '') { %>
+			<a href="" id="embed">Embed</a>&nbsp;
+			<%= username %> <a href="" id="logout">Logout</a>&nbsp;
+		<% } else { %>
+			<a href="" id="login">Login</a>&nbsp;
+		<% } %>
+	</td>
+</tr>
+</table>

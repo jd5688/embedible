@@ -33,10 +33,15 @@ define([
 				main_body: function () {
 					var data = {};
 					data.data = this.json();
-					data.website = DEM.website;
-					var template = _.template( detail_tpl, data );
-					//render the template
-					this.$el.html( template );
+					console.log(data.data);
+					if (typeof data.data.id === 'undefined') {
+						Backbone.history.navigate('404', true); // not found
+					} else {
+						data.website = DEM.website;
+						var template = _.template( detail_tpl, data );
+						//render the template
+						this.$el.html( template );
+					}
 				},
 				json: function() {
 					return this.model.toJSON();

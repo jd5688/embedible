@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from data_layer.classes import Db
+import base64
 
 class Videos:
 	def embed(self, param):
@@ -12,14 +13,29 @@ class Videos:
 		# not approved means that the video is not yet verified by admin
 		# but by default is visible from the user -- until junked by admin
 		q = """
-			INSERT INTO videos (data, username, is_public, category, is_approved, tags) 
+			INSERT INTO videos (uniq, data, username, is_public, category, is_approved, tags) 
 			VALUES 
-			(%(data)s, %(username)s, %(is_public)s, %(category)s, %(is_approved)s, %(tags)s)
+			('xdemx', %(data)s, %(username)s, %(is_public)s, %(category)s, %(is_approved)s, %(tags)s)
 			"""
 		cur.execute(q, param)
 		db.commit()
-		return 'success'
 		
+		lastId = cur.lastrowid
+		return self.insertUniq(lastId, param['username'])
+	
+	def insertUniq(self, id, username):
+		db = Db.con()
+		cur = db.cursor()
+		myUniq = base64.b64encode(str(username) + str(id))
+		
+		par = {
+			'uniq': myUniq
+		}
+		
+		cur.execute("""UPDATE videos SET uniq = %(uniq)s WHERE uniq = 'xdemx'""", par)
+		db.commit()
+		return 'success'
+	
 	def getAll(uid):
 		db = Db.con()
 		cur = db.cursor()
@@ -32,7 +48,7 @@ class Videos:
 	def allPublic(self):
 		db = Db.con()
 		cur = db.cursor()
-		qry = "SELECT id,category,tags,data,date_added FROM videos WHERE is_public = '1' ORDER BY id DESC LIMIT 0, 100"
+		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' ORDER BY id DESC LIMIT 0, 100"
 		cur.execute(qry)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
@@ -44,7 +60,7 @@ class Videos:
 		type = '"type": "' + type + '"'
 		db = Db.con()
 		cur = db.cursor()
-		qry = "SELECT id,category,tags,data,date_added FROM videos WHERE is_public = '1' AND data like %s ORDER BY id DESC LIMIT 0, 100"
+		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' AND data like %s ORDER BY id DESC LIMIT 0, 100"
 		cur.execute(qry, ('%' + type + '%',))
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
@@ -54,12 +70,14 @@ class Videos:
 	def allPublicById(self,id):
 		db = Db.con()
 		cur = db.cursor()
-		qry = "SELECT id,category,tags,data,date_added FROM videos WHERE is_public = '1' AND id = %s"
+		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' AND uniq = %s"
 		cur.execute(qry, id)
 		if cur.rowcount > 0:
 			row = cur.fetchall()
 			return row
-	
+		else:
+			return False
+			
 	def publicize(key):
 		cur = Db.con()
 		cur.execute("UPDATE videos SET is_public = 1 WHERE mkey = 'key'")

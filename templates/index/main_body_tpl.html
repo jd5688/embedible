@@ -3,6 +3,11 @@ var i = 0;
 _.each(data.data, function(c) { 
 	i += 1;
 	var dat = JSON.parse(c.data);
+	var title = dat.title;
+	title = title.replace(/"/g, '\\"');
+	var description = dat.description;
+	description = description.replace(/"/g, "'");
+	
 %>
-	<input type="image" src="<%= dat.thumbnail_url %>" width="100" height="100" id="ithumb<%= c.id %>" value="<%= dat.type + "/" + c.id %>" />
+	<input type="image" class="tooltip" title="<b><%= dat.type + ": " + title %></b><br/><br/><%= description %>" src="<%= dat.thumbnail_url %>" width="120" height="90" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
 <% }); %>
