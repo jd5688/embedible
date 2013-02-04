@@ -1,16 +1,43 @@
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
 <tr>
-	<td width="10%">
-		<img src="/~admin/images/embedible_logo.png" border="0"/><br/>
+	<td>
+		 <ul class="menu_ul">
+			<li class="green menu_li">
+				<p><a href="" id="home" class="menu_a">Home</a></p>
+				<p class="subtext menu_p">Go to main page</p>
+			</li>
+			<li class="yellow menu_li">
+				<p><a href="" id="video" class="menu_a">Videos</a></p>
+				<p class="subtext menu_p">Videos only</p>
+			</li>
+			<li class="red menu_li">
+				<p><a href="" id="photo" class="menu_a">Photos</a></p>
+				<p class="subtext menu_p">Photos only</p>
+			</li>
+			<li class="blue menu_li">
+				<p><a href="" id="rich" class="menu_a">Rich</a></p>
+				<p class="subtext menu_p">Rich Media</p>
+			</li>
+			<% if (username !== '') { %>
+				<li class="orange menu_li">
+					<p><a href="" id="embed" class="menu_a">Embed</a></p>
+					<p class="subtext menu_p">Submit your embed</p>
+				</li>
+				<li class="purple menu_li">
+					<p><a href="" id="logout" class="menu_a">Logout</a></p>
+					<p class="subtext menu_p">I'm leaving</p>
+				</li>
+			<% } else { %>
+				<li class="purple menu_li">
+					<p><a href="" id="login" class="menu_a">Login</a></p>
+					<p class="subtext menu_p">Go to login page</p>
+				</li>
+			<% } %>
+		</ul>
 	</td>
 	<td align="right">
-		<a href="" id="home">Home</a>&nbsp;
-		<% if (username !== '') { %>
-			<a href="" id="embed">Embed</a>&nbsp;
-			<%= username %> <a href="" id="logout">Logout</a>&nbsp;
-		<% } else { %>
-			<a href="" id="login">Login</a>&nbsp;
-		<% } %>
+		<%= username %>
 	</td>
 </tr>
 </table>
+<br/>

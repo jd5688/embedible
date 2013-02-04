@@ -31,7 +31,7 @@ define([
 					var ttip = _.template( tt_css ); // load the css template for tooltips
 					var template = _.template( tmplate );
 					//render the templates
-					$('#css_container').html( ttip ); // append the css to the <head>
+					$('#css_container').append( ttip ); // append the css to the <head>
 					this.$el.html( template );
 					
 					if (this.model.has("username") || this.model.has("id")) {
@@ -64,14 +64,16 @@ define([
 				},
 				redir: function (e) {
 					if (this.counter() === 1) {
-						// close the tooltip when the image was clicked.
-						$(e.currentTarget).data('plugin_tooltipster').hideTooltip();
-						
-						var clickedEl = $(e.currentTarget); // which element was clicked?
-						var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
-						//var uri = $("#" + id).val();
-						e.preventDefault();
-						Backbone.history.navigate(uri, true);
+						if (typeof e !== "undefined") {
+							// close the tooltip when the image was clicked.
+							$(e.currentTarget).data('plugin_tooltipster').hideTooltip();
+							
+							var clickedEl = $(e.currentTarget); // which element was clicked?
+							var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
+							//var uri = $("#" + id).val();
+							e.preventDefault();
+							Backbone.history.navigate(uri, true);
+						}
 					}
 					
 				}

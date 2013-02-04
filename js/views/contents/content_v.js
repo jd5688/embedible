@@ -33,7 +33,6 @@ define([
 				main_body: function () {
 					var data = {};
 					data.data = this.json();
-					console.log(data.data);
 					if (typeof data.data.id === 'undefined') {
 						Backbone.history.navigate('404', true); // not found
 					} else {

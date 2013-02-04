@@ -32,6 +32,9 @@ define([
 			"video"				: "video",
 			"video/"			: "video",
 			"video/:id"			: "video",
+			"photo"				: "photo",
+			"photo/"			: "photo",
+			"photo/:id"			: "photo",
 			"logout"			: "logout",
 			"404"				: "fourfour",
 			"*anything"			: "defaultRoute"
@@ -114,6 +117,22 @@ define([
 			}
 			
 			
+		},
+		
+		photo: function (id) {
+			var headView = new HeadView({ el: $("#head") });
+			
+			if (id) {
+				var contentModel = Content.Model({ noCache: true });
+				contentModel.fetch({ url : DEM.domain + "contents_photo?id=" + id +"&callback=?"}); // fetch data from the server
+				var ContentView = Content.View(); // the view constructor
+				var contentView = new ContentView({ el: $("#main"), model: contentModel });
+			} else {
+				var contentsModel = Contents.Model();
+				contentsModel.fetch({ url : DEM.domain + "contents_photo?callback=?"}); // fetch data from the server
+				var ContentsView = Contents.View(); // the view constructor
+				var contentsView = new ContentsView({ el: $("#main"), model: contentsModel });
+			}	
 		},
 		
 		//nowhere to go
