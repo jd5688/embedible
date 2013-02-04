@@ -9,5 +9,5 @@ _.each(data.data, function(c) {
 	description = description.replace(/"/g, "'");
 	
 %>
-	<input type="image" class="tooltip" title="<b><%= dat.type + ": " + title %></b><br/><br/><%= description %>" src="<%= dat.thumbnail_url %>" width="120" height="90" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
+	<input type="image" class="tooltip" title="<b><font color='#0292C0'><%= dat.type %></font> : <%= title %></b><br/><br/><%= description %>" src="<%= dat.thumbnail_url %>" width="120" height="90" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
 <% }); %>

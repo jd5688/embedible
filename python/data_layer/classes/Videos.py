@@ -57,11 +57,16 @@ class Videos:
 	
 	# get all public contents by type (photo, video, link, rich)
 	def allPublicByType(self,type):
-		type = '"type": "' + type + '"'
+		obj = {
+			'type1' : '%"type": "' + type + '"%',
+			'type2' : '%"type":"' + type + '"%',
+			'type3' : '%"type" : "' + type + '"%',
+			'type4' : '%"type" :"' + type + '"%'
+		}
 		db = Db.con()
 		cur = db.cursor()
-		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' AND data like %s ORDER BY id DESC LIMIT 0, 100"
-		cur.execute(qry, ('%' + type + '%',))
+		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' AND (data like %(type1)s OR data like %(type2)s OR data like %(type3)s OR data like %(type4)s) ORDER BY id DESC LIMIT 0, 100"
+		cur.execute(qry, obj)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
 			return rows
