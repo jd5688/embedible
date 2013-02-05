@@ -7,10 +7,16 @@ define([
   'text!templates/index/index_tpl.html',
   'text!templates/index/main_body_tpl.html',
   'text!templates/index/detail_tpl.html',
-], function($, _, Backbone, Content_m, DEM, tmplate, body_tpl, detail_tpl ){
+  'text!templates/facebook/fb_comments_tpl.html',
+], function($, _, Backbone, Content_m, DEM, tmplate, body_tpl, detail_tpl, fb_comments){
 	var Content = {
 		'View'	: function () { 
 			return Backbone.View.extend({
+				events: {
+					'click #showDetBut':  'showDetails',
+					'click #hideDetBut':  'hideDetails',
+					
+				},
 				initialize: function () {
 					this.render();
 				},
@@ -36,6 +42,10 @@ define([
 					if (typeof data.data.id === 'undefined') {
 						Backbone.history.navigate('404', true); // not found
 					} else {
+						// load the fb comments plugin code
+						var fbTemplate = _.template( fb_comments );
+						$("#head").append( fbTemplate );
+						
 						data.website = DEM.website;
 						var template = _.template( detail_tpl, data );
 						//render the template
@@ -45,6 +55,18 @@ define([
 				json: function() {
 					return this.model.toJSON();
 				},
+				showDetails: function () {
+					$("#conDetails").fadeIn();
+					$("#showDetBut").hide();
+					$("#hideDetBut").show();
+					
+				},
+				hideDetails: function () {
+					$("#conDetails").fadeOut();
+					$("#showDetBut").show();
+					$("#hideDetBut").hide();
+					
+				}
 			});
 		},
 		'Model': function () {

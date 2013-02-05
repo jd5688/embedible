@@ -21,6 +21,8 @@ define([
 		routes: {
 			"index.html"		: "index",
 			""					: "index",
+			"dashboard"			: "dashboard",
+			"dashboard/"		: "dashboard",
 			"embed"				: "embed",
 			"embed/"			: "embed",
 			"embed/save"		: "save_embed",
@@ -35,6 +37,9 @@ define([
 			"photo"				: "photo",
 			"photo/"			: "photo",
 			"photo/:id"			: "photo",
+			"rich"				: "rich",
+			"rich/"				: "rich",
+			"rich/:id"			: "rich",
 			"logout"			: "logout",
 			"404"				: "fourfour",
 			"*anything"			: "defaultRoute"
@@ -130,6 +135,22 @@ define([
 			} else {
 				var contentsModel = Contents.Model();
 				contentsModel.fetch({ url : DEM.domain + "contents_photo?callback=?"}); // fetch data from the server
+				var ContentsView = Contents.View(); // the view constructor
+				var contentsView = new ContentsView({ el: $("#main"), model: contentsModel });
+			}	
+		},
+		
+		rich: function (id) {
+			var headView = new HeadView({ el: $("#head") });
+			
+			if (id) {
+				var contentModel = Content.Model({ noCache: true });
+				contentModel.fetch({ url : DEM.domain + "contents_rich?id=" + id +"&callback=?"}); // fetch data from the server
+				var ContentView = Content.View(); // the view constructor
+				var contentView = new ContentView({ el: $("#main"), model: contentModel });
+			} else {
+				var contentsModel = Contents.Model();
+				contentsModel.fetch({ url : DEM.domain + "contents_rich?callback=?"}); // fetch data from the server
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ el: $("#main"), model: contentsModel });
 			}	

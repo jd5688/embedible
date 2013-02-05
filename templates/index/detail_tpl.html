@@ -14,5 +14,15 @@
 	}
 %>
 
-<h3><%= dat.title %></h3>
-<%= showThis %>
+<h3>
+	<%= dat.title %>
+	<span id="showDetBut"><a href="#" title="Show details"><img src="<%= website %>images/icons/button_forward.png" border="0" width="28" height="28" /></a></span>
+	<span id="hideDetBut" style="display:none"><a href="#" title="Hide details"><img src="<%= website %>images/icons/button_rewind.png" border="0" width="28" height="28" /></a></span>
+	
+</h3>
+<div id="conDetails" style="display:none">
+	<b>Description:</b><br/>
+	<%= dat.description %>
+</div>
+<div><%= showThis %></div><br/>
+<div class="fb-comments" data-href="<%= location.hostname + location.pathname %>" data-width="470" data-num-posts="10"></div>

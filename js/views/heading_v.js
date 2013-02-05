@@ -64,7 +64,7 @@ define([
 		
 		rich: function(e) {
 			e.preventDefault();
-			Backbone.history.navigate('rich_media', true);
+			Backbone.history.navigate('rich', true);
 		},
 		
 		login: function(e) {
