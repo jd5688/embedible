@@ -1,6 +1,7 @@
 body { 
 	font: 1em "Trebuchet MS", verdana, arial, sans-serif; 
 	font-size: 100%;
+	background-color:#eee;
 }
 input, textarea { font-family: Arial; font-size: 125%; padding: 7px; }
 label { display: block; } 
@@ -12,14 +13,15 @@ label { display: block; }
 }
 
 #head {
-	width:95%;
-	margin:0px auto;
+	width:90%;
+	margin-left: 50px;
+	margin-right: 50px;
 	text-align:left;
 }
+
 #main {
-	width: 95%;
-	margin:0px auto;
-	text-align:left;
+	width: 90%;
+	margin-left: 50px;
+	margin-right: 50px;
 	padding:5px;
-	background-color:#eee;
 }

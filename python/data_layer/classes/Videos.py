@@ -55,6 +55,20 @@ class Videos:
 			return rows
 		#return false
 	
+	def allUserData(self, username):
+		if username == False:
+			return False;
+			
+		db = Db.con()
+		cur = db.cursor()
+		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE username = %s ORDER BY id DESC"
+		cur.execute(qry, username)
+		if cur.rowcount > 0:
+			rows = cur.fetchall()
+			return rows
+		else:
+			return False
+			
 	# get all public contents by type (photo, video, link, rich)
 	def allPublicByType(self,type):
 		obj = {

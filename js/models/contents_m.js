@@ -1,9 +1,8 @@
 define([
 	'jquery',
 	'underscore',
-	'backbone',
-	'DEM'
-], function($, _, Backbone, DEM){
+	'backbone'
+], function($, _, Backbone){
   	var Contents = Backbone.Model.extend({
 	});
 	

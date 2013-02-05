@@ -98,7 +98,7 @@ define([
 					if (attributes.result === 'success') {
 						var username = this.$('#username').val();
 						session.setCookie("username", username, 1);
-						Backbone.history.navigate('', true);
+						Backbone.history.navigate('dashboard', true);
 					} else {
 						// authentication failed
 						var bool = session.delCookie("username");

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from data_layer.classes.User import Users
+from data_layer.classes.Videos import Videos
 import md5
 
 # function for writing user-submitted data to database
@@ -38,6 +39,31 @@ def login(param):
 		}
 		
 	return obj
-	
-	
-	
+
+def allEmbed(username):
+	x = Videos()
+	data = x.allUserData(username)
+
+	if data:
+		obj = {}
+		i = 0
+		for item in data:
+			obj[i] = {
+				'id' : item[0],
+				'category' : item[1],
+				'tags' : item[2],
+				'data' : item[3]
+				#'date_added': item[4]
+			}
+			i = i + 1
+	else:
+		obj = {
+			'message': 'no record found'
+		}
+
+	dat = {
+			'data': obj,
+			'id': 1234
+		}
+		
+	return dat

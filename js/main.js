@@ -2,6 +2,7 @@ require.config({
   paths: {   
     //baseURL is /js/
     jquery: 'libs/jquery',
+    bootstrap: 'libs/bootstrap.min',
 	tooltipster: 'libs/jquery.tooltipster.min',
 	easing: 'libs/jquery.easing',
     jcrypt: 'libs/jquery.crypt',

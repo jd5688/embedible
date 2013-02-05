@@ -76,7 +76,15 @@ def application(environ, start_response):
 			status = '200 OK'
 			headers = [('Content-type', 'application/json')]
 			start_response(status, headers)
-			response = b_main.main()
+			username = d.get('username', [''])[0]
+			
+			# if username is not blank, get all user embed data
+			if username:
+				response = b_user.allEmbed(username)
+			else:
+				# else, get all public embed data
+				response = b_main.main()
+			
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'contents_video':
 			status = '200 OK'

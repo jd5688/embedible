@@ -1,5 +1,6 @@
 define([
   'jquery',
+  'bootstrap',
   'tooltipster',
   'underscore',
   'backbone',
@@ -8,7 +9,7 @@ define([
   'text!templates/css/tooltipster.html',
   'text!templates/index/index_tpl.html',
   'text!templates/index/main_body_tpl.html',
-], function($, tooltipster, _, Backbone, Index_m, DEM, tt_css, tmplate, body_tpl){
+], function($, bootstrap, tooltipster, _, Backbone, Index_m, DEM, tt_css, tmplate, body_tpl){
 	var Index = {
 		'View'	: function () { 
 			return Backbone.View.extend({
@@ -28,10 +29,10 @@ define([
 				
 				'counter' : '',
 				render: function () {
-					var ttip = _.template( tt_css ); // load the css template for tooltips
+					//var ttip = _.template( tt_css ); // load the css template for tooltips
 					var template = _.template( tmplate );
 					//render the templates
-					$('#css_container').append( ttip ); // append the css to the <head>
+					//$('#css_container').append( ttip ); // append the css to the <head>
 					this.$el.html( template );
 					
 					if (this.model.has("username") || this.model.has("id")) {
@@ -48,8 +49,9 @@ define([
 					data.website = DEM.website;
 					var template = _.template( body_tpl, data );
 					//render the template
-					this.$el.html( template );
+					$("#main_body").append( template );
 					
+					/*
 					// enable the tooltipster plugin
 					$('.tooltip').tooltipster({
 						position: 'top-right',
@@ -58,6 +60,7 @@ define([
 						interactive: true,
 						delay: 100
 					});
+					*/
 				},
 				json: function() {
 					return this.model.toJSON();
@@ -66,7 +69,7 @@ define([
 					if (this.counter() === 1) {
 						if (typeof e !== "undefined") {
 							// close the tooltip when the image was clicked.
-							$(e.currentTarget).data('plugin_tooltipster').hideTooltip();
+							//$(e.currentTarget).data('plugin_tooltipster').hideTooltip();
 							
 							var clickedEl = $(e.currentTarget); // which element was clicked?
 							var uri = decodeURIComponent(clickedEl.attr("value")); // get the value

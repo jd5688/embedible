@@ -13,9 +13,10 @@ define([
 	'views/index/index_v',
 	'views/contents/contents_v',
 	'views/contents/content_v',
+	'views/dashboard/dashboard_v',
 	'views/heading_v',
 	'DEM',
-], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, HeadView, DEM){
+], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, Dashboard, HeadView, DEM){
 
 	var Router = Backbone.Router.extend({
 		routes: {
@@ -58,6 +59,20 @@ define([
 			indexMain.fetch();
             var IndexView = Index.View();
 			var indexView = new IndexView({ el: $("#main"), model: indexMain });
+		},
+		
+		dashboard: function () {
+			username = session.checkCookie();
+			if (typeof username === 'string') {
+				var headView = new HeadView({ el: $("#head") });
+				var dashboardMain = Dashboard.Main(); // create the model
+				dashboardMain.fetch({ url: DEM.domain + "getembed?username=" + username + "&callback=?" });
+				var DashboardView = Dashboard.View();
+				var dashboardView = new DashboardView({ el: $("#main"), model: dashboardMain });
+			} else {
+				Backbone.history.navigate('', true); // redirect to the main page
+				return true;
+			}
 		},
 		
 		defaultRoute: function(anything) {

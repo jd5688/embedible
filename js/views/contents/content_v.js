@@ -59,13 +59,13 @@ define([
 					$("#conDetails").fadeIn();
 					$("#showDetBut").hide();
 					$("#hideDetBut").show();
-					
+					return false;
 				},
 				hideDetails: function () {
 					$("#conDetails").fadeOut();
 					$("#showDetBut").show();
 					$("#hideDetBut").hide();
-					
+					return false;
 				}
 			});
 		},

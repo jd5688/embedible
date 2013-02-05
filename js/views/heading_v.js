@@ -14,7 +14,7 @@ define([
 			'click #video': 'videos',
 			'click #photo': 'photos',
 			'click #rich': 'rich',
-			'click #embed': 'embed',
+			'click #dashboard': 'dashboard',
 			'click #login': 'login',
 			'click #logout': 'logout',
 			'mouseover li': 'mouseOver',
@@ -77,9 +77,9 @@ define([
 			Backbone.history.navigate('logout', true);
 		},
 		
-		embed: function(e) {
+		dashboard: function(e) {
 			e.preventDefault();
-			Backbone.history.navigate('embed', true);
+			Backbone.history.navigate('dashboard', true);
 		}
 	});
 	
