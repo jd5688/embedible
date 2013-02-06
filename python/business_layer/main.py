@@ -9,23 +9,27 @@ import urllib
 def main():
 	x = Videos()
 	data = x.allPublic()
-
-	obj = {}
-	i = 0
-	for item in data:
-		obj[i] = {
-			'id' : item[0],
-			'category' : item[1],
-            'tags' : item[2],
-            'data' : item[3]
-			#'date_added': item[4]
-		}
-		i = i + 1
 	
+	if data:
+		obj = {}
+		i = 0
+		for item in data:
+			obj[i] = {
+				'id' : item[0],
+				'category' : item[1],
+				'tags' : item[2],
+				'data' : item[3]
+				#'date_added': item[4]
+			}
+			i = i + 1
+	else:
+		obj = False
+    	
 	dat = {
 		'data': obj,
 		'id': 1234
 	}
+	
 	return dat
 	
 def cat_data():

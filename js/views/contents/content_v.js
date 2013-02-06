@@ -1,14 +1,13 @@
 define([
   'jquery',
+  'bootstrap',
   'underscore',
   'backbone',
   'models/content_m',
   'DEM',
-  'text!templates/index/index_tpl.html',
-  'text!templates/index/main_body_tpl.html',
   'text!templates/index/detail_tpl.html',
   'text!templates/facebook/fb_comments_tpl.html',
-], function($, _, Backbone, Content_m, DEM, tmplate, body_tpl, detail_tpl, fb_comments){
+], function($, bootstrap, _, Backbone, Content_m, DEM, detail_tpl, fb_comments){
 	var Content = {
 		'View'	: function () { 
 			return Backbone.View.extend({
@@ -21,9 +20,6 @@ define([
 					this.render();
 				},
 				render: function () {
-					var template = _.template( tmplate );
-					//render the template
-					this.$el.html( template );
 					if (this.model.has("id") || this.model.has("username")) {
 						if (this.model.hasChanged) {
 							this.model.on('change', this.main_body, this);

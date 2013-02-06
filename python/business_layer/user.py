@@ -52,15 +52,16 @@ def allEmbed(username):
 				'id' : item[0],
 				'category' : item[1],
 				'tags' : item[2],
-				'data' : item[3]
-				#'date_added': item[4]
+				'data' : item[3],
+				'is_public' : item[4],
+				'pkid' : item[5]
+				#'date_added': item[5]
 			}
 			i = i + 1
 	else:
-		obj = {
-			'message': 'no record found'
-		}
+		obj = False
 
+	
 	dat = {
 			'data': obj,
 			'id': 1234

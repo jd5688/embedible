@@ -61,7 +61,7 @@ class Videos:
 			
 		db = Db.con()
 		cur = db.cursor()
-		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE username = %s ORDER BY id DESC"
+		qry = "SELECT uniq,category,tags,data,is_public,id,date_added FROM videos WHERE username = %s ORDER BY id DESC"
 		cur.execute(qry, username)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()

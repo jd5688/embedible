@@ -1,43 +1,28 @@
-<table width="100%" cellspacing="0" cellpadding="0" border="0">
-<tr>
-	<td>
-		 <ul class="menu_ul">
-			<li class="green menu_li">
-				<p><a href="" id="home" class="menu_a">Home</a></p>
-				<p class="subtext menu_p">Go to main page</p>
-			</li>
-			<li class="yellow menu_li">
-				<p><a href="" id="video" class="menu_a">Videos</a></p>
-				<p class="subtext menu_p">Videos only</p>
-			</li>
-			<li class="red menu_li">
-				<p><a href="" id="photo" class="menu_a">Photos</a></p>
-				<p class="subtext menu_p">Photos only</p>
-			</li>
-			<li class="blue menu_li">
-				<p><a href="" id="rich" class="menu_a">Rich Media</a></p>
-				<p class="subtext menu_p">Music, graphics, pdf's, docs, etc.</p>
-			</li>
-			<% if (username !== '') { %>
-				<li class="orange menu_li">
-					<p><a href="" id="dashboard" class="menu_a">Dashboard</a></p>
-					<p class="subtext menu_p">Your embeds, playlists, etc.</p>
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+	<div class="container">
+	  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+	  </a>
+	  <a class="brand" href="" id="home">&lt;embedible&gt;</a>
+	  <div class="nav-collapse collapse">
+		<ul class="nav">
+		  <li <%= uri === "home" ? 'class="active"' : ''%>><a href="#" id="home">Home</a></li>
+		  <li <%= uri === "video" ? 'class="active"' : ''%>><a href="#" id="video">Videos</a></li>
+		  <li <%= uri === "photo" ? 'class="active"' : ''%>><a href="#" id="photo">Photos</a></li>
+		  <li <%= uri === "rich" ? 'class="active"' : ''%>><a href="#" id="rich">Rich Media</a></li>
+		  <% if (username !== '') { %>
+				<li <%= uri === "dashboard" ? 'class="active"' : ''%>>
+					<a href="" id="dashboard">Dashboard</a>
 				</li>
-				<li class="purple menu_li">
-					<p><a href="" id="logout" class="menu_a">Logout</a></p>
-					<p class="subtext menu_p">I'm leaving</p>
-				</li>
+				<li><a href="" id="logout">Logout</a></li>
 			<% } else { %>
-				<li class="purple menu_li">
-					<p><a href="" id="login" class="menu_a">Login</a></p>
-					<p class="subtext menu_p">Go to login page</p>
-				</li>
+				<li <%= uri === "login" ? 'class="active"' : ''%>><a href="" id="login">Login</a></li>
 			<% } %>
 		</ul>
-	</td>
-	<td align="right">
-		<%= username %>
-	</td>
-</tr>
-</table>
-<br/>
+	  </div><!--/.nav-collapse -->
+	</div>
+  </div>
+</div>

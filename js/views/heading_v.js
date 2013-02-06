@@ -1,87 +1,80 @@
 define([
   'jquery',
-  'easing',
+  'bootstrap',
   'underscore',
   'backbone',
   'mysession',
   'DEM',
-  'text!templates/css/menu.html',
+  'models/heading_m',
   'text!templates/header_tpl.html',
-], function($, j_easing, _, Backbone, session, DEM, menu, header){
-	var HeadView = Backbone.View.extend({
-		events: {
-			'click #home': 'home',
-			'click #video': 'videos',
-			'click #photo': 'photos',
-			'click #rich': 'rich',
-			'click #dashboard': 'dashboard',
-			'click #login': 'login',
-			'click #logout': 'logout',
-			'mouseover li': 'mouseOver',
-			'mouseout li': 'mouseOut'
-		},
-		initialize: function () {
-			this.render();
-		},
-		render: function () {
-			var menuTemp = _.template( menu );
-			$("#css_container").append(menuTemp);
-		
-			var username = session.checkCookie() || '';
-			var attrib = {
-					'username' : username,
+], function($, bootstrap, _, Backbone, session, DEM, Head_m, header){
+	var Head = {
+		View: function () {
+			return Backbone.View.extend({
+				uri : '',
+				events: {
+					'click #home': 'home',
+					'click #video': 'videos',
+					'click #photo': 'photos',
+					'click #rich': 'rich',
+					'click #dashboard': 'dashboard',
+					'click #login': 'login',
+					'click #logout': 'logout'
+				},
+				initialize: function () {
+					this.render();
+				},
+				render: function () {
+					var username = session.checkCookie() || '';
+					var attrib = {
+							'username' : username,
+							'uri': this.model.get("uri")
+						}
+					var template = _.template( header, attrib );
+					//render the template
+					this.$el.html( template );
+				},
+				
+				home: function(e) {
+					e.preventDefault();
+					Backbone.history.navigate('', true);
+				},
+				
+				videos: function(e) {
+					e.preventDefault();
+					Backbone.history.navigate('video', true);
+				},
+				
+				photos: function(e) {
+					e.preventDefault();
+					Backbone.history.navigate('photo', true);
+				},
+				
+				rich: function(e) {
+					e.preventDefault();
+					Backbone.history.navigate('rich', true);
+				},
+				
+				login: function(e) {
+					e.preventDefault();
+					Backbone.history.navigate('login', true);
+				},
+				
+				logout: function(e) {
+					e.preventDefault();
+					Backbone.history.navigate('logout', true);
+				},
+				
+				dashboard: function(e) {
+					e.preventDefault();
+					Backbone.history.navigate('dashboard', true);
 				}
-			var template = _.template( header, attrib );
-			//render the template
-			this.$el.html( template );
+			});
 		},
-		
-		mouseOver: function (e) {
-			var liEl = $(e.currentTarget); // which element was clicked?
-			//var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
-			$(liEl).stop().animate({height:'150px'},{queue:false, duration:600, easing: 'easeOutBounce'});
-		},
-		
-		mouseOut: function (e) {
-			var liEl = $(e.currentTarget); // which element was clicked?
-			$("li").stop().animate({height:'50px'},{queue:false, duration:600, easing: 'easeOutBounce'}) 
-		},
-		
-		home: function(e) {
-			e.preventDefault();
-			Backbone.history.navigate('', true);
-		},
-		
-		videos: function(e) {
-			e.preventDefault();
-			Backbone.history.navigate('video', true);
-		},
-		
-		photos: function(e) {
-			e.preventDefault();
-			Backbone.history.navigate('photo', true);
-		},
-		
-		rich: function(e) {
-			e.preventDefault();
-			Backbone.history.navigate('rich', true);
-		},
-		
-		login: function(e) {
-			e.preventDefault();
-			Backbone.history.navigate('login', true);
-		},
-		
-		logout: function(e) {
-			e.preventDefault();
-			Backbone.history.navigate('logout', true);
-		},
-		
-		dashboard: function(e) {
-			e.preventDefault();
-			Backbone.history.navigate('dashboard', true);
+		Model: function () {
+			return new Head_m();
 		}
-	});
 	
-	return HeadView;
+	}
+	return Head;
 });

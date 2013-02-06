@@ -1,15 +1,39 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" type="text/css" href="/~admin/css/bootstrap.css" media="screen">
+	<style>
+      body {
+        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+      }
+      
+      #footer {
+        background-color: #f5f5f5;
+      }
+    </style>
+    <link href="/~admin/css/bootstrap-responsive.css" rel="stylesheet">
+    
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
 	<div id="css_container"></div>
 	<script data-main="/~admin/js/main.js" src="/~admin/js/require.js"></script>
 	<div id="js_container"></div>
 </head>
 <body>
 <div id="head"></div>
-<div id="main">
+<div class="container" id="main">
 </div>
-
+<!--
+<div id="footer">
+	<div class="container">
+		<p class="muted credit">this is my footer</p>
+	</div>
+</div>
+-->
 </body>
 </html>

@@ -16,7 +16,7 @@ define([
 	'views/dashboard/dashboard_v',
 	'views/heading_v',
 	'DEM',
-], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, Dashboard, HeadView, DEM){
+], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, Dashboard, Head, DEM){
 
 	var Router = Backbone.Router.extend({
 		routes: {
@@ -24,11 +24,14 @@ define([
 			""					: "index",
 			"dashboard"			: "dashboard",
 			"dashboard/"		: "dashboard",
+			"dashboard/:option"	: "dashboard",
+			"dashboard/:option/"	: "dashboard",
 			"embed"				: "embed",
 			"embed/"			: "embed",
 			"embed/save"		: "save_embed",
 			"embed/save/"		: "save_embed",
 			"embed/save/:opt"	: "save_embed",
+			"embed/save/:opt/"	: "save_embed",
 			"login"				: "login",
 			"login/"			: "login",
 			"login/:failed"		: "login",
@@ -52,23 +55,38 @@ define([
 			Backbone.history.start({ pushState: true, root: DEM.root });
 		},
 		
+		_renderHead: function (uri) {
+			var headModel = Head.Model();
+			headModel.set({ uri: uri });
+			var HeadView = Head.View();
+			var headView = new HeadView({ el: $("#head"), model: headModel});
+			return true;
+		},
+		
 		// the index or home page
 		index: function () {
-			var headView = new HeadView({ el: $("#head") });
+			this._renderHead('home');
 			var indexMain = Index.Main(); // create the model
 			indexMain.fetch();
             var IndexView = Index.View();
 			var indexView = new IndexView({ el: $("#main"), model: indexMain });
 		},
 		
-		dashboard: function () {
+		dashboard: function (option) {
+			var gPass = '';
+			if (typeof option === 'undefined' || option === 'show_all' || option === 'my_videos' || option === 'my_photos' || option === 'my_rich' || option === 'my_links') {
+				gPass = 1;
+			}
+
 			username = session.checkCookie();
 			if (typeof username === 'string') {
-				var headView = new HeadView({ el: $("#head") });
-				var dashboardMain = Dashboard.Main(); // create the model
-				dashboardMain.fetch({ url: DEM.domain + "getembed?username=" + username + "&callback=?" });
-				var DashboardView = Dashboard.View();
-				var dashboardView = new DashboardView({ el: $("#main"), model: dashboardMain });
+				if (gPass === 1) {
+					this._renderHead('dashboard');
+					var dashboardMain = Dashboard.Main(); // create the model
+					dashboardMain.fetch({ url: DEM.domain + "getembed?username=" + username + "&callback=?" });
+					var DashboardView = Dashboard.View();
+					var dashboardView = new DashboardView({ el: $("#main"), model: dashboardMain });
+				}
 			} else {
 				Backbone.history.navigate('', true); // redirect to the main page
 				return true;
@@ -81,7 +99,7 @@ define([
 		
 		// user submitting content
 		embed: function() {	
-			var headView = new HeadView({ el: $("#head") });
+			this._renderHead('embed');
 			var cat = Embed.Cat(); // category model
 			cat.fetch(); // fetch data from the server
 			var EmbedView = Embed.View();
@@ -122,7 +140,7 @@ define([
 		},
 		
 		video: function (id) {
-			var headView = new HeadView({ el: $("#head") });
+			this._renderHead('video');
 			
 			if (id) {
 				var contentModel = Content.Model({ noCache: true });
@@ -140,7 +158,7 @@ define([
 		},
 		
 		photo: function (id) {
-			var headView = new HeadView({ el: $("#head") });
+			this._renderHead("photo");
 			
 			if (id) {
 				var contentModel = Content.Model({ noCache: true });
@@ -156,7 +174,7 @@ define([
 		},
 		
 		rich: function (id) {
-			var headView = new HeadView({ el: $("#head") });
+			this._renderHead("rich");
 			
 			if (id) {
 				var contentModel = Content.Model({ noCache: true });
@@ -179,7 +197,7 @@ define([
 		
 		//login page
 		login: function(failed) {
-			var headView = new HeadView({ el: $("#head") });
+			this._renderHead("login");
 			if (failed) {
 				var LoginViewFail = Login.ViewFail();
 				var loginViewFail = new LoginViewFail({ el: $("#main") });

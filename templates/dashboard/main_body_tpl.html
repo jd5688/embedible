@@ -1,0 +1,174 @@
+<span id="nav_tabs"></span>
+
+<span id="xshow_all">
+<% if (data.data) { %>
+	<ul class="thumbnails">
+		<% 
+		var i = 0;
+		_.each(data.data, function(c) { 
+			i += 1;
+			var dat = JSON.parse(c.data);
+			var title = dat.title;
+			title = title.replace(/"/g, '\\"');
+			var description = dat.description;
+			description = description.replace(/"/g, "'");
+		%>
+		<li class="span2">
+			<span style="text-align:center">
+				<a class="thumbnail">
+					<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
+				</a>
+				<span id="<%= c.pkid %>">
+					<% if (c.is_public === 1) { %>
+						<a href="#" id="propu" name="<%= c.pkid %>" title="make it private"><span class="label">public</span></a>
+					<% } else { %>
+						<a href="#" id="propu" name="<%= c.pkid %>" title="make it public"><span class="label label-info">private</span></a>
+					<% } %>
+				</span>
+			</span>
+		</li>
+		<% }); %>
+	</ul>
+
+<% } else { %>
+	<div class="alert alert-info">
+    	No record yet. Please start embedding.
+    </div>
+<% } %>
+</span>
+
+<span id="xmy_videos" style="display:none">
+	<ul class="thumbnails">
+		<% 
+		var i = 0;
+		var noData = true;
+		_.each(data.data, function(c) { 
+			i += 1;
+			var dat = JSON.parse(c.data);
+			if (dat.type !== 'video') { 
+				// do nothing;
+			} else {
+				noData = false;
+				var title = dat.title;
+				title = title.replace(/"/g, '\\"');
+				var description = dat.description;
+				description = description.replace(/"/g, "'");
+			
+		%>
+			<li class="span2">
+				<span style="text-align:center">
+				<a class="thumbnail">
+					<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
+				</a>
+				</span>
+			</li>
+		<% } }); %>
+	</ul>
+	<% if (noData) { %>
+		<div class="alert alert-info">
+			No record yet. Please start embedding.
+		</div>
+	<% } %>
+</span>
+
+<span id="xmy_photos" style="display:none">
+	<ul class="thumbnails">
+		<% 
+		var noData = true;
+		var i = 0;
+		_.each(data.data, function(c) { 
+			i += 1;
+			var dat = JSON.parse(c.data);
+			if (dat.type !== 'photo') { 
+				// do nothing;
+			} else {
+				noData = false;
+				var title = dat.title;
+				title = title.replace(/"/g, '\\"');
+				var description = dat.description;
+				description = description.replace(/"/g, "'");
+			
+		%>
+			<li class="span2">
+				<span style="text-align:center">
+				<a class="thumbnail">
+					<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
+				</a>
+				</span>
+			</li>
+		<% } }); %>
+	</ul>
+	<% if (noData) { %>
+		<div class="alert alert-info">
+			No record yet. Please start embedding.
+		</div>
+	<% } %>
+</span>
+
+<span id="xmy_links" style="display:none">
+	<ul class="thumbnails">
+		<% 
+		var i = 0;
+		var noData = true;
+		_.each(data.data, function(c) { 
+			i += 1;
+			var dat = JSON.parse(c.data);
+			if (dat.type !== 'link') { 
+				// do nothing;
+			} else {
+				noData = false;
+				var title = dat.title;
+				title = title.replace(/"/g, '\\"');
+				var description = dat.description;
+				description = description.replace(/"/g, "'");
+			
+		%>
+			<li class="span2">
+				<span style="text-align:center">
+				<a class="thumbnail">
+					<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
+				</a>
+				</span>
+			</li>
+		<% } }); %>
+	</ul>
+	<% if (noData) { %>
+		<div class="alert alert-info">
+			No record yet. Please start embedding.
+		</div>
+	<% } %>
+</span>
+
+<span id="xmy_rich" style="display:none">
+	<ul class="thumbnails">
+		<% 
+		var i = 0;
+		var noData = true;
+		_.each(data.data, function(c) { 
+			i += 1;
+			var dat = JSON.parse(c.data);
+			if (dat.type !== 'rich') { 
+				// do nothing;
+			} else {
+				noData = false;
+				var title = dat.title;
+				title = title.replace(/"/g, '\\"');
+				var description = dat.description;
+				description = description.replace(/"/g, "'");
+			
+		%>
+			<li class="span2">
+				<span style="text-align:center">
+				<a class="thumbnail">
+					<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
+				</a>
+				</span>
+			</li>
+		<% } }); %>
+	</ul>
+	<% if (noData) { %>
+		<div class="alert alert-info">
+			No record yet. Please start embedding.
+		</div>
+	<% } %>
+</span>
