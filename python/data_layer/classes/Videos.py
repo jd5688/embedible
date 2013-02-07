@@ -21,9 +21,9 @@ class Videos:
 		db.commit()
 		
 		lastId = cur.lastrowid
-		return self.insertUniq(lastId, param['username'])
+		return self._insertUniq(lastId, param['username'])
 	
-	def insertUniq(self, id, username):
+	def _insertUniq(self, id, username):
 		db = Db.con()
 		cur = db.cursor()
 		myUniq = base64.b64encode(str(username) + str(id))
@@ -36,13 +36,20 @@ class Videos:
 		db.commit()
 		return 'success'
 	
-	def getAll(uid):
+	# set the embed to public or private
+	def embedToPublic(self, param):
 		db = Db.con()
 		cur = db.cursor()
-		cur.execute("SELECT embed FROM videos WHERE user_id = 'uid'")
-		if cur.rowcount > 0:
-			rows = cur.fetchall()
-			return rows
+		
+		cur.execute("""UPDATE videos SET is_public = %(is_public)s WHERE id = %(id)s""", param)
+		
+		try:
+			db.commit()
+			resp = 'success'
+		except:
+			resp = False
+			
+		return resp
 	
 	# get all contents that are marked as public
 	def allPublic(self):

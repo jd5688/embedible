@@ -7,7 +7,7 @@ define([
   'models/contents_m',
   'DEM',
   'text!templates/index/main_body_tpl.html',
-  'text!templates/index/detail_tpl.html',
+  'text!templates/index/detail_tpl.html'
 ], function($, bootstrap, tooltip, _, Backbone, Contents_m, DEM, body_tpl, detail_tpl ){
 	var Contents = {
 		'View'	: function () { 
@@ -43,8 +43,10 @@ define([
 					//render the template
 					this.$el.html( template );
 					
-					// enable the tooltipster plugin
-					$('.tooltip').tooltip();
+					$('.thumbnail').tooltip({
+						selector: "input[rel=tooltip]",
+						placement: "bottom"
+					});
 				},
 				json: function() {
 					return this.model.toJSON();

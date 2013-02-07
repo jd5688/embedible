@@ -13,6 +13,7 @@ def application(environ, start_response):
     Start point of the DMR application.  Handles routing for all the REST resources defined in the system.
     """
     
+    private_key = "ph1li9sVAi0"
     ui_domain = 'http://localhost'
 	
     # Wrap the environ in a request class
@@ -74,7 +75,10 @@ def application(environ, start_response):
         	response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'getembed':
 			status = '200 OK'
-			headers = [('Content-type', 'application/json')]
+			headers = [
+						('Content-type', 'application/json'),
+						('Access-Control-Allow-Origin', ui_domain)
+					]
 			start_response(status, headers)
 			username = d.get('username', [''])[0]
 			
@@ -119,7 +123,15 @@ def application(environ, start_response):
 				response = b_main.contents('rich');
 		
 			response = callback + "(" + json.dumps(response) + ");"
-		
+        elif requested_resource == 'makepriv':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			id = d.get('id', [''])[0]
+			is_public = d.get('is_public', [''])[0]
+			response = b_user.set_public(is_public, id)
+			response = callback + "(" + json.dumps(response) + ");"
+	
 	elif method == 'OPTIONS':
 		#somehow, OPTIONS requests are not getting in here but at the 'else' statement
 		
@@ -127,7 +139,7 @@ def application(environ, start_response):
 		status = '200 OK'
 		headers = [
 			('Content-type', 'text/plain; charset=utf-8'),
-			('Access-Control-Allow-Origin', 'http://localhost'),
+			('Access-Control-Allow-Origin', ui_domain),
 			('Access-Control-Allow-Methods', 'POST, GET, OPTIONS'),
 			('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version')
 		]

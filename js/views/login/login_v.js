@@ -56,7 +56,7 @@ define([
 				do_login: function () {
 					var username = this.$('#username').val();
 					var password = this.$('#password').val();
-					var ckey = username + password;
+					var ckey = username + password + DEM.key;
 					if (this._user_validate(username) && password !== '') {
 						// increment and make sure it's 1
 						// if more than one, it's looping/creating another instance-- so ignore

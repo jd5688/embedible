@@ -14,15 +14,41 @@
 	}
 %>
 
-<h3>
-	<%= dat.title %>
-	<span id="showDetBut"><a href="" title="Show details"><img src="<%= website %>images/icons/button_forward.png" border="0" width="28" height="28" /></a></span>
-	<span id="hideDetBut" style="display:none"><a href="" title="Hide details"><img src="<%= website %>images/icons/button_rewind.png" border="0" width="28" height="28" /></a></span>
-	
-</h3>
-<div id="conDetails" style="display:none">
-	<b>Description:</b><br/>
-	<%= dat.description %>
+<div class="row-fluid">
+	<div class="span10">
+		<h4>
+			<%= dat.title %>
+			<!--
+			<span id="showDetBut"><a href="" title="Show details"><img src="<%= website %>images/icons/button_forward.png" border="0" width="28" height="28" /></a></span>
+			<span id="hideDetBut" style="display:none"><a href="" title="Hide details"><img src="<%= website %>images/icons/button_rewind.png" border="0" width="28" height="28" /></a></span>
+			-->
+			
+			<span id="showDetBut"><a href="" class="btn btn-small" title="Show details"><i class="icon-chevron-down"></i></a></span>
+			<span id="hideDetBut" style="display:none"><a href="" class="btn btn-small" title="Hide details"><i class="icon-chevron-up"></i></a></span>
+			
+		</h4>
+		<span id="conDetails" style="display:none">
+			<b>Description:</b><br/>
+			<p class="text-info"><%= dat.description %></p>
+		</span>
+		<div><%= showThis %></div><br/>
+		
+		<div class="row">
+			<div class="span7">
+			  <h4>Post a comment:</h4>
+			  <div class="fb-comments" data-href="<%= location.hostname + location.pathname %>" data-width="470" data-num-posts="10"></div>
+			</div>
+
+			<div class="span3">
+			  <h4>Subheading</h4>
+			  <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+			  <h4>Subheading</h4>
+			  <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+			  <h4>Subheading</h4>
+			  <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+			</div>
+		</div>
+    </div>
 </div>
-<div><%= showThis %></div><br/>
-<div class="fb-comments" data-href="<%= location.hostname + location.pathname %>" data-width="470" data-num-posts="10"></div>

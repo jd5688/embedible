@@ -2,14 +2,16 @@ define([
   'jquery',
   'bootstrap',
   'tooltip',
+  'modal',
   'underscore',
   'backbone',
   'models/index_main_m',
+  'models/puborpriv_m',
   'DEM',
   'text!templates/dashboard/dashboard_nav_tpl.html',
   'text!templates/dashboard/main_body_tpl.html',
-  'text!templates/dashboard/preloader_tpl.html',
-], function($, bootstrap, tooltip, _, Backbone, Index_m, DEM, d_nav, body_tpl, preloader_tpl){
+  'text!templates/modal_tpl.html',
+], function($, bootstrap, tooltip, modal, _, Backbone, Index_m, Puborpriv_m, DEM, d_nav, body_tpl, modal_template){
 	var Dashboard = {
 		View : function () {
 			return Backbone.View.extend({
@@ -20,7 +22,9 @@ define([
 					'click #my_photos': 'redir2',
 					'click #my_rich': 'redir2',
 					'click #my_links': 'redir2',
-					'click #propu': 'propu'
+					'click #propu': 'propu',
+					'click .fordelete': 'show_modal',
+					'click #modal_confirm': 'do_delete'
 				},
 				initialize: function () {
 					this.counter = this.inc(); // initialize counter
@@ -50,6 +54,11 @@ define([
 					var template = _.template( body_tpl, data );
 					//render the template
 					this.$el.html( template );
+					
+					// the modal template is used for deleting content
+					var mod_tpl = _.template( modal_template );
+					$('#modal_container').html( mod_tpl );
+					
 					
 					// check the uri and make the appropriate tab active at the dashboard
 					var cURL = location.protocol + '//' + location.hostname + location.pathname
@@ -107,26 +116,58 @@ define([
 					}
 				},	
 				propu: function (e) {
-					var clickedEl = $(e.currentTarget);
-					// ID is the primary key id of the embed
-					var id = clickedEl.attr("name");
-					var axion = clickedEl.attr("title");
-					console.log(id + ' - ' + axion);
-					
-					var template = _.template( preloader_tpl );
-					
-					if (axion === 'make it private') {
-						// reverse the button to 'make it public'
-						//var thisHtml = '<a href="#" id="propu" name="' + id + '" title="make it public"><span class="label label-info">private</span></a>';
-						//$('#' + id).html(thisHtml);
+					e.preventDefault();
+					if (this.counter() === 1) {
+						var clickedEl = $(e.currentTarget);
+						var att = clickedEl.attr("name");
+						var attArr = att.split('_');
 						
-						$('#' + id).html('<img src="images/icons/loading.gif"/>');
-					} else { // make it public was pressed
-						//var thisHtml = '<a href="#" id="propu" name="' + id + '" title="make it private"><span class="label">public</span></a>';
-						//$('#' + id).html(thisHtml);
+						// ID is the primary key id of the embed
+						var id = attArr[1];
+						var axion = clickedEl.attr("title");
 						
-						$('#' + id).html('<img src="images/icons/loading.gif"/>');
+						// replace with 'saving...' text
+						var thisHtml = '<a><span class="label">saving...</span></a>';
+						$('#' + att).html(thisHtml);
+						
+						var pubOrPriv = new Puborpriv_m();
+						var obj = {};
+						var response = '';
+						if (axion === 'make it private') {
+							pubOrPriv.fetch({ url: DEM.domain + "makepriv?is_public=0&id=" + id + "&callback=?" });
+							
+							pubOrPriv.on('change', function() {
+								obj = pubOrPriv.toJSON();
+								response = obj.response;
+								if (response === 'success') {
+									// reverse the button to 'make it public'
+									var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it public"><span class="label label-info">private</span></a>';
+								} else {
+									// revert to original status
+									var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it private"><span class="label">public</span></a>';
+									// show alert
+									$('#alerter').fadeIn();
+								};
+								$('#' + att).html(thisHtml);
+							});
+						} else { // make it public was pressed
+							pubOrPriv.fetch({ url: DEM.domain + "makepriv?is_public=1&id=" + id + "&callback=?" });
+							pubOrPriv.on('change', function() {
+								obj = pubOrPriv.toJSON();
+								response = obj.response;
+								if (response === 'success') {
+									var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it private"><span class="label">public</span></a>';
+								} else {
+									var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it public"><span class="label label-info">private</span></a>';
+									// show alert
+									$('#alerter').fadeIn();
+								};
+								$('#' + att).html(thisHtml);
+							});
+						};
+						this.counter = this.inc(); 
 					}
+					return false;
 				},
 				_show_all: function () {
 					var data = {};
@@ -193,6 +234,24 @@ define([
 					$('#xmy_rich').fadeIn();
 					return true;
 				},
+				show_modal: function (e) {
+					var clickedEl = $(e.currentTarget);
+					var id = clickedEl.attr("id");
+					
+					// populate the modal template with some values
+					$('#modal_body').html('Your embed is about to be deleted!');
+					$('#modal_value').val(id);
+					
+					// then show it
+					$('#my_modal').modal('show');
+				
+				},
+				do_delete: function (e) {
+					e.preventDefault();
+					// hide the modal
+					$('#my_modal').modal('hide');
+					alert($('#modal_value').val());
+				}
 			});
 		},
 		'Main'	: function () {

@@ -19,7 +19,7 @@ def login(param):
 	}
 	
 	# create a hash
-	m = md5.new(data['user_email'] + data['user_pass']);
+	m = md5.new(data['user_email'] + data['user_pass'] + _private_key())
 	
 	# check if this hash is equal to the one transmitted
 	if m.hexdigest() == param['password']:
@@ -40,6 +40,9 @@ def login(param):
 		
 	return obj
 
+def _private_key():
+	return 'ph1li9sVAi0'
+	
 def allEmbed(username):
 	x = Videos()
 	data = x.allUserData(username)
@@ -67,4 +70,21 @@ def allEmbed(username):
 			'id': 1234
 		}
 		
+	return dat
+
+#set user content to public or private
+def set_public(is_public, id):
+	x = Videos()
+	param = {
+		'is_public': is_public,
+		'id': id
+	}
+	
+	bool = x.embedToPublic(param)
+	
+	if bool:
+		dat = { 'response': bool }
+	else:
+		dat = { 'response': 'failed' }
+	
 	return dat
