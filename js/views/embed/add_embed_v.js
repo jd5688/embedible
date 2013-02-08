@@ -30,8 +30,9 @@ define([
 					'click #my_photos'			: 'redir2',
 					'click #my_rich'			: 'redir2',
 					'click #my_links'			: 'redir2',
-					'click #dashboard'			: 'redir2',
+					'click #my_dashboard'		: 'redir2',
 					'click #playlists'			: 'redir2',
+					'click #embed'				: 'redir2'
 				},
 				initialize: function () {
 					// check if user is logged
@@ -161,22 +162,29 @@ define([
 				},
 				
 				redir: function(e) {
-					this.counter = this.inc();  // re-initialize counter
-					this.$('#url').val('');
-					
-					//$('#embedible').html( '<input type="submit" id="submit" name="submit" value="Send"/>' );
-					
-					$('#embedible').html( '<button class="btn btn-small btn-primary" id="submit" name="submit">Send</button>' );
+					if (this.counter() === 1) {
+						this.counter = this.inc();  // re-initialize counter
+						this.$('#url').val('');
+						
+						//$('#embedible').html( '<input type="submit" id="submit" name="submit" value="Send"/>' );
+						
+						$('#embedible').html( '<button class="btn btn-small btn-primary" id="submit" name="submit">Send</button>' );
+					}
 				},
 				redir2: function(e) {
-					var clickedEl = $(e.currentTarget); // which element was clicked?
-					var uri = clickedEl.attr("id");
-					if (uri === 'playlists') {
-						uri = 'dashboard/' + uri;
-					};
-					e.preventDefault();
-					Backbone.history.navigate(uri, true);
-					
+					if (this.counter() === 1) {
+						var clickedEl = $(e.currentTarget); // which element was clicked?
+						var uri = clickedEl.attr("id");
+						if (uri === 'playlists') {
+								uri = 'dashboard/' + uri;
+							};
+						
+						if (uri === 'my_dashboard') {
+							uri = 'dashboard';
+						};
+						e.preventDefault();
+						Backbone.history.navigate(uri, true);
+					}
 				}
 			});
 		},

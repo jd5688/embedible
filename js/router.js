@@ -195,6 +195,7 @@ define([
 		playlists: function() {
 			this._renderHead("dashboard");
 			var playlistModel = Playlist.Model();
+			//playlistModel.fetch({ url : DEM.domain + "playlists?hash=" + hash + "&id=" + id +"&callback=?"});
 			var PlaylistView = Playlist.View(); // the view constructor
 			var playlistView = new PlaylistView({ el: $("#main"), model: playlistModel });
 		},

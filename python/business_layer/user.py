@@ -2,6 +2,7 @@
 
 from data_layer.classes.User import Users
 from data_layer.classes.Videos import Videos
+from data_layer.classes.Playlists import Playlists
 import md5
 
 # function for writing user-submitted data to database
@@ -105,3 +106,26 @@ def set_public(is_public, id):
 		dat = { 'response': 'failed' }
 	
 	return dat
+
+def playlists(hash, publc, username):
+	x = Playlists()
+	data = False
+	# create a hash
+	m = md5.new(publc + _private_key() + username)
+	
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
+		param = {
+			'username' : username
+		}
+		bool = x.getPlaylists(param)
+
+		if bool:
+			data = bool
+			
+	return {
+		'data': data,
+		'id': 1234
+	}
+		
+	

@@ -139,6 +139,15 @@ def application(environ, start_response):
 			hash = d.get('hash', [''])[0]
 			response = b_user.deleteEmbed(hash, id)
 			response = callback + "(" + json.dumps(response) + ");"
+        elif requested_resource == 'playlists':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			username = d.get('u', [''])[0]
+			hash = d.get('hash', [''])[0]
+			publc = d.get('public', [''])[0]
+			response = b_user.playlists(hash, publc, username)
+			response = callback + "(" + json.dumps(response) + ");"
 		
 	elif method == 'OPTIONS':
 		#somehow, OPTIONS requests are not getting in here but at the 'else' statement

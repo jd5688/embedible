@@ -29,6 +29,7 @@ define([
 					'click #modal_confirm': 'do_delete',
 					'click #embed': 'redir3',
 					'click #playlists': 'redir3',
+					'click #my_dashboard': 'redir3'
 				},
 				initialize: function () {
 					this.counter = this.inc(); // initialize counter
@@ -120,13 +121,19 @@ define([
 					}
 				},
 				redir3: function(e) {
-					var clickedEl = $(e.currentTarget); // which element was clicked?
-					var uri = clickedEl.attr("id");
-					if (uri === 'playlists') {
-						uri = 'dashboard/' + uri;
-					};
-					e.preventDefault();
-					Backbone.history.navigate(uri, true);
+					if (this.counter() === 1) {
+						var clickedEl = $(e.currentTarget); // which element was clicked?
+						var uri = clickedEl.attr("id");
+						if (uri === 'playlists') {
+							uri = 'dashboard/' + uri;
+						};
+						
+						if (uri === 'my_dashboard') {
+							uri = 'dashboard';
+						};
+						e.preventDefault();
+						Backbone.history.navigate(uri, true);
+					}
 					
 				},
 				propu: function (e) {
