@@ -72,6 +72,23 @@ def allEmbed(username):
 		
 	return dat
 
+def deleteEmbed(hash, id):
+	x = Videos()
+	
+	# create a hash
+	m = md5.new(id + _private_key())
+	if m.hexdigest() == hash:
+		param = {
+			'hash': hash,
+			'id': id
+		}
+		bool = x.deleteEmbed(param)
+		if bool:
+			dat = { 'response' : bool }
+	else:
+		dat = { 'response': 'failed' }
+		
+	return dat
 #set user content to public or private
 def set_public(is_public, id):
 	x = Videos()

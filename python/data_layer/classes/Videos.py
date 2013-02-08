@@ -23,6 +23,39 @@ class Videos:
 		lastId = cur.lastrowid
 		return self._insertUniq(lastId, param['username'])
 	
+	def deleteEmbed(self, param):
+		db = Db.con()
+		cur = db.cursor()
+		
+		qry = "SELECT uniq,username,category,tags,data FROM videos WHERE id = %(id)s LIMIT 0, 1"
+		cur.execute(qry, param)
+		if cur.rowcount > 0:
+			rows = cur.fetchall()
+			data = {
+				'uniq': rows[0][0],
+				'username': rows[0][1],
+				'category': rows[0][2],
+				'tags': rows[0][3],
+				'data': rows[0][4]
+			}
+			# now insert it
+			q = """
+				INSERT INTO deleted (uniq, data, username, is_public, category, is_approved, tags) 
+				VALUES 
+				(%(uniq)s, %(data)s, %(username)s, '1', %(category)s, '1', %(tags)s)
+				"""
+			cur.execute(q, data)
+			db.commit()
+		
+		cur.execute("""DELETE FROM videos WHERE id = %(id)s""", param)	
+		try:
+			db.commit()
+			resp = 'success'
+		except:
+			resp = False
+			
+		return resp
+	
 	def _insertUniq(self, id, username):
 		db = Db.con()
 		cur = db.cursor()
@@ -96,7 +129,7 @@ class Videos:
 	def allPublicById(self,id):
 		db = Db.con()
 		cur = db.cursor()
-		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' AND uniq = %s"
+		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE uniq = %s"
 		cur.execute(qry, id)
 		if cur.rowcount > 0:
 			row = cur.fetchall()

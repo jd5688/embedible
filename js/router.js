@@ -14,39 +14,42 @@ define([
 	'views/contents/contents_v',
 	'views/contents/content_v',
 	'views/dashboard/dashboard_v',
+	'views/playlists/playlist_v',
 	'views/heading_v',
 	'DEM',
-], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, Dashboard, Head, DEM){
+], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, Dashboard, Playlist, Head, DEM){
 
 	var Router = Backbone.Router.extend({
 		routes: {
-			"index.html"		: "index",
-			""					: "index",
-			"dashboard"			: "dashboard",
-			"dashboard/"		: "dashboard",
-			"dashboard/:option"	: "dashboard",
-			"dashboard/:option/"	: "dashboard",
-			"embed"				: "embed",
-			"embed/"			: "embed",
-			"embed/save"		: "save_embed",
-			"embed/save/"		: "save_embed",
-			"embed/save/:opt"	: "save_embed",
-			"embed/save/:opt/"	: "save_embed",
-			"login"				: "login",
-			"login/"			: "login",
-			"login/:failed"		: "login",
-			"video"				: "video",
-			"video/"			: "video",
-			"video/:id"			: "video",
-			"photo"				: "photo",
-			"photo/"			: "photo",
-			"photo/:id"			: "photo",
-			"rich"				: "rich",
-			"rich/"				: "rich",
-			"rich/:id"			: "rich",
-			"logout"			: "logout",
-			"404"				: "fourfour",
-			"*anything"			: "defaultRoute"
+			"index.html"					: "index",
+			""								: "index",
+			"dashboard"						: "dashboard",
+			"dashboard/"					: "dashboard",
+			"dashboard/playlists/"			: "playlists",
+			"dashboard/playlists"			: "playlists",
+			"dashboard/:option"				: "dashboard",
+			"dashboard/:option/"			: "dashboard",
+			"embed"							: "embed",
+			"embed/"						: "embed",
+			"embed/save"					: "save_embed",
+			"embed/save/"					: "save_embed",
+			"embed/save/:opt"				: "save_embed",
+			"embed/save/:opt/"				: "save_embed",
+			"login"							: "login",
+			"login/"						: "login",
+			"login/:failed"					: "login",
+			"video"							: "video",
+			"video/"						: "video",
+			"video/:id"						: "video",
+			"photo"							: "photo",
+			"photo/"						: "photo",
+			"photo/:id"						: "photo",
+			"rich"							: "rich",
+			"rich/"							: "rich",
+			"rich/:id"						: "rich",
+			"logout"						: "logout",
+			"404"							: "fourfour",
+			"*anything"						: "defaultRoute"
 		},
 		
 		start: function () {
@@ -99,7 +102,7 @@ define([
 		
 		// user submitting content
 		embed: function() {	
-			this._renderHead('embed');
+			this._renderHead('dashboard');
 			var cat = Embed.Cat(); // category model
 			cat.fetch(); // fetch data from the server
 			var EmbedView = Embed.View();
@@ -187,6 +190,13 @@ define([
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ el: $("#main"), model: contentsModel });
 			}	
+		},
+		
+		playlists: function() {
+			this._renderHead("dashboard");
+			var playlistModel = Playlist.Model();
+			var PlaylistView = Playlist.View(); // the view constructor
+			var playlistView = new PlaylistView({ el: $("#main"), model: playlistModel });
 		},
 		
 		//nowhere to go

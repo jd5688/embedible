@@ -9,7 +9,9 @@ define([
 	'text!templates/embed/embed_data_tpl.html',
 	'text!templates/embed/embed_success_tpl.html',
   	'text!templates/embed/embed_fail_tpl.html',
-], function($, _, Backbone, session, Cat, EmbedSaveM, tmplate, embed_result, esuccess, efail){
+  	'text!templates/embed/embed_alert_tpl.html',
+  	'text!templates/embed/embed_nav_tpl.html',
+], function($, _, Backbone, session, Cat, EmbedSaveM, tmplate, embed_result, esuccess, efail, alert_tpl, nav_tab){
 	var Embed = {
 		'Cat' : function () {
 			return new Cat();
@@ -22,7 +24,14 @@ define([
 					'click #hide_cat'			: 'hideSelect',
 					'click #submit'				: 'embedly', // the link was submitted.
 					'click #save'				: 'navi', // #save does not get rendered until 'embedly' has rendered.
-					'click #embCancel'			: 'redir'
+					'click #embCancel'			: 'redir',
+					'click #show_all'			: 'redir2',
+					'click #my_videos'			: 'redir2',
+					'click #my_photos'			: 'redir2',
+					'click #my_rich'			: 'redir2',
+					'click #my_links'			: 'redir2',
+					'click #dashboard'			: 'redir2',
+					'click #playlists'			: 'redir2',
 				},
 				initialize: function () {
 					// check if user is logged
@@ -67,6 +76,11 @@ define([
 					var template = _.template( tmplate, attributes );
 					//render the template
 					this.$el.html( template );
+					
+					var data = {};
+					data.activ = "";
+					var naviTabs = _.template( nav_tab, data );
+					$('#nav_tabs').html( naviTabs );
 				},
 				json: function() {
 					return this.model.toJSON();
@@ -120,7 +134,10 @@ define([
 					} else {
 						if (this.counter() === 1) {
 							// display an error message. user did not input any URL
-							alert('Please enter your URL');
+							var data = { message : 'Please enter a link or URL.' };
+							var template = _.template( alert_tpl, data );
+							//render the template
+							$('#embed_alert').html( template );
 							this.counter = this.inc();  // re-initialize counter
 						}
 					}
@@ -133,7 +150,10 @@ define([
 						if (categ !== undefined) {
 							Backbone.history.navigate('embed/save', true);
 						} else {
-							alert('You need to choose category');
+							var data = { message: 'You need to choose a category' };
+							var template = _.template( alert_tpl, data );
+							//render the template
+							$('#embed_alert_bottom').html( template );
 						}
 						this.counter = this.inc();  // re-initialize counter
 						this.counter();
@@ -143,8 +163,20 @@ define([
 				redir: function(e) {
 					this.counter = this.inc();  // re-initialize counter
 					this.$('#url').val('');
-					$('#embedible').html( '<input type="submit" id="submit" name="submit" value="Send"/>' );
-					//$('#embedible')
+					
+					//$('#embedible').html( '<input type="submit" id="submit" name="submit" value="Send"/>' );
+					
+					$('#embedible').html( '<button class="btn btn-small btn-primary" id="submit" name="submit">Send</button>' );
+				},
+				redir2: function(e) {
+					var clickedEl = $(e.currentTarget); // which element was clicked?
+					var uri = clickedEl.attr("id");
+					if (uri === 'playlists') {
+						uri = 'dashboard/' + uri;
+					};
+					e.preventDefault();
+					Backbone.history.navigate(uri, true);
+					
 				}
 			});
 		},

@@ -1,17 +1,19 @@
 define([
   'jquery',
   'bootstrap',
+  'jcrypt',
   'tooltip',
   'modal',
   'underscore',
   'backbone',
   'models/index_main_m',
   'models/puborpriv_m',
+  'models/delete_embed_m',
   'DEM',
   'text!templates/dashboard/dashboard_nav_tpl.html',
   'text!templates/dashboard/main_body_tpl.html',
   'text!templates/modal_tpl.html',
-], function($, bootstrap, tooltip, modal, _, Backbone, Index_m, Puborpriv_m, DEM, d_nav, body_tpl, modal_template){
+], function($, bootstrap, jcrypt, tooltip, modal, _, Backbone, Index_m, Puborpriv_m, Dembed_m, DEM, d_nav, body_tpl, modal_template){
 	var Dashboard = {
 		View : function () {
 			return Backbone.View.extend({
@@ -24,7 +26,9 @@ define([
 					'click #my_links': 'redir2',
 					'click #propu': 'propu',
 					'click .fordelete': 'show_modal',
-					'click #modal_confirm': 'do_delete'
+					'click #modal_confirm': 'do_delete',
+					'click #embed': 'redir3',
+					'click #playlists': 'redir3',
 				},
 				initialize: function () {
 					this.counter = this.inc(); // initialize counter
@@ -114,7 +118,17 @@ define([
 							Backbone.history.navigate(uri, true);
 						}
 					}
-				},	
+				},
+				redir3: function(e) {
+					var clickedEl = $(e.currentTarget); // which element was clicked?
+					var uri = clickedEl.attr("id");
+					if (uri === 'playlists') {
+						uri = 'dashboard/' + uri;
+					};
+					e.preventDefault();
+					Backbone.history.navigate(uri, true);
+					
+				},
 				propu: function (e) {
 					e.preventDefault();
 					if (this.counter() === 1) {
@@ -128,7 +142,8 @@ define([
 						
 						// replace with 'saving...' text
 						var thisHtml = '<a><span class="label">saving...</span></a>';
-						$('#' + att).html(thisHtml);
+						//$('#' + att).html(thisHtml);
+						$('span[id=' + att + ']').html(thisHtml);
 						
 						var pubOrPriv = new Puborpriv_m();
 						var obj = {};
@@ -148,7 +163,8 @@ define([
 									// show alert
 									$('#alerter').fadeIn();
 								};
-								$('#' + att).html(thisHtml);
+								//$('#' + att).html(thisHtml);
+								$('span[id=' + att + ']').html(thisHtml);
 							});
 						} else { // make it public was pressed
 							pubOrPriv.fetch({ url: DEM.domain + "makepriv?is_public=1&id=" + id + "&callback=?" });
@@ -162,12 +178,53 @@ define([
 									// show alert
 									$('#alerter').fadeIn();
 								};
-								$('#' + att).html(thisHtml);
+								//$('#' + att).html(thisHtml);
+								$('span[id=' + att + ']').html(thisHtml);
 							});
 						};
 						this.counter = this.inc(); 
 					}
 					return false;
+				},
+				do_delete: function (e) {
+					e.preventDefault();
+					// hide the modal
+					$('#my_modal').modal('hide');
+					var preId = $('#modal_value').val();
+					preArr = preId.split('_');
+					var id = preArr[1];
+					var prefix = preArr[0] + '_';
+					var ckey = id + DEM.key;
+					
+					// use jcrypt to encrypt
+					var hash = $().crypt({
+						method: "md5",
+						source: ckey}
+					);
+					
+					var dembed = new Dembed_m();
+					dembed.fetch({ url: DEM.domain + "dembed?hash=" + hash + "&id=" + id + "&callback=?" });
+					dembed.on('change', function() {
+						obj = dembed.toJSON();
+						response = obj.response;
+						
+						if (response === 'success') {
+							var root = DEM.root;
+							var url = location.pathname;
+							//split the URL to extract the URI
+							myArr = url.split(root);
+							//alert(myArr[1]);
+							
+							var clickedEl = $(e.currentTarget); // which element was clicked?
+							var uri = decodeURIComponent(clickedEl.attr("id")); // get the value
+							
+							$('li').remove('#' + prefix + id);
+						} else {
+							$('#alerter').fadeIn();
+						};
+						return true;
+					});
+					
 				},
 				_show_all: function () {
 					var data = {};
@@ -245,12 +302,6 @@ define([
 					// then show it
 					$('#my_modal').modal('show');
 				
-				},
-				do_delete: function (e) {
-					e.preventDefault();
-					// hide the modal
-					$('#my_modal').modal('hide');
-					alert($('#modal_value').val());
 				}
 			});
 		},

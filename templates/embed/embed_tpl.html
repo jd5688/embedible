@@ -1,30 +1,40 @@
-	<h2>Add Embed</h2>
-	<span id="b1">Category: <span id="disp_cat">choose...</span> <button id="choose_cat">>></button></span>
-	<span id="b2" style="display:none">Category: choose... <button id="hide_cat"><<</button></span>
+<span id="nav_tabs"></span>
+
+	<h2>Submit a Link to Embed</h2>
+	<hr/>
+	<span id="embed_alert"></span>
+	<span id="b1"><b>Category:</b> <span id="disp_cat" class="text-info">choose...</span> <a class="btn" id="choose_cat" href="#"><i class="icon-chevron-down"></i></a></span>
+	<span id="b2" style="display:none">Category: <span class="text-info">choose...</span> <a class="btn" id="hide_cat" href="#"><i class="icon-chevron-up"></i></a></span>
 	<div id="sf" style="display:none">
 		<% _.each(data, function(c) { %> 
-			<input type="radio" id="category" name="category" value="<%= c.name %>"/><%= c.name %><br/>
+			<input type="radio" id="category" name="category" value="<%= c.name %>"/> <%= c.name %><br/>
 		<% }); %>
 	</div>
+	<br/>
 	<div>
 		<p>
-			Paste your link:<br/>
-			<input type="text" id="url" name="url" size="50"/>
+			<b>Paste your link:</b><br/>
+			<input class="input-xxlarge" type="text" id="url" name="url" size="100"/>
 		</p>
 	</div>
+	
 	<div>
 		<p>
-			This content is:<br/>
+			<b>Tags:</b> <span class="text-info">(separate your tags with a comma - ",")</span><br/>
+			<input class="input-xxlarge" type="text" id="tags" name="tags" size="100"/>
+		</p>
+	</div>
+	
+	<div>
+		<p>
+			<b>This content is:</b><br/>
 			<input type="radio" id="is_public" name="is_public" value="1" checked="checked"/> public &nbsp;
 			<input type="radio" id="is_public" name="is_public" value="0"/> private
 		</p>
 	</div>
-	<div>
-		<p>
-			Tags: (separate your tags with comma - ',')<br/>
-			<input type="text" id="tags" name="tags" size="50"/>
-		</p>
-	</div>
+	
 	<div id="embedible">
-		<input type="submit" id="submit" name="submit" value="Send"/>
+		<button class="btn btn-small btn-primary" id="submit" name="submit">Send</button>
 	</div>
+	<br/>
+	<span id="embed_alert_bottom"></span>
