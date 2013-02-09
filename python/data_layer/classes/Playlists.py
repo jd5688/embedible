@@ -51,7 +51,9 @@ class Playlists:
 	
 		return obj
 
-	def add_playlist(param):
+	def add_playlist(self, param):
+		db = Db.con()
+		cur = db.cursor()
 		q = """
 			INSERT INTO playlist (playlist_name, owner) 
 			VALUES 

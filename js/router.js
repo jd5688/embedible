@@ -119,8 +119,7 @@ define([
 			cat.fetch({
 				success: function (model, response) { 
 					var EmbedView = Embed.View();
-					// set this as a global variable because we will call it later on at the save embed
-					embedView = new EmbedView({ model : cat });
+					var embedView = new EmbedView({ model : cat });
 					that.AppView.showView(embedView);
 				}
 			});
@@ -131,7 +130,7 @@ define([
 			// check wether category radio selection exists in the DOM.
 			// if not, means user typed the URL (/embed/save) directly
 			// we do not allow user to go directly to /embed/save,
-			// so...
+			// so...		
 			var cat = $("input:radio[name=category]:checked").val();
 			if (cat === undefined) {
 				Backbone.history.navigate('embed', true); // redirect to the embed main page
@@ -142,28 +141,23 @@ define([
 			if (opt === 'success' || opt === 'fail') {
 				var EmbedSucFail = Embed.SuccessFail();
 				var embedSucFail = new EmbedSucFail();
+				
 				this.AppView.showView(embedSucFail);
 				
 				if (opt === 'success') {
-					embedSucFail.success();
+					//embedSucFail.success();
+					this.currentview.success();
 				} else if (opt === 'fail') {			
 					embedSucFail.fail();
 				}
+				
+				this.AppView.closeView('saveEmbed');
 			} else if (opt === undefined) {
 				var embedSave = Embed.SaveM(); // create the model
 				
 				var SaveEmbed = Embed.Save(); // the view constructor
-				var saveEmbed = new SaveEmbed({ model: embedSave });
-				
-				// show the view but don't close previous view -- embedView
+				var saveEmbed = new SaveEmbed({ model: embedSave } );
 				this.AppView.showViewNoClose(saveEmbed);
-				var that = this;
-				saveEmbed.save(null, {
-					// date has been saved. Close it now we don't need it anymore
-					success : function () {
-						that.AppView.closeView(embedView);
-					}
-				});
 			} else {
 				Backbone.history.navigate('404', true);
 			}
@@ -244,13 +238,15 @@ define([
 				$("#main").html(this.currentView.el);
 			},
 			closeView: function(view){
-				view.close();
+				if (this[view]) {
+					this[view].close();
+				};
 			},
 			showViewNoClose: function (view) {
-				this.currentView = view;
-				this.currentView.render();
+				this[view] = view;
+				this[view].render();
 		 
-				$("#main").html(this.currentView.el);
+				$("#main").html(this[view].el);
 			}
 		},
 		

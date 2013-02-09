@@ -10,7 +10,8 @@ define([
   'mysession',
   'text!templates/playlists/playlist_tpl.html',
   'text!templates/playlists/playlist_nav_tpl.html',
-], function($, bootstrap, jcrypt, _, Backbone, Playlists, AddPlaylist, DEM, session, main_tpl, nav_tpl){
+  'text!templates/playlists/playlist_alert_success_tpl.html',
+], function($, bootstrap, jcrypt, _, Backbone, Playlists, AddPlaylist, DEM, session, main_tpl, nav_tpl, alert_tpl){
 	var Playlist = {
 		View : function () {
 			return Backbone.View.extend({
@@ -94,6 +95,7 @@ define([
 				},
 				add_playlist: function(e) {
 					e.preventDefault();
+					
 					var pl_name = $('#playlist_name').val();
 
 					// prevent special characters
@@ -107,14 +109,17 @@ define([
 							'username' : username,
 							'pl_name' : $('#playlist_name').val()
 						};
-						console.log(data);
 						// set the data
 						addPlaylist.set(data);
 						addPlaylist.save(null, {
 							// always results in error even if successful. maybe this is due to cross-domain
 							// error: -> goes to success page
 							error : function(options) {
-								alert('success');
+								$('#alerter_success').fadeIn();
+								$('#playlist_name').val('');
+								setTimeout(function () {
+									$('#alerter_success').fadeOut();
+								},1500);
 							},
 							success: function() {
 								alert('ewan');

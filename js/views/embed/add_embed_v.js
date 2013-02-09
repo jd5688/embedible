@@ -186,15 +186,14 @@ define([
 				},
 				*/
 				render: function () {
-					this.data.data = this.$("#data").val();
-					this.data.tags = this.$("#tags").val();
-					this.data.is_public = this.$("#is_public").val();
+					this.data.data = $("#data").val();
+					this.data.tags = $("#tags").val();
+					this.data.is_public = $("#is_public").val();
 					this.data.category = $("input:radio[name=category]:checked").val();
 					this.data.username = session.getCookie("username");
 					this.model.set(this.data);
-					console.log(this.$("#data").val());
 					//this.model.on('change', this.save, this);
-					//this.save();
+					this.save();
 				},
 				
 				data: {},
@@ -222,6 +221,12 @@ define([
 				events: {
 					'click #a_embed': 'gotoPage'
 				},
+				render: function () {
+					//this is a blank render 
+					// the AppView function from router.js file invokes
+					// render() by default.
+					// do nothing.
+				},
 				success: function() {
 					var template = _.template( esuccess );
 					//render the template
@@ -237,6 +242,9 @@ define([
 				gotoPage: function(e) {	
 					e.preventDefault();
 					Backbone.history.navigate('embed', true); // redirect to the embed main page
+				},
+				onClose: function(){
+					this.model.unbind("change", this.render);
 				}
 			});
 		}
