@@ -183,7 +183,24 @@ def application(environ, start_response):
         	jbody = json.loads(request_body)
         	
         	response = b_main.embed_data(jbody)
-
+		if requested_resource == 'add_playlist':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			
+			try:
+				request_body_size = int(environ.get('CONTENT_LENGTH', 0))
+			except (ValueError):
+				request_body_size = 0
+        	
+        	# request_body is a json string
+        	request_body = environ['wsgi.input'].read(request_body_size)
+        	
+        	#parse json text into an object
+        	jbody = json.loads(request_body)
+        	print jbody
+        	response = b_user.add_playlist(jbody)
+			
     # DELETE
     elif method == 'DELETE':
         # Addresses

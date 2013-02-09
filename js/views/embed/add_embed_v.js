@@ -34,6 +34,7 @@ define([
 					'click #playlists'			: 'redir2',
 					'click #embed'				: 'redir2'
 				},
+				/*
 				initialize: function () {
 					// check if user is logged
 					var logged = session.checkCookie();
@@ -43,10 +44,6 @@ define([
 						return true;
 					}
 				
-					// initialize the counter;
-					// this counter is used to prevent the functions from doing unexpected and unwanted loops. 
-					// a bug from my script? or require.js? or a bug from backbone? not yet known as of writing this
-					this.counter = this.inc(); 
 					if (this.model.has("key")) {
 						// if model has attribute named 'key', render immediately.
 						// means that the model has already been preloaded before and no need to
@@ -61,17 +58,15 @@ define([
 						this.model.on('change', this.render, this);
 					}
 				},
+				*/
+				render: function () {	
+					var logged = session.checkCookie();
+					if (logged === false) {
+						// only logged in users can submit embed. so...
+						Backbone.history.navigate('', true);
+						return true;
+					}
 				
-				'inc' : function () {
-					var i = 0;
-					return function (j) {
-						return j !== undefined ? j : i += 1;
-					};
-				},
-				
-				'counter' : '',
-		
-				render: function () {			
 					var attributes = this.json();
 					var embedlyKey = attributes.key;
 					var template = _.template( tmplate, attributes );
@@ -114,77 +109,66 @@ define([
 					var url = this.$('#url').val();
 		
 					if (typeof embedlyKey !== "undefined" && url !== '') {
-						if (this.counter() === 1) {
-							var api = 'http://api.embed.ly/1/oembed?key=' + embedlyKey + '&url=' + url + '&format=json';
-							$.get(api, function(data) {
-								// data in firefox is 'string'. in chrome it's an 'object'
-								// so convert to jSON obj if not yet an object
-								if (typeof data !== 'object') {
-									var strData = data; // assign the 'string' type data
-									data = $.parseJSON(data); // then parse
-									data.data = strData; // finally, assign the original 'string' data to a property
-								} else {
-									// data is already an object
-									var strData = JSON.stringify(data); // assign as a string
-									data.data = strData;
-								}
-								var template = _.template( embed_result, data );
-								$('#embedible').html( template );
-							});
-						}
+						var api = 'http://api.embed.ly/1/oembed?key=' + embedlyKey + '&url=' + url + '&format=json';
+						$.get(api, function(data) {
+							// data in firefox is 'string'. in chrome it's an 'object'
+							// so convert to jSON obj if not yet an object
+							if (typeof data !== 'object') {
+								var strData = data; // assign the 'string' type data
+								data = $.parseJSON(data); // then parse
+								data.data = strData; // finally, assign the original 'string' data to a property
+							} else {
+								// data is already an object
+								var strData = JSON.stringify(data); // assign as a string
+								data.data = strData;
+							}
+							var template = _.template( embed_result, data );
+							$('#embedible').html( template );
+						});
 					} else {
-						if (this.counter() === 1) {
-							// display an error message. user did not input any URL
-							var data = { message : 'Please enter a link or URL.' };
-							var template = _.template( alert_tpl, data );
-							//render the template
-							$('#embed_alert').html( template );
-							this.counter = this.inc();  // re-initialize counter
-						}
+						// display an error message. user did not input any URL
+						var data = { message : 'Please enter a link or URL.' };
+						var template = _.template( alert_tpl, data );
+						//render the template
+						$('#embed_alert').html( template );
 					}
 				},
 				
 				navi: function() {
-					if (this.counter() === 2) {
-						var categ = $("input:radio[name=category]:checked").val();
-						
-						if (categ !== undefined) {
-							Backbone.history.navigate('embed/save', true);
-						} else {
-							var data = { message: 'You need to choose a category' };
-							var template = _.template( alert_tpl, data );
-							//render the template
-							$('#embed_alert_bottom').html( template );
-						}
-						this.counter = this.inc();  // re-initialize counter
-						this.counter();
+					var categ = $("input:radio[name=category]:checked").val();
+					
+					if (categ !== undefined) {
+						Backbone.history.navigate('embed/save', true);
+					} else {
+						var data = { message: 'You need to choose a category' };
+						var template = _.template( alert_tpl, data );
+						//render the template
+						$('#embed_alert_bottom').html( template );
 					}
 				},
 				
 				redir: function(e) {
-					if (this.counter() === 1) {
-						this.counter = this.inc();  // re-initialize counter
-						this.$('#url').val('');
-						
-						//$('#embedible').html( '<input type="submit" id="submit" name="submit" value="Send"/>' );
-						
-						$('#embedible').html( '<button class="btn btn-small btn-primary" id="submit" name="submit">Send</button>' );
-					}
+					this.$('#url').val('');
+					
+					//$('#embedible').html( '<input type="submit" id="submit" name="submit" value="Send"/>' );
+					
+					$('#embedible').html( '<button class="btn btn-small btn-primary" id="submit" name="submit">Send</button>' );
 				},
 				redir2: function(e) {
-					if (this.counter() === 1) {
-						var clickedEl = $(e.currentTarget); // which element was clicked?
-						var uri = clickedEl.attr("id");
-						if (uri === 'playlists') {
-								uri = 'dashboard/' + uri;
-							};
-						
-						if (uri === 'my_dashboard') {
-							uri = 'dashboard';
+					var clickedEl = $(e.currentTarget); // which element was clicked?
+					var uri = clickedEl.attr("id");
+					if (uri === 'playlists') {
+							uri = 'dashboard/' + uri;
 						};
-						e.preventDefault();
-						Backbone.history.navigate(uri, true);
-					}
+					
+					if (uri === 'my_dashboard') {
+						uri = 'dashboard';
+					};
+					e.preventDefault();
+					Backbone.history.navigate(uri, true);
+				},
+				onClose: function(){
+					this.model.unbind("change", this.render);
 				}
 			});
 		},
@@ -196,10 +180,11 @@ define([
 			return Backbone.View.extend({
 				//model: embedSave,
 				
+				/*
 				initialize: function () {
 					this.render();
 				},
-				
+				*/
 				render: function () {
 					this.data.data = this.$("#data").val();
 					this.data.tags = this.$("#tags").val();
@@ -207,6 +192,9 @@ define([
 					this.data.category = $("input:radio[name=category]:checked").val();
 					this.data.username = session.getCookie("username");
 					this.model.set(this.data);
+					console.log(this.$("#data").val());
+					//this.model.on('change', this.save, this);
+					//this.save();
 				},
 				
 				data: {},
@@ -222,6 +210,9 @@ define([
 							Backbone.history.navigate('embed/save/success', true);
 						}
 					});
+				},
+				onClose: function(){
+					this.model.unbind("change", this.render);
 				}
 			});
 		},

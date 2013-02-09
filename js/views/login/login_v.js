@@ -16,7 +16,9 @@ define([
 		'View' : function() {
 			return Backbone.View.extend({
 				events: {
-					'click #signin': 'do_login'
+					'click #signin': 'do_login',
+					'keypress input[type=email]': 'filterOnEnter',
+					'keypress input[type=password]': 'filterOnEnter'
 				},
 				initialize: function () {
 					// check if logged
@@ -52,8 +54,19 @@ define([
 				json: function () {
 					return this.model.toJSON();
 				},
+				
+				filterOnEnter: function(e) {
+					if (e.keyCode !== 13) {
+						return;
+					} else {
+						this.do_login(e);
+					}
+				},
 		
-				do_login: function () {
+				do_login: function (e) {
+					// do not refresh
+					e.preventDefault();
+					
 					var username = this.$('#username').val();
 					var password = this.$('#password').val();
 					var ckey = username + password + DEM.key;

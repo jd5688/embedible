@@ -32,17 +32,8 @@ define([
 					'click #my_dashboard': 'redir3'
 				},
 				initialize: function () {
-					this.counter = this.inc(); // initialize counter
 					this.render();
 				},
-				inc : function () {
-					var i = 0;
-					return function (j) {
-						return j !== undefined ? j : i += 1;
-					};
-				},
-				
-				counter : '',
 				render: function () {
 					if (this.model.has("username") || this.model.has("id")) {
 						// if model has attribute named 'username', load main_body immediately.
@@ -97,101 +88,90 @@ define([
 					return this.model.toJSON();
 				},
 				redir: function (e) {
-					if (this.counter() === 1) {
-						if (typeof e !== "undefined") {
-							var clickedEl = $(e.currentTarget); // which element was clicked?
-							var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
-							//var uri = $("#" + id).val();
-							e.preventDefault();
-							Backbone.history.navigate(uri, true);
-						}
-					}
-					
-				},
-				redir2: function (e) {
-					if (this.counter() === 1) {
-						if (typeof e !== "undefined") {
-							var clickedEl = $(e.currentTarget); // which element was clicked?
-							var uri = decodeURIComponent(clickedEl.attr("id")); // get the value
-							uri = uri === "show_all" ? "" : uri;
-							uri = "dashboard/" + uri;
-							e.preventDefault();
-							Backbone.history.navigate(uri, true);
-						}
-					}
-				},
-				redir3: function(e) {
-					if (this.counter() === 1) {
+					if (typeof e !== "undefined") {
 						var clickedEl = $(e.currentTarget); // which element was clicked?
-						var uri = clickedEl.attr("id");
-						if (uri === 'playlists') {
-							uri = 'dashboard/' + uri;
-						};
-						
-						if (uri === 'my_dashboard') {
-							uri = 'dashboard';
-						};
+						var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
+						//var uri = $("#" + id).val();
 						e.preventDefault();
 						Backbone.history.navigate(uri, true);
 					}
+				},
+				redir2: function (e) {
+					if (typeof e !== "undefined") {
+						var clickedEl = $(e.currentTarget); // which element was clicked?
+						var uri = decodeURIComponent(clickedEl.attr("id")); // get the value
+						uri = uri === "show_all" ? "" : uri;
+						uri = "dashboard/" + uri;
+						e.preventDefault();
+						Backbone.history.navigate(uri, true);
+					}
+				},
+				redir3: function(e) {
+					var clickedEl = $(e.currentTarget); // which element was clicked?
+					var uri = clickedEl.attr("id");
+					if (uri === 'playlists') {
+						uri = 'dashboard/' + uri;
+					};
+					
+					if (uri === 'my_dashboard') {
+						uri = 'dashboard';
+					};
+					e.preventDefault();
+					Backbone.history.navigate(uri, true);
 					
 				},
 				propu: function (e) {
 					e.preventDefault();
-					if (this.counter() === 1) {
-						var clickedEl = $(e.currentTarget);
-						var att = clickedEl.attr("name");
-						var attArr = att.split('_');
+					var clickedEl = $(e.currentTarget);
+					var att = clickedEl.attr("name");
+					var attArr = att.split('_');
+					
+					// ID is the primary key id of the embed
+					var id = attArr[1];
+					var axion = clickedEl.attr("title");
+					
+					// replace with 'saving...' text
+					var thisHtml = '<a><span class="label">saving...</span></a>';
+					//$('#' + att).html(thisHtml);
+					$('span[id=' + att + ']').html(thisHtml);
+					
+					var pubOrPriv = new Puborpriv_m();
+					var obj = {};
+					var response = '';
+					if (axion === 'make it private') {
+						pubOrPriv.fetch({ url: DEM.domain + "makepriv?is_public=0&id=" + id + "&callback=?" });
 						
-						// ID is the primary key id of the embed
-						var id = attArr[1];
-						var axion = clickedEl.attr("title");
-						
-						// replace with 'saving...' text
-						var thisHtml = '<a><span class="label">saving...</span></a>';
-						//$('#' + att).html(thisHtml);
-						$('span[id=' + att + ']').html(thisHtml);
-						
-						var pubOrPriv = new Puborpriv_m();
-						var obj = {};
-						var response = '';
-						if (axion === 'make it private') {
-							pubOrPriv.fetch({ url: DEM.domain + "makepriv?is_public=0&id=" + id + "&callback=?" });
-							
-							pubOrPriv.on('change', function() {
-								obj = pubOrPriv.toJSON();
-								response = obj.response;
-								if (response === 'success') {
-									// reverse the button to 'make it public'
-									var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it public"><span class="label label-info">private</span></a>';
-								} else {
-									// revert to original status
-									var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it private"><span class="label">public</span></a>';
-									// show alert
-									$('#alerter').fadeIn();
-								};
-								//$('#' + att).html(thisHtml);
-								$('span[id=' + att + ']').html(thisHtml);
-							});
-						} else { // make it public was pressed
-							pubOrPriv.fetch({ url: DEM.domain + "makepriv?is_public=1&id=" + id + "&callback=?" });
-							pubOrPriv.on('change', function() {
-								obj = pubOrPriv.toJSON();
-								response = obj.response;
-								if (response === 'success') {
-									var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it private"><span class="label">public</span></a>';
-								} else {
-									var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it public"><span class="label label-info">private</span></a>';
-									// show alert
-									$('#alerter').fadeIn();
-								};
-								//$('#' + att).html(thisHtml);
-								$('span[id=' + att + ']').html(thisHtml);
-							});
-						};
-						this.counter = this.inc(); 
-					}
-					return false;
+						pubOrPriv.on('change', function() {
+							obj = pubOrPriv.toJSON();
+							response = obj.response;
+							if (response === 'success') {
+								// reverse the button to 'make it public'
+								var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it public"><span class="label label-info">private</span></a>';
+							} else {
+								// revert to original status
+								var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it private"><span class="label">public</span></a>';
+								// show alert
+								$('#alerter').fadeIn();
+							};
+							//$('#' + att).html(thisHtml);
+							$('span[id=' + att + ']').html(thisHtml);
+						});
+					} else { // make it public was pressed
+						pubOrPriv.fetch({ url: DEM.domain + "makepriv?is_public=1&id=" + id + "&callback=?" });
+						pubOrPriv.on('change', function() {
+							obj = pubOrPriv.toJSON();
+							response = obj.response;
+							if (response === 'success') {
+								var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it private"><span class="label">public</span></a>';
+							} else {
+								var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it public"><span class="label label-info">private</span></a>';
+								// show alert
+								$('#alerter').fadeIn();
+							};
+							//$('#' + att).html(thisHtml);
+							$('span[id=' + att + ']').html(thisHtml);
+						});
+					};
 				},
 				do_delete: function (e) {
 					e.preventDefault();
@@ -309,6 +289,9 @@ define([
 					// then show it
 					$('#my_modal').modal('show');
 				
+				},
+				onClose: function(){
+					this.model.unbind("change", this.render);
 				}
 			});
 		},

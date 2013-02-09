@@ -5,7 +5,6 @@ define([
     'DEM'
 ], function($, _, Backbone, DEM){
   	var Playlists = Backbone.Model.extend({
-		url: DEM.domain + "playlists?callback=?"
 	});
 	
 	return Playlists;

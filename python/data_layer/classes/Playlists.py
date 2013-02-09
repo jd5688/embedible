@@ -50,3 +50,13 @@ class Playlists:
 			obj = False
 	
 		return obj
+
+	def add_playlist(param):
+		q = """
+			INSERT INTO playlist (playlist_name, owner) 
+			VALUES 
+			(%(playlist)s, %(username)s)
+			"""
+		cur.execute(q, param)
+		db.commit()
+		return 'success'

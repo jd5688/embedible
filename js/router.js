@@ -18,7 +18,15 @@ define([
 	'views/heading_v',
 	'DEM',
 ], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, Dashboard, Playlist, Head, DEM){
-
+	// create a close function on the view prototype
+	Backbone.View.prototype.close = function(){
+		this.remove();
+		this.unbind();
+		if (this.onClose){
+			this.onClose();
+		}
+	}
+	
 	var Router = Backbone.Router.extend({
 		routes: {
 			"index.html"					: "index",
@@ -27,6 +35,7 @@ define([
 			"dashboard/"					: "dashboard",
 			"dashboard/playlists/"			: "playlists",
 			"dashboard/playlists"			: "playlists",
+			"dashboard/playlists/add"		: "playlists",
 			"dashboard/:option"				: "dashboard",
 			"dashboard/:option/"			: "dashboard",
 			"embed"							: "embed",
@@ -52,7 +61,7 @@ define([
 			"*anything"						: "defaultRoute"
 		},
 		
-		start: function () {
+		start: function (options) {
 			// declare your root URL if located in a folder other than the main
 			// folder - http://example.com/~admin/
 			Backbone.history.start({ pushState: true, root: DEM.root });
@@ -88,7 +97,8 @@ define([
 					var dashboardMain = Dashboard.Main(); // create the model
 					dashboardMain.fetch({ url: DEM.domain + "getembed?username=" + username + "&callback=?" });
 					var DashboardView = Dashboard.View();
-					var dashboardView = new DashboardView({ el: $("#main"), model: dashboardMain });
+					var dashboardView = new DashboardView({ model: dashboardMain });
+					this.AppView.showView(dashboardView);
 				}
 			} else {
 				Backbone.history.navigate('', true); // redirect to the main page
@@ -104,9 +114,16 @@ define([
 		embed: function() {	
 			this._renderHead('dashboard');
 			var cat = Embed.Cat(); // category model
-			cat.fetch(); // fetch data from the server
-			var EmbedView = Embed.View();
-			var embedView = new EmbedView({ el: $("#main"), model : cat });
+			// fetch data from the server
+			var that = this;
+			cat.fetch({
+				success: function (model, response) { 
+					var EmbedView = Embed.View();
+					// set this as a global variable because we will call it later on at the save embed
+					embedView = new EmbedView({ model : cat });
+					that.AppView.showView(embedView);
+				}
+			});
 		},
 		
 		// saving the user-submitted content to the db
@@ -124,7 +141,8 @@ define([
 			// else, do the following
 			if (opt === 'success' || opt === 'fail') {
 				var EmbedSucFail = Embed.SuccessFail();
-				var embedSucFail = new EmbedSucFail({ el: $("#main") });
+				var embedSucFail = new EmbedSucFail();
+				this.AppView.showView(embedSucFail);
 				
 				if (opt === 'success') {
 					embedSucFail.success();
@@ -135,8 +153,17 @@ define([
 				var embedSave = Embed.SaveM(); // create the model
 				
 				var SaveEmbed = Embed.Save(); // the view constructor
-				var saveEmbed = new SaveEmbed({ el: $("#main"), model: embedSave });
-				saveEmbed.save();
+				var saveEmbed = new SaveEmbed({ model: embedSave });
+				
+				// show the view but don't close previous view -- embedView
+				this.AppView.showViewNoClose(saveEmbed);
+				var that = this;
+				saveEmbed.save(null, {
+					// date has been saved. Close it now we don't need it anymore
+					success : function () {
+						that.AppView.closeView(embedView);
+					}
+				});
 			} else {
 				Backbone.history.navigate('404', true);
 			}
@@ -192,12 +219,39 @@ define([
 			}	
 		},
 		
-		playlists: function() {
+		playlists: function() {		
 			this._renderHead("dashboard");
 			var playlistModel = Playlist.Model();
 			//playlistModel.fetch({ url : DEM.domain + "playlists?hash=" + hash + "&id=" + id +"&callback=?"});
 			var PlaylistView = Playlist.View(); // the view constructor
-			var playlistView = new PlaylistView({ el: $("#main"), model: playlistModel });
+			var playlistView = new PlaylistView({ model: playlistModel });
+			
+			this.AppView.showView(playlistView);
+		},
+		
+		// it's very important to close events that are no longer being used
+		// backbone is event-driven and so will create event zombies if views and models are not properly
+		// closed or destroyed
+		AppView: {
+			showView: function(view) {
+				if (this.currentView){
+					this.currentView.close();
+				}
+		 
+				this.currentView = view;
+				this.currentView.render();
+		 
+				$("#main").html(this.currentView.el);
+			},
+			closeView: function(view){
+				view.close();
+			},
+			showViewNoClose: function (view) {
+				this.currentView = view;
+				this.currentView.render();
+		 
+				$("#main").html(this.currentView.el);
+			}
 		},
 		
 		//nowhere to go

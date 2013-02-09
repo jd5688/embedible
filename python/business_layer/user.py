@@ -127,5 +127,13 @@ def playlists(hash, publc, username):
 		'data': data,
 		'id': 1234
 	}
-		
+
+def all_playlist(param):
+	x = Playlists()
 	
+	data = {
+		'username' : param['username'],
+		'playlist' : param['pl_name']
+	}
+	
+	return x.add_playlist(param)

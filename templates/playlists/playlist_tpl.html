@@ -1,9 +1,27 @@
 <span id="nav_tabs"></span>
 
-<% if (data.data) { %>
+<span id="show_pl_active">
+	<% if (data.data) { %>
 
-<% } else { %>
-	<div class="alert alert-info">
-    	You don't have playlists yet. Please start adding.
-    </div>
-<% } %>
+	<% } else { %>
+		<div class="alert alert-info">
+			You don't have playlists yet. Please start adding.
+		</div>
+	<% } %>
+</span>
+
+<span id="show_add_active" style="display:none">
+	<span id="alerter_add" style="display:none">
+		<div class="alert alert-block alert-error fade in">
+			<button class="close" type="button" id="button_close">&times;</button>
+			<h4 class="alert-heading">Uh oh!</h4>
+			<p>Playlist cannot contain special characters.</p>
+		</div>
+	</span>
+	<form>
+		<div class="input-append">
+			<input class="span3" id="playlist_name" type="text" placeholder="Playlist name">
+			<button class="btn btn-primary" id="add_submit" type="button">Go!</button>
+		</div>
+	</form>
+</span>
