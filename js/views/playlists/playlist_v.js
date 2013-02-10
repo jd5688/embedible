@@ -23,12 +23,13 @@ define([
 					'click #add_playlist': 'redir',
 					'click #add_submit': 'add_playlist',
 					'keypress input[type=text]': 'filterOnEnter',
-					'click #button_close': 'close_alerter'
+					'click #button_close': 'close_alerter',
+					'click a[alt=pl_name_list]': 'show_playlist_content'
 					
 				},
-				initialize: function () {
-					this.render();
-				},
+				//initialize: function () {
+				//	this.render();
+				//},
 				render: function () {
 					// user needs to be logged in to write playlists
 					var username = session.checkCookie();
@@ -97,11 +98,25 @@ define([
 					e.preventDefault();
 					
 					var pl_name = $('#playlist_name').val();
+					
+					if (pl_name === '') {
+						$('#blank_playlist').fadeIn();
+						$('#playlist_name').val('');
+						setTimeout(function () {
+							$('#blank_playlist').fadeOut();
+						},1500);
+						return;
+					}
+					
 
 					// prevent special characters
 					if (/[^a-zA-Z 0-9]+/.test(pl_name)){
 						// show the alerter
 						$('#alerter_add').fadeIn();
+						$('#playlist_name').val('');
+						setTimeout(function () {
+							$('#alerter_add').fadeOut();
+						},3000);
 					} else {
 						var addPlaylist = new AddPlaylist();
 						var username = session.checkCookie();
@@ -126,6 +141,30 @@ define([
 							}
 						});
 					};
+				},
+				show_playlist_content: function (e) {
+					e.preventDefault();
+					var clickedEl = $(e.currentTarget);
+					var sp = clickedEl.attr("id");
+					var spArr = sp.split("x");
+					var id = spArr[0];
+					var axion = spArr[1];
+					if (axion === 'pl_name_show_list') {
+						// reveal the playlist
+						$('#' + id + '_list_container').fadeIn();
+						// reveal the 'hide list' icon
+						$('#' + id + 'xpl_name_hide_list').show();
+						// hide the clicked icon - 'show list'
+						$('#' + id + 'xpl_name_show_list').hide();
+					} else {
+						// _pl_name_hide_list' was clicked
+						// so hide the playlist
+						$('#' + id + '_list_container').fadeOut();
+						// show the 'show list' icon
+						$('#' + id + 'xpl_name_show_list').show();
+						// hide the clicked icon - 'hide list'
+						$('#' + id + 'xpl_name_hide_list').hide();
+					}
 				},
 				close_alerter: function () {
 					$('#alerter_add').fadeOut();

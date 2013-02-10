@@ -13,7 +13,8 @@ define([
   'text!templates/dashboard/dashboard_nav_tpl.html',
   'text!templates/dashboard/main_body_tpl.html',
   'text!templates/modal_tpl.html',
-], function($, bootstrap, jcrypt, tooltip, modal, _, Backbone, Index_m, Puborpriv_m, Dembed_m, DEM, d_nav, body_tpl, modal_template){
+  'text!templates/modalAddToPlaylist_tpl.html',
+], function($, bootstrap, jcrypt, tooltip, modal, _, Backbone, Index_m, Puborpriv_m, Dembed_m, DEM, d_nav, body_tpl, modal_template, modalAddToPlaylist_tpl){
 	var Dashboard = {
 		View : function () {
 			return Backbone.View.extend({
@@ -26,6 +27,7 @@ define([
 					'click #my_links': 'redir2',
 					'click #propu': 'propu',
 					'click .fordelete': 'show_modal',
+					'click .addToPlaylist': 'show_modal_atpl',
 					'click #modal_confirm': 'do_delete',
 					'click #embed': 'redir3',
 					'click #playlists': 'redir3',
@@ -54,6 +56,10 @@ define([
 					// the modal template is used for deleting content
 					var mod_tpl = _.template( modal_template );
 					$('#modal_container').html( mod_tpl );
+					
+					// the modal Add to Playlist template
+					var mod_atpl_tpl = _.template( modalAddToPlaylist_tpl, data );
+					$('#modalAddToPLaylistContainer').html( mod_atpl_tpl );
 					
 					
 					// check the uri and make the appropriate tab active at the dashboard
@@ -289,6 +295,20 @@ define([
 					// then show it
 					$('#my_modal').modal('show');
 				
+				},
+				show_modal_atpl: function (e) {
+					var clickedEl = $(e.currentTarget);
+					var preId = clickedEl.attr("id");
+					preArr = preId.split('_');
+					var id = preArr[1];
+					
+					// populate the modal template with some values
+					var title = $('#' + id + '_title').val();
+					$('#atpl_content_title').html(title);
+					$('#modal_atpl_value').val(id);
+					
+					// then show it
+					$('#addToPlaylistModal').modal('show');
 				},
 				onClose: function(){
 					this.model.unbind("change", this.render);

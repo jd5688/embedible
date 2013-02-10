@@ -72,11 +72,9 @@ define([
 					var template = _.template( tmplate, attributes );
 					//render the template
 					this.$el.html( template );
-					
-					var data = {};
-					data.activ = "";
-					var naviTabs = _.template( nav_tab, data );
-					$('#nav_tabs').html( naviTabs );
+
+					//var naviTabs = _.template( nav_tab );
+					//$('#nav_tabs').html( naviTabs );
 				},
 				json: function() {
 					return this.model.toJSON();

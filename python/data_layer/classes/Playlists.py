@@ -4,9 +4,12 @@ import base64
 
 class Playlists:
 	def getPlaylists(self, param):
+		# param object contains the username
+		
 		db = Db.con()
 		cur = db.cursor()
 		obj = {}
+		yobj = {}
 		if param['username']:
 			# get all playlists from this user
 			qry = "SELECT * FROM playlist WHERE owner = %(username)s"
@@ -17,7 +20,7 @@ class Playlists:
 				for item in rows:
 					plid = item[0]
 					# get the video ids related to this playlist
-					qry = "SELECT vid_id FROM playlist_contents WHERE plid = %s"
+					qry = "SELECT vid_id FROM playlist_contents WHERE pl_id = %s"
 					cur.execute(qry, plid)
 					if cur.rowcount > 0:
 						xrows = cur.fetchall()

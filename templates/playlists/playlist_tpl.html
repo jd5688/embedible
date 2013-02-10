@@ -1,8 +1,49 @@
 <span id="nav_tabs"></span>
 
 <span id="show_pl_active">
-	<% if (data.data) { %>
-
+	<% 
+	if (data.data) { 
+		var spa_i = 0;
+	%>
+		<% 
+		_.each(data.data, function(c) { 
+			spa_i += 1;
+		%> 
+			<div>
+				<blockquote>
+					<span class="badge"><%= spa_i %></span>&nbsp;
+					<a href="" alt="pl_name_list" id="<%= spa_i %>xpl_name_show_list"><i class="icon-chevron-down"></i></a>
+					<a href="" alt="pl_name_list" id="<%= spa_i %>xpl_name_hide_list" style="display:none"><i class="icon-chevron-up"></i></a>
+					&nbsp;<%= c.playlist_name %>&nbsp;
+				</blockquote>
+					<span id="<%= spa_i %>_list_container" style="display:none">
+						<div class="row">
+							
+							<div class="well span11">
+								<%
+								if (c.embed) {
+								%>
+									this playlist has content
+								<%
+								} else {
+								%>
+									<p class="muted">
+										<small>
+											This playlist is empty. Check out some <abbr title="Videos, Photos, Rich Media, or Links" class="initialism">embedibles</abbr> and add them to this list.
+										</small>
+									</p>
+								<%
+								}
+								%>
+							</div>
+							
+						</div>
+					</span>
+				</div>
+			</div>
+		<% 
+		}); 
+		%>
 	<% } else { %>
 		<div class="alert alert-info">
 			You don't have playlists yet. Please start adding.
@@ -12,8 +53,7 @@
 
 <span id="show_add_active" style="display:none">
 	<span id="alerter_add" style="display:none">
-		<div class="alert alert-block alert-error fade in">
-			<button class="close" type="button" id="button_close">&times;</button>
+		<div class="alert alert-block alert-error">
 			<h4 class="alert-heading">Uh oh!</h4>
 			<p>Playlist cannot contain special characters.</p>
 		</div>
@@ -23,6 +63,11 @@
 			Your playlist has been created successfully!
 		</div>
 	</span>
+	<span id="blank_playlist" style="display:none">
+		<div class="alert alert-error">
+			Oops! Please enter a playlist name.
+		</div>
+    </span>
 	<form>
 		<div class="input-append">
 			<input class="span3" id="playlist_name" type="text" placeholder="Playlist name">

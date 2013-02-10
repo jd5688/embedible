@@ -44,15 +44,18 @@ def login(param):
 def _private_key():
 	return 'ph1li9sVAi0'
 	
+# get all embeds. If username is not blank, get embeds submitted by the user
+# and the playlists created by the user
+# if username is blank, get all latest 100 embeds
 def allEmbed(username):
 	x = Videos()
 	data = x.allUserData(username)
 
 	if data:
-		obj = {}
+		embeds = {}
 		i = 0
 		for item in data:
-			obj[i] = {
+			embeds[i] = {
 				'id' : item[0],
 				'category' : item[1],
 				'tags' : item[2],
@@ -63,11 +66,19 @@ def allEmbed(username):
 			}
 			i = i + 1
 	else:
-		obj = False
+		embeds = False
 
+	# get the user's playlists
+	# if username is blank, data will be false
+	pl = Playlists()
+	param = {
+		'username' : username
+	}
+	playlists = pl.getPlaylists(param)
 	
 	dat = {
-			'data': obj,
+			'data': embeds,
+			'playlists': playlists,
 			'id': 1234
 		}
 		

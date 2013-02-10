@@ -34,7 +34,8 @@
 					<% } %>
 				</span>
 				&nbsp;|&nbsp;<a href="" class="fordelete" style="width:100%;" data-toggle="modal" id="a_<%= c.pkid %>" title="delete"><i class="icon-trash"></i></a>
-				&nbsp;|&nbsp;<a href="" class="fordelete" style="width:100%;" data-toggle="modal" id="a_<%= c.pkid %>" title="add to playlist"><i class="icon-plus"></i></a>
+				&nbsp;|&nbsp;<a href="" class="addToPlaylist" style="width:100%;" data-toggle="modal" id="a_<%= c.pkid %>" title="add to playlist"><i class="icon-plus"></i></a>
+				<input type="hidden" id="<%= c.pkid %>_title" value="<%= title %>">
 			</span>
 		</li>
 		<% }); %>
@@ -216,4 +217,5 @@
 </span>
 
 <span id="modal_container"></span>
+<span id="modalAddToPLaylistContainer"></span>
 <span id="popover"></span>

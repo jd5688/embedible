@@ -1,0 +1,33 @@
+<div class="modal fade" id="addToPlaylistModal">
+	<div class="modal-header">
+		<a class="close" data-dismiss="modal">&times;</a>
+		<h4 id="atpl_content_title"></h4>
+	</div>
+	<div class="modal-body">
+		<h5>Add to Playlist</h5>
+		<p id="modal_atpl_body">
+		<%
+		if (data.playlists) {
+		%>
+			<ul>
+		<%
+			_.each(data.playlists, function(c) { 
+		%>
+				<li>
+					<%= c.playlist_name %>
+				</li>
+		<%
+			}); // each
+		%>
+			</ul>
+		<%
+		}
+		%>
+		</p>
+	</div>
+	<div class="modal-footer">
+		<a href="" class="btn" data-dismiss="modal">Close</a>
+		<a href="" class="btn btn-primary" id="modal_confirm">Done</a>
+	</div>
+	<input type="hidden" id="modal_atpl_value" value=""/>
+</div>
