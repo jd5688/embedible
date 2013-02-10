@@ -84,6 +84,7 @@ define([
 			var indexView = new IndexView({ el: $("#main"), model: indexMain });
 		},
 		
+		// logged in users go here
 		dashboard: function (option) {
 			var gPass = '';
 			if (typeof option === 'undefined' || option === 'show_all' || option === 'my_videos' || option === 'my_photos' || option === 'my_rich' || option === 'my_links') {
@@ -114,6 +115,7 @@ define([
 		embed: function() {	
 			this._renderHead('dashboard');
 			var cat = Embed.Cat(); // category model
+			
 			// fetch data from the server
 			var that = this;
 			cat.fetch({
@@ -142,6 +144,9 @@ define([
 				var EmbedSucFail = Embed.SuccessFail();
 				var embedSucFail = new EmbedSucFail();
 				
+				// we don't need the embedView event anymore
+				// this will create embedSucFail view and destroy the previous
+				// view embedView
 				this.AppView.showView(embedSucFail);
 				
 				if (opt === 'success') {
@@ -151,12 +156,17 @@ define([
 					embedSucFail.fail();
 				}
 				
+				// now destroy/close the saveEmbed view
 				this.AppView.closeView('saveEmbed');
 			} else if (opt === undefined) {
 				var embedSave = Embed.SaveM(); // create the model
 				
 				var SaveEmbed = Embed.Save(); // the view constructor
 				var saveEmbed = new SaveEmbed({ model: embedSave } );
+				
+				// do not destroy the previous view (embedView)
+				// we need it's rendered view event
+				// just create another view instance (saveEmbed)
 				this.AppView.showViewNoClose(saveEmbed);
 			} else {
 				Backbone.history.navigate('404', true);
@@ -223,7 +233,7 @@ define([
 			this.AppView.showView(playlistView);
 		},
 		
-		// it's very important to close events that are no longer being used
+		// it's very important to close events that are no longer being used.
 		// backbone is event-driven and so will create event zombies if views and models are not properly
 		// closed or destroyed
 		AppView: {
@@ -235,14 +245,19 @@ define([
 				this.currentView = view;
 				this.currentView.render();
 		 
+				// display the new view
 				$("#main").html(this.currentView.el);
 			},
 			closeView: function(view){
+			// this is the partner of showViewNoClose
 				if (this[view]) {
 					this[view].close();
 				};
 			},
 			showViewNoClose: function (view) {
+				// this will create another view event without closing
+				// the previous view. this is needed sometimes when a new view
+				// depends on the old view's rendered elements
 				this[view] = view;
 				this[view].render();
 		 

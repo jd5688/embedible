@@ -30,7 +30,6 @@ class Playlists:
 							# this is going to be seen only by the owner of the playlist
 							qry = "SELECT uniq,category,tags,data FROM videos WHERE id = %s"
 							cur.execute(qry, vid_id)
-							yobj = {}
 							if cur.rowcount > 0:
 								k = 0
 								yrows = cur.fetchall()
@@ -41,7 +40,9 @@ class Playlists:
 										'tags': yitem[2],
 										'data': yitem[3]
 									}
-									k = k + 1	
+									k = k + 1
+							else:
+								yobj = False
 					obj[i] = {
 						'id' : item[0],
 						'playlist_name' : item[1],
@@ -50,7 +51,7 @@ class Playlists:
 					}
 					i = i + 1
 		else:
-			obj = False
+			obj = {}
 	
 		return obj
 

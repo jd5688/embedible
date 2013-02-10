@@ -12,28 +12,32 @@ def login(param):
 	
 	user = u.user_query(param);
 	
-	data = {
-		'user_id'		: user[0][0],
-		'user_email'	: user[0][1],
-		'user_pass'		: user[0][2],
-		'user_active'	: user[0][3]
-	}
+	if (user):
+		data = {
+			'user_id'		: user[0][0],
+			'user_email'	: user[0][1],
+			'user_pass'		: user[0][2],
+			'user_active'	: user[0][3]
+		}
 	
-	# create a hash
-	m = md5.new(data['user_email'] + data['user_pass'] + _private_key())
+		# create a hash
+		m = md5.new(data['user_email'] + data['user_pass'] + _private_key())
 	
-	# check if this hash is equal to the one transmitted
-	if m.hexdigest() == param['password']:
-		if data['user_active'] == 1:
-			result	= 'success'
-			message	= data['user_id']
+		# check if this hash is equal to the one transmitted
+		if m.hexdigest() == param['password']:
+			if data['user_active'] == 1:
+				result	= 'success'
+				message	= data['user_id']
+			else:
+				result = 'fail'
+				message = 'User not activated.'
 		else:
 			result = 'fail'
-			message = 'User not activated.'
+			message = 'Authentication failed.'
 	else:
 		result = 'fail'
 		message = 'Authentication failed.'
-		
+			
 	obj = {
 			'result'	: result,
 			'message'	: message
@@ -129,10 +133,7 @@ def playlists(hash, publc, username):
 		param = {
 			'username' : username
 		}
-		bool = x.getPlaylists(param)
-
-		if bool:
-			data = bool
+		data = x.getPlaylists(param)
 			
 	return {
 		'data': data,

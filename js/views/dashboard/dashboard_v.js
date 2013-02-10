@@ -31,7 +31,9 @@ define([
 					'click #modal_confirm': 'do_delete',
 					'click #embed': 'redir3',
 					'click #playlists': 'redir3',
-					'click #my_dashboard': 'redir3'
+					'click #my_dashboard': 'redir3',
+					'click #redir_to_add_playlist': 'redir3',
+					'click a[name=atpl_link]':  'add_to_playlist',
 				},
 				initialize: function () {
 					this.render();
@@ -93,6 +95,12 @@ define([
 				json: function() {
 					return this.model.toJSON();
 				},
+				add_to_playlist: function (e) {
+					var clickedEl = $(e.currentTarget); // which element was clicked?
+					var info = clickedEl.attr("id");
+					var infoArr = info.split('_');
+					var playlist_id = infoArr[1];
+				},
 				redir: function (e) {
 					if (typeof e !== "undefined") {
 						var clickedEl = $(e.currentTarget); // which element was clicked?
@@ -113,6 +121,7 @@ define([
 					}
 				},
 				redir3: function(e) {
+					e.preventDefault();
 					var clickedEl = $(e.currentTarget); // which element was clicked?
 					var uri = clickedEl.attr("id");
 					if (uri === 'playlists') {
@@ -121,6 +130,11 @@ define([
 					
 					if (uri === 'my_dashboard') {
 						uri = 'dashboard';
+					};
+					
+					if (uri === 'redir_to_add_playlist') {
+						$('#addToPlaylistModal').modal('hide');
+						uri = 'dashboard/playlists/add';
 					};
 					e.preventDefault();
 					Backbone.history.navigate(uri, true);
