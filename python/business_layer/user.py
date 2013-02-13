@@ -88,38 +88,94 @@ def allEmbed(username):
 		
 	return dat
 
-def deleteEmbed(hash, id):
+def deleteEmbed(hash, publc, id):
 	x = Videos()
 	
 	# create a hash
-	m = md5.new(id + _private_key())
+	m = md5.new(id + publc + _private_key())
 	if m.hexdigest() == hash:
 		param = {
 			'hash': hash,
 			'id': id
 		}
 		bool = x.deleteEmbed(param)
-		if bool:
-			dat = { 'response' : bool }
+		dat = { 'response' : bool }
 	else:
 		dat = { 'response': 'failed' }
 		
 	return dat
-#set user content to public or private
-def set_public(is_public, id):
-	x = Videos()
-	param = {
-		'is_public': is_public,
-		'id': id
-	}
+
+def removeEmbed(hash, publc, pl_id, vid_id):
+	x = Playlists()
 	
-	bool = x.embedToPublic(param)
-	
-	if bool:
-		dat = { 'response': bool }
+	# create a hash
+	m = md5.new(pl_id + publc + _private_key())
+
+	if m.hexdigest() == hash:
+		param = {
+			'pl_id': pl_id,
+			'vid_id': vid_id
+		}
+		bool = x.removeEmbed(param)
+		dat = { 'response' : bool }
 	else:
 		dat = { 'response': 'failed' }
+		
+	return dat
+
+def deletePlaylist(hash, publc, pl_id):
+	x = Playlists()
 	
+	# create a hash
+	m = md5.new(pl_id + publc + _private_key())
+	
+	if m.hexdigest() == hash:
+		param = {
+			'pl_id': pl_id
+		}
+		bool = x.deletePlaylist(param)
+		dat = { 'response' : bool }
+	else:
+		dat = { 'response': 'failed' }
+		
+	return dat
+
+#set user content to public or private
+def set_public(hash, publc, is_public, id):
+	x = Videos()
+	
+	# create a hash
+	m = md5.new(id + publc + _private_key())
+	
+	if m.hexdigest() == hash:
+		param = {
+			'id': id,
+			'is_public': is_public
+		}
+		bool = x.embedToPublic(param)
+		dat = { 'response' : bool }
+	else:
+		dat = { 'response': 'failed' }
+		
+	return dat
+
+#set user playlist to public or private
+def set_pl_public(hash, publc, is_public, pl_id):
+	x = Playlists()
+	
+	# create a hash
+	m = md5.new(pl_id + publc + _private_key())
+	
+	if m.hexdigest() == hash:
+		param = {
+			'pl_id': pl_id,
+			'is_public': is_public
+		}
+		bool = x.playlistToPublic(param)
+		dat = { 'response' : bool }
+	else:
+		dat = { 'response': 'failed' }
+		
 	return dat
 
 def playlists(hash, publc, username):
@@ -140,6 +196,7 @@ def playlists(hash, publc, username):
 		'id': 1234
 	}
 
+# add a playlist
 def add_playlist(param):
 	x = Playlists()
 	
@@ -149,3 +206,23 @@ def add_playlist(param):
 	}
 	
 	return x.add_playlist(data)
+
+# add contents to playlist
+def add_to_playlist(hash, atpl_id, list_ids):
+	x = Playlists()
+	
+	# create a hash
+	m = md5.new(atpl_id + _private_key())
+	
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
+		param = {
+			'atpl_id' : atpl_id,
+			'list_ids': list_ids
+		}
+		data = x.add_to_playlist(param)
+		dat = { 'response' : data }
+	else:
+		dat = { 'response' : data }
+		
+	return dat

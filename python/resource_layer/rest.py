@@ -127,9 +127,21 @@ def application(environ, start_response):
 			status = '200 OK'
 			headers = [('Content-type', 'application/json')]
 			start_response(status, headers)
+			hash = d.get('hash', [''])[0]
+			publc = d.get('publc', [''])[0]
 			id = d.get('id', [''])[0]
 			is_public = d.get('is_public', [''])[0]
-			response = b_user.set_public(is_public, id)
+			response = b_user.set_public(hash, publc, is_public, id)
+			response = callback + "(" + json.dumps(response) + ");"
+        elif requested_resource == 'makePlPriv':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			hash = d.get('hash', [''])[0]
+			pl_id = d.get('id', [''])[0]
+			publc = d.get('publc', [''])[0]
+			is_public = d.get('is_public', [''])[0]
+			response = b_user.set_pl_public(hash, publc, is_public, pl_id)
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'dembed':
 			status = '200 OK'
@@ -137,7 +149,27 @@ def application(environ, start_response):
 			start_response(status, headers)
 			id = d.get('id', [''])[0]
 			hash = d.get('hash', [''])[0]
-			response = b_user.deleteEmbed(hash, id)
+			publc = d.get('publc', [''])[0]
+			response = b_user.deleteEmbed(hash, publc, id)
+			response = callback + "(" + json.dumps(response) + ");"
+        elif requested_resource == 'remplay':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			pl_id = d.get('pl_id', [''])[0]
+			vid_id = d.get('vid_id', [''])[0]
+			hash = d.get('hash', [''])[0]
+			publc = d.get('publc', [''])[0]
+			response = b_user.removeEmbed(hash, publc, pl_id, vid_id)
+			response = callback + "(" + json.dumps(response) + ");"
+        elif requested_resource == 'del_playlist':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			pl_id = d.get('pl_id', [''])[0]
+			hash = d.get('hash', [''])[0]
+			publc = d.get('publc', [''])[0]
+			response = b_user.deletePlaylist(hash, publc, pl_id)
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'playlists':
 			status = '200 OK'
@@ -148,7 +180,17 @@ def application(environ, start_response):
 			publc = d.get('public', [''])[0]
 			response = b_user.playlists(hash, publc, username)
 			response = callback + "(" + json.dumps(response) + ");"
-		
+        elif requested_resource == 'add_to_playlist':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			hash = d.get('hash', [''])[0]
+			atpl_id = d.get('atpl_id', [''])[0]
+			list_ids = d.get('list_ids', [''])[0]
+			response = b_user.add_to_playlist(hash, atpl_id, list_ids)
+			response = callback + "(" + json.dumps(response) + ");"
+			
+			
 	elif method == 'OPTIONS':
 		#somehow, OPTIONS requests are not getting in here but at the 'else' statement
 		

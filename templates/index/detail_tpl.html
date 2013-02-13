@@ -12,6 +12,49 @@
 			showThis = '<a href="' + dat.url + '" target="_blank">' + dat.url + '</a>'
 		}
 	}
+	
+	// for testing purposes only
+	// remove after
+	var devWidth = $(window).width() - 50;
+			newWidth = 'width="' + devWidth + '"';
+			
+			// match the width value of showThis
+			var myReg = showThis.match(/width=(".*?"|'.*?'|[^"'][^\s]*)/)
+			// width="640"
+			var widthVal = myReg[0];
+			
+			myReg = showThis.match(/height=(".*?"|'.*?'|[^"'][^\s]*)/)
+			var heightVal = myReg[0];
+			
+			if (newWidth < widthVal) {
+				showThis = showThis.replace(widthVal, newWidth);
+				showThis = showThis.replace(heightVal, newWidth);
+			}
+	// for testing purposes
+	
+	
+	// detect if using a mobile device
+	if (dat.type === 'video' || dat.type === 'rich') {
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+			// get the resolution of the device display less 50
+			var devWidth = $(window).width() - 50;
+			newWidth = 'width="' + devWidth + '"';
+			
+			// match the width value of showThis
+			var myReg = showThis.match(/width=(".*?"|'.*?'|[^"'][^\s]*)/)
+			// width="640"
+			var widthVal = myReg[0];
+			
+			myReg = showThis.match(/height=(".*?"|'.*?'|[^"'][^\s]*)/)
+			var heightVal = myReg[0];
+			
+			if (newWidth < widthVal) {
+				showThis = showThis.replace(widthVal, newWidth);
+				showThis = showThis.replace(heightVal, newWidth);
+			}
+			
+		};
+	}
 %>
 
 <div class="row-fluid">
@@ -31,7 +74,8 @@
 			<b>Description:</b><br/>
 			<p class="text-info"><%= dat.description %></p>
 		</span>
-		<div><%= showThis %></div><br/>
+		<%= showThis %>                                                                       
+		<br/>
 		<hr/>
 		<div class="row">
 			<div class="span7">

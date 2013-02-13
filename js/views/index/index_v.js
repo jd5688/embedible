@@ -43,11 +43,13 @@ define([
 					//render the template
 					this.$el.html( template );
 					
+					/*
 					// enable the tooltips plugin
 					$('.thumbnail').tooltip({
 						selector: "input[rel=tooltip]",
 						placement: "bottom"
 					});
+					*/
 				},
 				json: function() {
 					return this.model.toJSON();

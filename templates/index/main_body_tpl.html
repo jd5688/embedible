@@ -1,5 +1,4 @@
-<ul class="thumbnails">
-
+<div class="row-fluid">
 <% 
 var i = 0;
 if (data.data) {
@@ -14,19 +13,36 @@ if (data.data) {
 	%>
 		<!--<input type="image" class="tooltip" title="<b><font color='#0292C0'><%= dat.type %></font> : <%= title %></b><br/><br/><%= description %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />-->
 		<!--<input type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />-->
-		<li class="span2">
-			<span style="text-align:center">
-			<a class="thumbnail">
-				<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
-			</a>
-			</span>
+	<!--
+	<li class="span4">
+			<div class="thumbnail">
+				<span style="text-align:center">
+					<a class="thumbnail">
+						<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
+					</a>
+				</span>
+				<h5><%= title %></h5>
+				<p><%= dat.description %></p>
+			</div>
 		</li>
+		-->
+	<div class="media">
+		<a class="pull-left" href="">
+			<input type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="64" height="64" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
+		</a>
+		
+		<div class="media-body">
+			<h4 class="media-heading"><%= title %></h4>
+			<p><%= dat.description %></p>
+		</div>
+    </div>
+    <hr/>
 <% 
 	}); // each
 %>
-</ul>
 <% } else { %>
 	<div class="alert alert-info">
     	No record yet. Please start embedding.
     </div>
 <% } %>
+</div>

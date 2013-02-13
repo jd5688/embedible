@@ -8,15 +8,46 @@
 		<p id="modal_atpl_body">
 		<%
 		var i = 0;
+		var cbArr = mycallback.get();
 		if (typeof data.playlists['0'] !== "undefined") {
 		%>
-			<div class="row">
+			<div class="row" id="content_id">
 		<%
 			_.each(data.playlists, function(c) { 
+				var matched = false;
+				var cbMatched = false;
+				_.each(c.embeds, function(d) {
+					if (JSON.stringify(d.id) === atpl_id) {
+						matched = true;
+					};
+				});
+				for (var z = 0; z < cbArr.length; z += 1) {
+					// the magic of closures at work here
+					// array format: cbId xdemx cbName xdemx cbAtpl_id
+					str = cbArr[z];
+					strArr = str.split('xdemx');
+					cbId = strArr[0];
+					cbName = strArr[1];
+					cbAtpl_id = strArr[2];
+					
+					if (cbAtpl_id === atpl_id && JSON.stringify(c.id) === cbId) {
+						cbMatched = true;
+					};
+				}
 				i += 1;
 		%>
 				<div class="span2">
-					 <a href="" name="atpl_link" id="<%= c.id %>_atpl_link"><%= c.playlist_name %></a>
+					<label class="checkbox inline">
+				<%
+				if (matched === true || cbMatched === true) {
+				%>
+						<i class="icon-ok"></i> <span class="muted"><%= c.playlist_name %></span>
+				<%
+				} else {
+				%>
+						<span id="xxx<%= c.id %>"><input type="checkbox" name="<%= c.playlist_name %>" value="<%= c.id %>"><%= c.playlist_name %></span>
+				<% } %>
+					</label>
 				</div>
 		<%
 			}); // each
@@ -31,7 +62,7 @@
 	</div>
 	<div class="modal-footer">
 		<a href="" class="btn" data-dismiss="modal">Cancel</a>
-		<a href="" class="btn btn-primary" id="modal_confirm">Done</a>
+		<a href="" class="btn btn-primary" id="modal_confirm_add">Add</a>
 	</div>
 	<input type="hidden" id="modal_atpl_value"  value=""/>
 </div>

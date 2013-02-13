@@ -9,12 +9,13 @@ define([
   'models/index_main_m',
   'models/puborpriv_m',
   'models/delete_embed_m',
+  'models/add_to_playlist_m',
   'DEM',
   'text!templates/dashboard/dashboard_nav_tpl.html',
   'text!templates/dashboard/main_body_tpl.html',
   'text!templates/modal_tpl.html',
   'text!templates/modalAddToPlaylist_tpl.html',
-], function($, bootstrap, jcrypt, tooltip, modal, _, Backbone, Index_m, Puborpriv_m, Dembed_m, DEM, d_nav, body_tpl, modal_template, modalAddToPlaylist_tpl){
+], function($, bootstrap, jcrypt, tooltip, modal, _, Backbone, Index_m, Puborpriv_m, Dembed_m, Atpl_m, DEM, d_nav, body_tpl, modal_template, modalAddToPlaylist_tpl){
 	var Dashboard = {
 		View : function () {
 			return Backbone.View.extend({
@@ -33,12 +34,16 @@ define([
 					'click #playlists': 'redir3',
 					'click #my_dashboard': 'redir3',
 					'click #redir_to_add_playlist': 'redir3',
-					'click a[name=atpl_link]':  'add_to_playlist',
+					'click #modal_confirm_add': 'add_to_playlist',
 				},
+				/*
 				initialize: function () {
+					this.atpl_callback = this.iclosure(); // initialize callback
 					this.render();
 				},
+				*/
 				render: function () {
+					this.atpl_callback = this.iclosure();
 					if (this.model.has("username") || this.model.has("id")) {
 						// if model has attribute named 'username', load main_body immediately.
 						this.main_body();
@@ -60,8 +65,8 @@ define([
 					$('#modal_container').html( mod_tpl );
 					
 					// the modal Add to Playlist template
-					var mod_atpl_tpl = _.template( modalAddToPlaylist_tpl, data );
-					$('#modalAddToPLaylistContainer').html( mod_atpl_tpl );
+					//var mod_atpl_tpl = _.template( modalAddToPlaylist_tpl, data );
+					//$('#modalAddToPLaylistContainer').html( mod_atpl_tpl );
 					
 					
 					// check the uri and make the appropriate tab active at the dashboard
@@ -158,8 +163,18 @@ define([
 					var pubOrPriv = new Puborpriv_m();
 					var obj = {};
 					var response = '';
+					
+					var ux = DEM.ux(); // this is the public key
+					var ckey = id + ux + DEM.key();
+					
+					// use jcrypt to encrypt
+					var hash = $().crypt({
+						method: "md5",
+						source: ckey}
+					);
+					
 					if (axion === 'make it private') {
-						pubOrPriv.fetch({ url: DEM.domain + "makepriv?is_public=0&id=" + id + "&callback=?" });
+						pubOrPriv.fetch({ url: DEM.domain + "makepriv?hash=" + hash + "&publc=" + ux + "&is_public=0&id=" + id + "&callback=?" });
 						
 						pubOrPriv.on('change', function() {
 							obj = pubOrPriv.toJSON();
@@ -170,14 +185,14 @@ define([
 							} else {
 								// revert to original status
 								var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it private"><span class="label">public</span></a>';
-								// show alert
+								// show 'fail' alert
 								$('#alerter').fadeIn();
 							};
 							//$('#' + att).html(thisHtml);
 							$('span[id=' + att + ']').html(thisHtml);
 						});
 					} else { // make it public was pressed
-						pubOrPriv.fetch({ url: DEM.domain + "makepriv?is_public=1&id=" + id + "&callback=?" });
+						pubOrPriv.fetch({ url: DEM.domain + "makepriv?hash=" + hash + "&publc=" + ux + "&is_public=1&id=" + id + "&callback=?" });
 						pubOrPriv.on('change', function() {
 							obj = pubOrPriv.toJSON();
 							response = obj.response;
@@ -185,7 +200,7 @@ define([
 								var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it private"><span class="label">public</span></a>';
 							} else {
 								var thisHtml = '<a href="" id="propu" name="' + att + '" title="make it public"><span class="label label-info">private</span></a>';
-								// show alert
+								// show 'fail' alert
 								$('#alerter').fadeIn();
 							};
 							//$('#' + att).html(thisHtml);
@@ -201,7 +216,8 @@ define([
 					preArr = preId.split('_');
 					var id = preArr[1];
 					var prefix = preArr[0] + '_';
-					var ckey = id + DEM.key;
+					var publc = DEM.ux();
+					var ckey = id + DEM.key();
 					
 					// use jcrypt to encrypt
 					var hash = $().crypt({
@@ -210,7 +226,7 @@ define([
 					);
 					
 					var dembed = new Dembed_m();
-					dembed.fetch({ url: DEM.domain + "dembed?hash=" + hash + "&id=" + id + "&callback=?" });
+					dembed.fetch({ url: DEM.domain + "dembed?hash=" + hash + "&publc=" + publc + "&id=" + id + "&callback=?" });
 					dembed.on('change', function() {
 						obj = dembed.toJSON();
 						response = obj.response;
@@ -301,7 +317,7 @@ define([
 				show_modal: function (e) {
 					var clickedEl = $(e.currentTarget);
 					var id = clickedEl.attr("id");
-					
+
 					// populate the modal template with some values
 					$('#modal_body').html('Your embed is about to be deleted!');
 					$('#modal_value').val(id);
@@ -310,11 +326,33 @@ define([
 					$('#my_modal').modal('show');
 				
 				},
+				iclosure: function () {
+					var obj = [];
+					return {
+						set : function (id, name, atpl_id) {
+							obj.push(id + 'xdemx' + name + 'xdemx' + atpl_id);
+						},
+						get : function () {
+							return obj;
+						}
+					};
+				},
+				atpl_callback: [],
 				show_modal_atpl: function (e) {
 					var clickedEl = $(e.currentTarget);
 					var preId = clickedEl.attr("id");
 					preArr = preId.split('_');
-					var id = preArr[1];
+					var id = preArr[1]; // the id of the content
+					
+					var data = {};
+					data.data = this.json();
+					data.website = DEM.website;
+					data.mycallback = this.atpl_callback;
+					data.atpl_id = id;
+					
+					// the modal Add to Playlist template
+					var mod_atpl_tpl = _.template( modalAddToPlaylist_tpl, data );
+					$('#modalAddToPLaylistContainer').html( mod_atpl_tpl );
 					
 					// populate the modal template with some values
 					var title = $('#' + id + '_title').val();
@@ -323,6 +361,45 @@ define([
 					
 					// then show it
 					$('#addToPlaylistModal').modal('show');
+				},
+				add_to_playlist: function (e) {
+					e.preventDefault();
+					// hide the modal
+					$('#addToPlaylistModal').modal('hide');
+					var atpl_id = $('#modal_atpl_value').val(); // get the id of the content to be added to playlist
+					
+					// get all the checked boxes' value
+					var list_ids = [];
+					var that = this;
+					var cb;
+					$('#content_id input:checked').each(function() {
+						list_ids.push(this.value);
+						// this is a callback function so that the add playlist
+						// modal will get updated even without refreshing the page
+						that.atpl_callback.set(this.value, this.name, atpl_id);
+					});
+					var ckey = atpl_id + DEM.key();
+					// use jcrypt to encrypt
+					var hash = $().crypt({
+						method: "md5",
+						source: ckey}
+					);
+					
+					var atpl = new Atpl_m();
+					atpl.fetch({ url: DEM.domain + "add_to_playlist?hash=" + hash + "&atpl_id=" + atpl_id + "&list_ids=" + list_ids + "&callback=?" });
+					atpl.on('change', function() {
+						obj = atpl.toJSON();
+						response = obj.response;
+						if (response === 'success') {
+							$('#alerter_success_atpl').fadeIn();
+							setTimeout(function () {
+								$('#alerter_success_atpl').fadeOut();
+							},1500);
+						} else {
+							//$('#alerter').fadeIn();
+						};
+						return true;
+					});
 				},
 				onClose: function(){
 					this.model.unbind("change", this.render);
