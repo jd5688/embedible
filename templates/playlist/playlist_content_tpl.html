@@ -1,0 +1,98 @@
+<style type="text/css" media="all">
+	.aawrapper {
+		background-color: white;
+		width: 480px;
+		margin: 40px auto;
+		padding: 50px;
+		box-shadow: 0 0 5px #999;
+	}
+	.aalist_carousel {
+		background-color: #ccc;
+		margin: 0 0 30px 60px;
+		width: 360px;
+	}
+	.aalist_carousel ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		display: block;
+	}
+	.aalist_carousel li {
+		font-size: 40px;
+		color: #999;
+		text-align: center;
+		background-color: #eee;
+		border: 5px solid #999;
+		width: 50px;
+		height: 50px;
+		padding: 0;
+		margin: 6px;
+		display: block;
+		float: left;
+	}
+	.aalist_carousel.responsive {
+		width: auto;
+		margin-left: 0;
+	}
+	.aaclearfix {
+		float: none;
+		clear: both;
+	}
+	.aaprev {
+		float: left;
+		margin-left: 10px;
+	}
+	.aanext {
+		float: right;
+		margin-right: 10px;
+	}
+	.aapager {
+		float: left;
+		width: 300px;
+		text-align: center;
+	}
+	.aapager a {
+		margin: 0 5px;
+		text-decoration: none;
+	}
+	.aapager a.selected {
+		text-decoration: underline;
+	}
+	.aatimer {
+		background-color: #999;
+		height: 6px;
+		width: 0px;
+	}
+</style>
+
+<%
+if (data.data) {
+%>
+	<div class="aalist_carousel responsive" >
+		<ul class="thumbnails" id="foo5">
+			<li style="width: 300px;">c</li>
+			<li style="width: 150px;">a</li>
+			<li>r</li>
+			<li style="width: 300px;">o</li>
+			<li style="width: 150px;">u</li>
+			<li>F</li>
+			<li style="width: 300px;">r</li>
+			<li style="width: 150px;">e</li>
+			<li>d</li>
+			<li style="width: 400px;">S</li>
+			<li style="width: 150px;">e</li>
+			<li>l</li>
+			<li> </li>
+		</ul>
+		<div class="aaclearfix"></div>
+		<a id="prev2" class="aaprev" href="#">&lt;</a>
+		<a id="next2" class="aanext" href="#">&gt;</a>
+		<div id="pager2" class="aapager"></div>
+	</div>
+<%
+} else {
+%>
+	there's no data
+<%
+}
+%>

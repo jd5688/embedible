@@ -50,6 +50,7 @@ class Videos:
 		cur.execute("""DELETE FROM videos WHERE id = %(id)s""", param)	
 		try:
 			db.commit()
+			
 			resp = 'success'
 		except:
 			resp = False

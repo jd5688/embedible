@@ -8,16 +8,17 @@ define([
 	'underscore',
 	'backbone',
 	'mysession',
-	'views/embed/add_embed_v',
+	'views/dashboard/embed/add_embed_v',
 	'views/login/login_v',
 	'views/index/index_v',
 	'views/contents/contents_v',
 	'views/contents/content_v',
 	'views/dashboard/dashboard_v',
-	'views/playlists/playlist_v',
+	'views/dashboard/playlists/playlist_v',
+	'views/playlist/playlist_v',
 	'views/heading_v',
 	'DEM',
-], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, Dashboard, Playlist, Head, DEM){
+], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, Dashboard, Playlist, MainPlaylist, Head, DEM){
 	// create a close function on the view prototype
 	Backbone.View.prototype.close = function(){
 		this.remove();
@@ -56,6 +57,9 @@ define([
 			"rich"							: "rich",
 			"rich/"							: "rich",
 			"rich/:id"						: "rich",
+			"playlist"						: "playlist",
+			"playlist/"						: "playlist",
+			"playlist/:title"				: "playlist",
 			"logout"						: "logout",
 			"404"							: "fourfour",
 			"*anything"						: "defaultRoute"
@@ -71,8 +75,8 @@ define([
 			var headModel = Head.Model();
 			headModel.set({ uri: uri });
 			var HeadView = Head.View();
-			var headView = new HeadView({ el: $("#head"), model: headModel});
-			return true;
+			var headView = new HeadView({ model: headModel });
+			this.AppView.showHeadView(headView);
 		},
 		
 		// the index or home page
@@ -81,7 +85,8 @@ define([
 			var indexMain = Index.Main(); // create the model
 			indexMain.fetch();
             var IndexView = Index.View();
-			var indexView = new IndexView({ el: $("#main"), model: indexMain });
+			var indexView = new IndexView({ model: indexMain });
+			this.AppView.showView(indexView);
 		},
 		
 		// logged in users go here
@@ -233,6 +238,18 @@ define([
 			this.AppView.showView(playlistView);
 		},
 		
+		playlist: function (title) {
+			this._renderHead("playlist");
+			if (!title) {
+				var playlistModel = MainPlaylist.Model();
+				var PlaylistView = MainPlaylist.View();
+				var playlistView = new PlaylistView({ model: playlistModel });
+				this.AppView.showView(playlistView);
+			} else {
+				
+			}
+		},
+		
 		// it's very important to close events that are no longer being used.
 		// backbone is event-driven and so will create event zombies if views and models are not properly
 		// closed or destroyed
@@ -247,6 +264,17 @@ define([
 		 
 				// display the new view
 				$("#main").html(this.currentView.el);
+			},
+			showHeadView: function(view) {
+				if (this.headView){
+					this.headView.close();
+				}
+		 
+				this.headView = view;
+				this.headView.render();
+		 
+				// display the new view
+				$("#head").html(this.headView.el);
 			},
 			closeView: function(view){
 			// this is the partner of showViewNoClose

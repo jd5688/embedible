@@ -14,18 +14,6 @@ define([
 				events: {
 					'click input[type=image]':  'redir',
 				},
-				initialize: function () {
-					this.counter = this.inc(); // initialize counter
-					this.render();
-				},
-				'inc' : function () {
-					var i = 0;
-					return function (j) {
-						return j !== undefined ? j : i += 1;
-					};
-				},
-				
-				'counter' : '',
 				render: function () {
 					if (this.model.has("username") || this.model.has("id")) {
 						// if model has attribute named 'username', load main_body immediately.
@@ -42,29 +30,19 @@ define([
 					var template = _.template( body_tpl, data );
 					//render the template
 					this.$el.html( template );
-					
-					/*
-					// enable the tooltips plugin
-					$('.thumbnail').tooltip({
-						selector: "input[rel=tooltip]",
-						placement: "bottom"
-					});
-					*/
+
 				},
 				json: function() {
 					return this.model.toJSON();
 				},
 				redir: function (e) {
-					if (this.counter() === 1) {
-						if (typeof e !== "undefined") {						
-							var clickedEl = $(e.currentTarget); // which element was clicked?
-							var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
-							//var uri = $("#" + id).val();
-							e.preventDefault();
-							Backbone.history.navigate(uri, true);
-						}
+					if (typeof e !== "undefined") {						
+						var clickedEl = $(e.currentTarget); // which element was clicked?
+						var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
+						//var uri = $("#" + id).val();
+						e.preventDefault();
+						Backbone.history.navigate(uri, true);
 					}
-					
 				}
 			});
 		},

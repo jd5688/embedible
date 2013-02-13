@@ -4,6 +4,7 @@ from data_layer.classes.User import Users
 from data_layer.classes.Videos import Videos
 from data_layer.classes.Playlists import Playlists
 import md5
+import urllib
 
 # function for writing user-submitted data to database
 # returns true
@@ -178,24 +179,50 @@ def set_pl_public(hash, publc, is_public, pl_id):
 		
 	return dat
 
-def playlists(hash, publc, username):
+def playlists(hash, publc, username = ''):
 	x = Playlists()
 	data = False
 	# create a hash
-	m = md5.new(publc + _private_key() + username)
+	if username:
+		m = md5.new(publc + _private_key() + username)
+		# check if this hash is equal to the one transmitted
+		if m.hexdigest() == hash:
+			param = {
+				'username' : username
+			}
+			data = x.getPlaylists(param)
+	else:
+		m = md5.new(publc + _private_key())
+		# check if this hash is equal to the one transmitted
+		if m.hexdigest() == hash:
+			data = x.getPublicPlaylists()
 	
-	# check if this hash is equal to the one transmitted
-	if m.hexdigest() == hash:
-		param = {
-			'username' : username
-		}
-		data = x.getPlaylists(param)
+	
 			
 	return {
 		'data': data,
 		'id': 1234
 	}
 
+def playlist(hash, publc, title):
+	x = Playlists()
+	data = False
+	# create a hash
+	m = md5.new(publc + title + _private_key())
+	
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
+		title = urllib.unquote_plus(title)
+		param = {
+			'title' : title
+		}
+		data = x.getPlaylist(param)
+			
+	return {
+		'data': data,
+		'id': 1234
+	}
+	
 # add a playlist
 def add_playlist(param):
 	x = Playlists()

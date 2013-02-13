@@ -10,9 +10,9 @@ define([
   'models/puborpriv_m',
   'DEM',
   'mysession',
-  'text!templates/playlists/playlist_tpl.html',
-  'text!templates/playlists/playlist_nav_tpl.html',
-  'text!templates/playlists/playlist_alert_success_tpl.html',
+  'text!templates/dashboard/playlists/playlist_tpl.html',
+  'text!templates/dashboard/playlists/playlist_nav_tpl.html',
+  'text!templates/dashboard/playlists/playlist_alert_success_tpl.html',
   'text!templates/modal_tpl.html'
 ], function($, bootstrap, jcrypt, _, Backbone, Playlists, AddPlaylist, Dembed_m, Puborpriv_m, DEM, session, main_tpl, nav_tpl, alert_tpl, modal_template){
 	var Playlist = {

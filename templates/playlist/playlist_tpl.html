@@ -1,0 +1,82 @@
+<h4>Recent Playlists</h4>
+<hr/>
+
+<span id="alerter_public_playlists" style="display:none">
+	<div class="alert alert-success">
+		Click the playlist name to go to the details page.
+	</div>
+</span>
+
+<% 
+if (data.data) { 
+	var spa_i = 0;
+	var playlist_id;
+	var is_public;
+
+	_.each(data.data, function(c) { 
+		spa_i += 1;
+		playlist_id = c.id;
+		is_public = c.is_public;
+	%> 
+		<div class="row-fluid" id="<%= playlist_id %>">
+			<div class="span10">
+				<blockquote>
+					<span>
+						<a href="" class="btn btn-small" alt="pl_name_list" id="<%= playlist_id %>xpl_name_show_list" title="Show list"><i class="icon-chevron-down"></i></a>
+						<a href="" class="btn btn-small" alt="pl_name_list" id="<%= playlist_id %>xpl_name_hide_list" style="display:none" title="Hide list"><i class="icon-chevron-up"></i></a>
+					</span>
+					&nbsp;
+					<a name="playlist_details" id="<%= playlist_id %>" href=""><%= c.playlist_name %></a>
+				</blockquote>
+				<span id="<%= playlist_id %>_list_container" style="display:none">
+					<div class="row-fluid">
+						<div class="span1">&nbsp;</div>
+						<div class="well span10">
+							<%
+							if (typeof c.embeds[0] !== 'undefined') {
+							%>
+								<ul class="thumbnails">
+							<%
+									_.each(c.embeds, function(d) {
+										var dat = JSON.parse(d.data);
+										var title = dat.title;
+										title = title.replace(/"/g, '\\"');
+										var description = dat.description;
+										description = description.replace(/"/g, "'");
+								%>
+									<li class="span2" id="<%= playlist_id %>_<%= d.id %>">
+									<span style="text-align:center">
+										<a class="thumbnail" id="<%= playlist_id %>" name="<%= title %>">
+											<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
+										</a>
+									</span>
+									</li>
+							<%
+								}); // each
+							%>
+								</ul>
+							<%
+							} else {
+							%>
+								<p class="muted">
+									<small>
+										This playlist is empty. Check out some <abbr title="Videos, Photos, Rich Media, or Links" class="initialism">embedibles</abbr> and add them to this list.
+									</small>
+								</p>
+							<%
+							}
+							%>
+						</div>
+						
+					</div>
+				</span>
+			</div>
+		</div>
+	<% 
+	}); 
+	%>
+<% } else { %>
+	<div class="alert alert-info">
+		There's no playlists found.
+	</div>
+<% } %>

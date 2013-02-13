@@ -12,80 +12,166 @@ class Playlists:
 		robj = {}
 		
 		i = 0
-		if param['username']:
-			# get all playlists from this user
-			qry = "SELECT * FROM playlist WHERE owner = %(username)s"
-			cur.execute(qry, param)
-			# playlists exist
-			if cur.rowcount > 0:
-				rows = cur.fetchall()
-				
-				# check each playlist as item
-				for item in rows:
-					# make sure yobj is inialized inside the for loop where you are 
-					# assigning the value to it. Otherwise, unexpected and bizzare
-					# things happen when it is not properly re-initiazed upon loop
-					# in this case:
-					### obj[0].yobj is blank, obj[1].yobj is not blank.
-					### if yobj is not re-initialized below, obj[0].yobj inherits
-					### the value of obj[1].yobj.... totally strange!!!!
-					yobj = {}
-					plid = item[0] # get the playlist id
-					# get the video ids related to this playlist
-					qry = "SELECT vid_id FROM playlist_contents WHERE pl_id = %s"
-					cur.execute(qry, plid)
-					k = 0
-					
-					# if video ids exist
-					if cur.rowcount > 0:
-						print i
-						xrows = cur.fetchall()
-						# loop each one
-						for xitem in xrows:
-							vid_id = xitem[0]
-							# now get the videos. even the private ones since
-							# this is going to be seen only by the owner of the playlist
-							qry = "SELECT uniq,category,tags,data,id FROM videos WHERE id = %s"
-							cur.execute(qry, vid_id)
-							if cur.rowcount > 0:
-								yrows = cur.fetchall()
-								for yitem in yrows:
-									yobj[k] = {
-										'uniq': yitem[0],
-										'category': yitem[1],
-										'tags': yitem[2],
-										'data': yitem[3],
-										'id':yitem[4]
-									}
-									k = k + 1
-						
-						try:
-							test = yobj[0]
-						except:
-							yobj = False
-							
-						robj[i] = {
-							'id' : item[0],
-							'playlist_name' : item[1],
-							'owner': item[2],
-							'is_public': item[3],
-							'embeds': yobj
-						}
-					else:
-						try:
-							test = yobj[0]
-						except:
-							yobj = False
-							
-						robj[i] = {
-							'id' : item[0],
-							'playlist_name' : item[1],
-							'owner': item[2],
-							'is_public': item[3],
-							'embeds': yobj
-						}
-					i = i + 1
+		# get all playlists from this user
+		qry = "SELECT * FROM playlist WHERE owner = %(username)s"
+		
+		cur.execute(qry, param)
+		# playlists exist
+		if cur.rowcount > 0:
+			rows = cur.fetchall()
 			
+			# check each playlist as item
+			for item in rows:
+				# make sure yobj is inialized inside the for loop where you are 
+				# assigning the value to it. Otherwise, unexpected and bizzare
+				# things happen when it is not properly re-initiazed upon loop
+				# in this case:
+				### obj[0].yobj is blank, obj[1].yobj is not blank.
+				### if yobj is not re-initialized below, obj[0].yobj inherits
+				### the value of obj[1].yobj.... totally strange!!!!
+				yobj = {}
+				plid = item[0] # get the playlist id
+				# get the video ids related to this playlist
+				qry = "SELECT vid_id FROM playlist_contents WHERE pl_id = %s"
+				cur.execute(qry, plid)
+				k = 0
+				
+				# if video ids exist
+				if cur.rowcount > 0:
+					xrows = cur.fetchall()
+					# loop each one
+					for xitem in xrows:
+						vid_id = xitem[0]
+						
+						# now get the videos. even the private ones since
+						# this is going to be seen only by the owner of the playlist
+						qry = "SELECT uniq,category,tags,data,id FROM videos WHERE id = %s"
+						
+						cur.execute(qry, vid_id)
+						if cur.rowcount > 0:
+							yrows = cur.fetchall()
+							for yitem in yrows:
+								yobj[k] = {
+									'uniq': yitem[0],
+									'category': yitem[1],
+									'tags': yitem[2],
+									'data': yitem[3],
+									'id':yitem[4]
+								}
+								k = k + 1
+					
+					try:
+						test = yobj[0]
+					except:
+						yobj = False
+						
+					robj[i] = {
+						'id' : item[0],
+						'playlist_name' : item[1],
+						'owner': item[2],
+						'is_public': item[3],
+						'embeds': yobj
+					}
+				else:
+					try:
+						test = yobj[0]
+					except:
+						yobj = False
+						
+					robj[i] = {
+						'id' : item[0],
+						'playlist_name' : item[1],
+						'owner': item[2],
+						'is_public': item[3],
+						'embeds': yobj
+					}
+				i = i + 1
+		try:
+			test = robj[0]
+		except:
+			robj = False
+		
+		return robj
+		
+	def getPublicPlaylists(self):
+		db = Db.con()
+		cur = db.cursor()
+		robj = {}
+		
+		i = 0
+		# get 100 new most recent playlists
+		qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and playlist.is_public = 1 GROUP BY playlist.id DESC LIMIT 0, 100"
+			
+		cur.execute(qry)
+		# playlists exist
+		if cur.rowcount > 0:
+			rows = cur.fetchall()
+			
+			# check each playlist as item
+			for item in rows:
+				# make sure yobj is inialized inside the for loop where you are 
+				# assigning the value to it. Otherwise, unexpected and bizzare
+				# things happen when it is not properly re-initiazed upon loop
+				# in this case:
+				### obj[0].yobj is blank, obj[1].yobj is not blank.
+				### if yobj is not re-initialized below, obj[0].yobj inherits
+				### the value of obj[1].yobj.... totally strange!!!!
+				yobj = {}
+				plid = item[0] # get the playlist id
+				# get the video ids related to this playlist
+				qry = "SELECT vid_id FROM playlist_contents WHERE pl_id = %s"
+				cur.execute(qry, plid)
+				k = 0
+				
+				# if video ids exist
+				if cur.rowcount > 0:
+					xrows = cur.fetchall()
+					# loop each one
+					for xitem in xrows:
+						vid_id = xitem[0]
+						
+						# just get the public ones
+						qry = "SELECT uniq,category,tags,data,id FROM videos WHERE id = %s AND is_public = 1"
+							
+						cur.execute(qry, vid_id)
+						if cur.rowcount > 0:
+							yrows = cur.fetchall()
+							for yitem in yrows:
+								yobj[k] = {
+									'uniq': yitem[0],
+									'category': yitem[1],
+									'tags': yitem[2],
+									'data': yitem[3],
+									'id':yitem[4]
+								}
+								k = k + 1
+					
+					try:
+						test = yobj[0]
+					except:
+						yobj = False
+						
+					robj[i] = {
+						'id' : item[0],
+						'playlist_name' : item[1],
+						'owner': item[2],
+						'is_public': item[3],
+						'embeds': yobj
+					}
+				else:
+					try:
+						test = yobj[0]
+					except:
+						yobj = False
+						
+					robj[i] = {
+						'id' : item[0],
+						'playlist_name' : item[1],
+						'owner': item[2],
+						'is_public': item[3],
+						'embeds': yobj
+					}
+				i = i + 1
 		try:
 			test = robj[0]
 		except:

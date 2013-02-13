@@ -6,6 +6,7 @@ require.config({
     tooltip: 'libs/bootstrap/bootstrap-tooltip',
 	modal: 'libs/bootstrap/bootstrap-modal',
     jcrypt: 'libs/jquery.crypt',
+	carousel: 'libs/jquery.carouFredSel-6.2.0-packed',
     underscore: 'libs/underscore',
     backbone: 'libs/backbone', // this version of backbone is AMD enabled, downloaded at https://github.com/amdjs
     templates: '../templates', // the templates folder

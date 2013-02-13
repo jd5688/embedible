@@ -319,7 +319,7 @@ define([
 					var id = clickedEl.attr("id");
 
 					// populate the modal template with some values
-					$('#modal_body').html('Your embed is about to be deleted!');
+					$('#modal_body').html('Your embed is about to be deleted!<br/><small>note that deleting an embed means that you are no longer taking ownership of it.</small>');
 					$('#modal_value').val(id);
 					
 					// then show it

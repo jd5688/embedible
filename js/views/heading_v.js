@@ -17,13 +17,10 @@ define([
 					'click #video': 'videos',
 					'click #photo': 'photos',
 					'click #rich': 'rich',
+					'click #pubPlaylist': 'playlist',
 					'click #dashboard': 'dashboard',
 					'click #login': 'login',
 					'click #logout': 'logout'
-				},
-				initialize: function () {
-					this.counter = this.inc();
-					this.render();
 				},
 				render: function () {
 					var username = session.checkCookie() || '';
@@ -36,62 +33,44 @@ define([
 					this.$el.html( template );
 				},
 				
-				'inc' : function () {
-					var i = 0;
-					return function (j) {
-						return j !== undefined ? j : i += 1;
-					};
-				},
-				
-				'counter' : '',
-				
 				home: function(e) {
-					if (this.counter() === 1) {
-						e.preventDefault();
-						Backbone.history.navigate('', true);
-					}
+					e.preventDefault();
+					Backbone.history.navigate('', true);
 				},
 				
 				videos: function(e) {
-					if (this.counter() === 1) {
-						e.preventDefault();
-						Backbone.history.navigate('video', true);
-					}
+					e.preventDefault();
+					Backbone.history.navigate('video', true);
 				},
 				
 				photos: function(e) {
-					if (this.counter() === 1) {
-						e.preventDefault();
-						Backbone.history.navigate('photo', true);
-					}
+					e.preventDefault();
+					Backbone.history.navigate('photo', true);
 				},
 				
 				rich: function(e) {
-					if (this.counter() === 1) {
-						e.preventDefault();
-						Backbone.history.navigate('rich', true);
-					}
+					e.preventDefault();
+					Backbone.history.navigate('rich', true);
+				},
+				
+				playlist: function(e) {
+					e.preventDefault();
+					Backbone.history.navigate('playlist', true);
 				},
 				
 				login: function(e) {
-					if (this.counter() === 1) {
-						e.preventDefault();
-						Backbone.history.navigate('login', true);
-					}
+					e.preventDefault();
+					Backbone.history.navigate('login', true);
 				},
 				
 				logout: function(e) {
-					if (this.counter() === 1) {
-						e.preventDefault();
-						Backbone.history.navigate('logout', true);
-					}
+					e.preventDefault();
+					Backbone.history.navigate('logout', true);
 				},
 				
 				dashboard: function(e) {
-					if (this.counter() === 1) {
-						e.preventDefault();
-						Backbone.history.navigate('dashboard', true);
-					}
+					e.preventDefault();
+					Backbone.history.navigate('dashboard', true);
 				}
 			});
 		},
