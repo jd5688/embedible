@@ -67,9 +67,10 @@ class Playlists:
 						
 					robj[i] = {
 						'id' : item[0],
-						'playlist_name' : item[1],
-						'owner': item[2],
-						'is_public': item[3],
+						'uniq': item[1],
+						'playlist_name' : item[2],
+						'owner': item[3],
+						'is_public': item[4],
 						'embeds': yobj
 					}
 				else:
@@ -80,9 +81,10 @@ class Playlists:
 						
 					robj[i] = {
 						'id' : item[0],
-						'playlist_name' : item[1],
-						'owner': item[2],
-						'is_public': item[3],
+						'uniq': item[1],
+						'playlist_name' : item[2],
+						'owner': item[3],
+						'is_public': item[4],
 						'embeds': yobj
 					}
 				i = i + 1
@@ -95,8 +97,7 @@ class Playlists:
 	
 	#get specific playlist and all its embeds
 	def getPlaylist(self, param):
-		# param object contains the playlist id, playlist name
-		# and possibly the username
+		# param object contains the uniq_id and possibly the username
 		
 		db = Db.con()
 		cur = db.cursor()
@@ -106,11 +107,11 @@ class Playlists:
 		# get the playlist
 		if param['username']:
 			# user is logged in, but make sure pl_id and playlist_name matched on the DB
-			# some users might be guessing the url.
-			qry = "SELECT * FROM playlist WHERE owner = %(username)s AND id = %(pl_id)s AND playlist_name = %(pl_name)s"
+			# and check if owner owned the playlist. note: some users might be guessing the url.
+			qry = "SELECT * FROM playlist WHERE (owner = %(username)s OR is_public = 1) AND uniq_id = %(uniq_id)s"
 		else:
 			#not logged in. make sure the playlist is public
-			qry = "SELECT * FROM playlist WHERE id = %(pl_id)s AND playlist_name = %(pl_name)s AND is_public = 1"
+			qry = "SELECT * FROM playlist WHERE uniq_id = %(uniq_id)s AND is_public = 1"
 
 		cur.execute(qry, param)
 		# playlist exists
@@ -139,17 +140,22 @@ class Playlists:
 					# loop each one
 					for xitem in xrows:
 						vid_id = xitem[0]
+						param['vid_id'] = vid_id
 						
-						# now get the videos. even the private ones since
-						# this is going to be seen only by the owner of the playlist
-						qry = "SELECT uniq,category,tags,data,id FROM videos WHERE id = %s"
+						if param['username']:
+							# now get the videos. even the private ones owned by user
+							# videos that are private can only be seen by its embedder
+							qry = "SELECT uniq,category,tags,data,id FROM videos WHERE id = %(vid_id)s AND (username = %(username)s OR is_public = 1)"
+						else:
+							# get only videos that are flagged as public
+							qry = "SELECT uniq,category,tags,data,id FROM videos WHERE id = %(vid_id)s AND is_public = 1"
 						
-						cur.execute(qry, vid_id)
+						cur.execute(qry, param)
 						if cur.rowcount > 0:
 							yrows = cur.fetchall()
 							for yitem in yrows:
 								yobj[k] = {
-									'uniq': yitem[0],
+									'uniq': yitem[0],			
 									'category': yitem[1],
 									'tags': yitem[2],
 									'data': yitem[3],
@@ -164,9 +170,10 @@ class Playlists:
 						
 					robj[i] = {
 						'id' : item[0],
-						'playlist_name' : item[1],
-						'owner': item[2],
-						'is_public': item[3],
+						'uniq': item[1],
+						'playlist_name' : item[2],
+						'owner': item[3],
+						'is_public': item[4],
 						'embeds': yobj
 					}
 				else:
@@ -177,9 +184,10 @@ class Playlists:
 						
 					robj[i] = {
 						'id' : item[0],
-						'playlist_name' : item[1],
-						'owner': item[2],
-						'is_public': item[3],
+						'uniq': item[1],
+						'playlist_name' : item[2],
+						'owner': item[3],
+						'is_public': item[4],
 						'embeds': yobj
 					}
 				i = i + 1
@@ -190,16 +198,22 @@ class Playlists:
 		
 		return robj
 		
-	def getPublicPlaylists(self):
+	def getPublicPlaylists(self, param):
+		#param may contain username
+		
 		db = Db.con()
 		cur = db.cursor()
 		robj = {}
 		
 		i = 0
+		
 		# get 100 new most recent playlists
-		qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and playlist.is_public = 1 GROUP BY playlist.id DESC LIMIT 0, 100"
+		if param['username']:
+			qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and (playlist.owner = %(username)s OR playlist.is_public = 1) GROUP BY playlist.id DESC LIMIT 0, 100"
+		else:
+			qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and playlist.is_public = 1 GROUP BY playlist.id DESC LIMIT 0, 100"
 			
-		cur.execute(qry)
+		cur.execute(qry, param)
 		# playlists exist
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
@@ -226,11 +240,15 @@ class Playlists:
 					# loop each one
 					for xitem in xrows:
 						vid_id = xitem[0]
+						param['vid_id'] = vid_id
 						
-						# just get the public ones
-						qry = "SELECT uniq,category,tags,data,id FROM videos WHERE id = %s AND is_public = 1"
+						if param['username']:
+							qry = "SELECT uniq,category,tags,data,id FROM videos WHERE id = %(vid_id)s AND (username = %(username)s OR is_public = 1)"
+						else:
+							# just get the public ones
+							qry = "SELECT uniq,category,tags,data,id FROM videos WHERE id = %(vid_id)s AND is_public = 1"
 							
-						cur.execute(qry, vid_id)
+						cur.execute(qry, param)
 						if cur.rowcount > 0:
 							yrows = cur.fetchall()
 							for yitem in yrows:
@@ -250,9 +268,10 @@ class Playlists:
 						
 					robj[i] = {
 						'id' : item[0],
-						'playlist_name' : item[1],
-						'owner': item[2],
-						'is_public': item[3],
+						'uniq': item[1],
+						'playlist_name' : item[2],
+						'owner': item[3],
+						'is_public': item[4],
 						'embeds': yobj
 					}
 				else:
@@ -263,9 +282,10 @@ class Playlists:
 						
 					robj[i] = {
 						'id' : item[0],
-						'playlist_name' : item[1],
-						'owner': item[2],
-						'is_public': item[3],
+						'uniq': item[1],
+						'playlist_name' : item[2],
+						'owner': item[3],
+						'is_public': item[4],
 						'embeds': yobj
 					}
 				i = i + 1
@@ -280,14 +300,28 @@ class Playlists:
 		db = Db.con()
 		cur = db.cursor()
 		q = """
-			INSERT INTO playlist (playlist_name, owner, is_public) 
+			INSERT INTO playlist (uniq, playlist_name, owner, is_public) 
 			VALUES 
-			(%(playlist)s, %(username)s, 1)
+			('xdemx', %(playlist)s, %(username)s, 1)
 			"""
 		cur.execute(q, param)
 		db.commit()
-		return 'success'
+		lastId = cur.lastrowid
+		return self._insertUniq(lastId, param['key'])
 
+	def _insertUniq(self, id, key):
+		db = Db.con()
+		cur = db.cursor()
+		myUniq = base64.b64encode(str(key) + str(id))
+		
+		par = {
+			'uniq': myUniq
+		}
+		
+		cur.execute("""UPDATE playlist SET uniq = %(uniq)s WHERE uniq = 'xdemx'""", par)
+		db.commit()
+		return 'success'
+		
 	def removeEmbed(self, param):
 		db = Db.con()
 		cur = db.cursor()
@@ -348,6 +382,7 @@ class Playlists:
 		db = Db.con()
 		cur = db.cursor()
 		
+		print param
 		cur.execute("""UPDATE playlist SET is_public = %(is_public)s WHERE id = %(pl_id)s""", param)
 		
 		try:

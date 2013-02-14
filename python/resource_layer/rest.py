@@ -178,18 +178,18 @@ def application(environ, start_response):
 			username = d.get('u', [''])[0]
 			hash = d.get('hash', [''])[0]
 			publc = d.get('public', [''])[0]
-			response = b_user.playlists(hash, publc, username)
+			src = d.get('src', [''])[0]
+			response = b_user.playlists(hash, publc, username, src)
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'playlistContent':
 			status = '200 OK'
 			headers = [('Content-type', 'application/json')]
 			start_response(status, headers)
-			pl_id = d.get('pl_id', [''])[0]
-			pl_name = d.get('pl_name', [''])[0]
+			uniq_id = d.get('uniq_id', [''])[0]
 			username = d.get('u', [''])[0]
 			hash = d.get('hash', [''])[0]
 			publc = d.get('public', [''])[0]
-			response = b_user.playlist(hash, publc, pl_id, pl_name, username)
+			response = b_user.playlist(hash, publc, uniq_id, username)
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'add_to_playlist':
 			status = '200 OK'

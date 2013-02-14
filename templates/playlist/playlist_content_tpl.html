@@ -73,7 +73,7 @@ if (data.data) {
 	if (typeof c.embeds[0] !== 'undefined') {
 %>
 			<div class="aalist_carousel responsive" >
-				<ul class="thumbnails" id="foo5">
+				<ul id="foo5">
 <%
 		_.each(c.embeds, function(d) {
 			var dat = JSON.parse(d.data);
@@ -84,7 +84,7 @@ if (data.data) {
 %>
 					<li>
 						<span style="text-align:center">
-							<a class="thumbnail">
+							<a>
 								<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
 							</a>
 							&nbsp;<a href="" class="remplay" style="width:100%;" data-toggle="modal" id="<%= playlist_id %>_<%= d.id %>" title="Remove from playlist"><i class="icon-trash"></i></a>

@@ -179,23 +179,31 @@ def set_pl_public(hash, publc, is_public, pl_id):
 		
 	return dat
 
-def playlists(hash, publc, username = ''):
+def playlists(hash, publc, username, src):
+	if username == 'false':
+		username = ''
+	
 	x = Playlists()
 	data = False
-	# create a hash
+	
+	param = {
+			'username' : username
+		}
+	
 	if username:
-		m = md5.new(publc + _private_key() + username)
+		# create a hash
+		m = md5.new(publc + _private_key())
 		# check if this hash is equal to the one transmitted
 		if m.hexdigest() == hash:
-			param = {
-				'username' : username
-			}
-			data = x.getPlaylists(param)
+			if src == 'home':
+				data = x.getPublicPlaylists(param)
+			else:
+				data = x.getPlaylists(param)
 	else:
 		m = md5.new(publc + _private_key())
 		# check if this hash is equal to the one transmitted
 		if m.hexdigest() == hash:
-			data = x.getPublicPlaylists()
+			data = x.getPublicPlaylists(param)
 	
 	
 			
@@ -204,24 +212,21 @@ def playlists(hash, publc, username = ''):
 		'id': 1234
 	}
 
-def playlist(hash, publc, pl_id, pl_name, username=""):
-
+def playlist(hash, publc, uniq_id, username=""):
+	if username == 'false':
+		username = ''
+		
 	x = Playlists()
 	data = False
 	# create a hash
-	m = md5.new(publc + pl_id + pl_name + _private_key())
+	m = md5.new(publc + uniq_id + _private_key())
 	
-	#pl_name arrived url encoded (encodeURIComponent) so...
-	if urllib.unquote_plus(pl_name) != "('" + pl_name + "',)":
-		pl_name = urllib.unquote_plus(pl_name)
-
 	# check if this hash is equal to the one transmitted
 	if m.hexdigest() == hash:
 		
 			
 		param = {
-			'pl_id' : pl_id,
-			'pl_name': pl_name,
+			'uniq_id' : uniq_id,
 			'username': username
 		}
 		data = x.getPlaylist(param)
@@ -236,8 +241,9 @@ def add_playlist(param):
 	x = Playlists()
 	
 	data = {
-		'username' : param['username'],
-		'playlist' : param['pl_name']
+		'username' 	: param['username'],
+		'playlist' 	: param['pl_name'],
+		'key'		: _private_key()
 	}
 	
 	return x.add_playlist(data)

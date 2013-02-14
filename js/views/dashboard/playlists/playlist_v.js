@@ -44,7 +44,7 @@ define([
 						// set the hash
 						var ux = new Date().getTime();
 						var publc = DEM.ux();
-						var ckey = publc + DEM.key() + username;
+						var ckey = publc + DEM.key();
 					
 						// use jcrypt to encrypt
 						var hash = $().crypt({

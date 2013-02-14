@@ -20,6 +20,8 @@ define([
 					'click a[class=thumbnail]': 'redir2',
 				},
 				render: function () {
+					// get the username if user is logged in
+					var username = session.checkCookie();
 					var publc = DEM.ux();
 					var ckey = publc + DEM.key();
 				
@@ -30,7 +32,8 @@ define([
 					);
 				
 					// get the playlists from the server
-					this.model.fetch({ url : DEM.domain + "playlists?hash=" + hash + "&public=" + publc + "&callback=?"});
+					// this is coming from homepage
+					this.model.fetch({ url : DEM.domain + "playlists?hash=" + hash + "&public=" + publc + "&u=" + username + "&src=home&callback=?"});
 					
 					if (this.model.has("id")) {
 						this.main_body();
@@ -86,12 +89,9 @@ define([
 				redir: function (e) {
 					e.preventDefault();
 					var clickedEl = $(e.currentTarget); // which element was clicked?
-					var str = clickedEl.attr("id");
-					var strArr = str.split("_");
-					var pl_id = strArr[0];
-					var pl_name = encodeURIComponent(strArr[1]);
-					
-					var url = 'playlist/' + pl_id + '/' + pl_name;
+					var uniq_id = clickedEl.attr("id");
+										
+					var url = 'playlist/' + uniq_id;
 					Backbone.history.navigate(url, true);;
 				},
 				redir2: function (e) {
@@ -122,11 +122,9 @@ define([
 					if (!username) { username = ''; }
 					var publc = DEM.ux();
 					
-					pl_id = this.model.get('pl_id');
-					pl_name = this.model.get('pl_name');
-
+					uniq_id = this.model.get('uniq_id');
 					
-					var ckey = publc + pl_id + pl_name + DEM.key();
+					var ckey = publc + uniq_id + DEM.key();
 				
 					// use jcrypt to encrypt
 					var hash = $().crypt({
@@ -136,7 +134,7 @@ define([
 					
 				
 					// get the playlists from the server
-					this.model.fetch({ url : DEM.domain + "playlistContent?hash=" + hash + "&public=" + publc + "&pl_id=" + pl_id + "&pl_name=" + pl_name + "&u=" + username + "&callback=?"});
+					this.model.fetch({ url : DEM.domain + "playlistContent?hash=" + hash + "&public=" + publc + "&uniq_id=" + uniq_id + "&u=" + username + "&callback=?"});
 					
 					if (this.model.has("id")) {
 						this.main_body();
@@ -155,15 +153,8 @@ define([
 					this.$el.html( template );
 					
 					$('#foo5').carouFredSel({
-						auto: true,
-						scroll: 2,
-						prev: '#prev2',
-						next: '#next2',
-						mousewheel: true,
-						swipe: {
-							onMouse: true,
-							onTouch: true
-						}
+						width: '100%',
+						scroll: 2
 					});
 					
 					// enable the tooltips plugin
