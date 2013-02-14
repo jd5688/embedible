@@ -7,9 +7,10 @@ define([
   'carousel',
   'models/playlist_m',
   'text!templates/playlist/playlist_tpl.html',
+  'text!templates/playlist/playlist_content_tpl.html',
   'DEM',
-  
-], function($, bootstrap, jcrypt, _, Backbone, carousel, Playlist_m, main_tpl, DEM){
+  'mysession',
+], function($, bootstrap, jcrypt, _, Backbone, carousel, Playlist_m, main_tpl, content_tpl, DEM, session){
 	var Playlist = {
 		View : function () {
 			return Backbone.View.extend({
@@ -84,7 +85,14 @@ define([
 				},
 				redir: function (e) {
 					e.preventDefault();
-					alert('ehhlo');
+					var clickedEl = $(e.currentTarget); // which element was clicked?
+					var str = clickedEl.attr("id");
+					var strArr = str.split("_");
+					var pl_id = strArr[0];
+					var pl_name = encodeURIComponent(strArr[1]);
+					
+					var url = 'playlist/' + pl_id + '/' + pl_name;
+					Backbone.history.navigate(url, true);;
 				},
 				redir2: function (e) {
 					e.preventDefault();
@@ -103,26 +111,32 @@ define([
 		},
 		Model : function () {
 			return new Playlist_m();
-		}
-	};
-	
-	var PlaylistContent = {
-		View : function () {
+		},
+		ContentView: function () {
 			return Backbone.View.extend({
 				events: {
 				},
 				render: function () {
+					// get the username if user is logged in
+					var username = session.checkCookie();
+					if (!username) { username = ''; }
 					var publc = DEM.ux();
-					var ckey = publc + this.title + DEM.key();
+					
+					pl_id = this.model.get('pl_id');
+					pl_name = this.model.get('pl_name');
+
+					
+					var ckey = publc + pl_id + pl_name + DEM.key();
 				
 					// use jcrypt to encrypt
 					var hash = $().crypt({
 						method: "md5",
 						source: ckey}
 					);
+					
 				
 					// get the playlists from the server
-					this.model.fetch({ url : DEM.domain + "playlistContent?hash=" + hash + "&public=" + publc + "&title=" + this.title + "&callback=?"});
+					this.model.fetch({ url : DEM.domain + "playlistContent?hash=" + hash + "&public=" + publc + "&pl_id=" + pl_id + "&pl_name=" + pl_name + "&u=" + username + "&callback=?"});
 					
 					if (this.model.has("id")) {
 						this.main_body();
@@ -136,12 +150,12 @@ define([
 					data.data = this.json();
 					data.website = DEM.website;
 					
-					var template = _.template( main_tpl, data );
+					var template = _.template( content_tpl, data );
 					//render the template
 					this.$el.html( template );
 					
 					$('#foo5').carouFredSel({
-						auto: false,
+						auto: true,
 						scroll: 2,
 						prev: '#prev2',
 						next: '#next2',
@@ -166,9 +180,7 @@ define([
 				}
 			});
 		},
-		Model : function () {
-			return new Playlist_m();
-		}
 	};
+	
 	return Playlist;
 });

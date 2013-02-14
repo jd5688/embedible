@@ -1,22 +1,29 @@
 <h4>Recent Playlists</h4>
 <hr/>
 
-<span id="alerter_public_playlists" style="display:none">
-	<div class="alert alert-success">
-		Click the playlist name to go to the details page.
-	</div>
-</span>
-
 <% 
 if (data.data) { 
 	var spa_i = 0;
 	var playlist_id;
 	var is_public;
+	var playlist_name;
+%>
 
+	<span id="alerter_public_playlists" style="display:none">
+		<div class="alert alert-success">
+			Click the playlist name to go to the details page.
+		</div>
+	</span>
+
+
+<%
 	_.each(data.data, function(c) { 
 		spa_i += 1;
 		playlist_id = c.id;
 		is_public = c.is_public;
+		playlist_name = c.playlist_name;
+		//replace double quotes with single quotes
+		playlist_name = playlist_name.replace(/"/g, "'");
 	%> 
 		<div class="row-fluid" id="<%= playlist_id %>">
 			<div class="span10">
@@ -26,7 +33,7 @@ if (data.data) {
 						<a href="" class="btn btn-small" alt="pl_name_list" id="<%= playlist_id %>xpl_name_hide_list" style="display:none" title="Hide list"><i class="icon-chevron-up"></i></a>
 					</span>
 					&nbsp;
-					<a name="playlist_details" id="<%= playlist_id %>" href=""><%= c.playlist_name %></a>
+					<a name="playlist_details" id="<%= playlist_id %>_<%= playlist_name %>" href=""><%= c.playlist_name %></a>
 				</blockquote>
 				<span id="<%= playlist_id %>_list_container" style="display:none">
 					<div class="row-fluid">

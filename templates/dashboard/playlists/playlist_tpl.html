@@ -16,12 +16,10 @@
 <span id="show_pl_active">
 	<% 
 	if (data.data) { 
-		var spa_i = 0;
 		var playlist_id;
 		var is_public;
 
 		_.each(data.data, function(c) { 
-			spa_i += 1;
 			playlist_id = c.id;
 			is_public = c.is_public;
 		%> 

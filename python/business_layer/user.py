@@ -204,17 +204,25 @@ def playlists(hash, publc, username = ''):
 		'id': 1234
 	}
 
-def playlist(hash, publc, title):
+def playlist(hash, publc, pl_id, pl_name, username=""):
+
 	x = Playlists()
 	data = False
 	# create a hash
-	m = md5.new(publc + title + _private_key())
+	m = md5.new(publc + pl_id + pl_name + _private_key())
 	
+	#pl_name arrived url encoded (encodeURIComponent) so...
+	if urllib.unquote_plus(pl_name) != "('" + pl_name + "',)":
+		pl_name = urllib.unquote_plus(pl_name)
+
 	# check if this hash is equal to the one transmitted
 	if m.hexdigest() == hash:
-		title = urllib.unquote_plus(title)
+		
+			
 		param = {
-			'title' : title
+			'pl_id' : pl_id,
+			'pl_name': pl_name,
+			'username': username
 		}
 		data = x.getPlaylist(param)
 			

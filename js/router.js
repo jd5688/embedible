@@ -59,7 +59,7 @@ define([
 			"rich/:id"						: "rich",
 			"playlist"						: "playlist",
 			"playlist/"						: "playlist",
-			"playlist/:title"				: "playlist",
+			"playlist/:pl_id/:pl_name"		: "playlist",
 			"logout"						: "logout",
 			"404"							: "fourfour",
 			"*anything"						: "defaultRoute"
@@ -238,15 +238,19 @@ define([
 			this.AppView.showView(playlistView);
 		},
 		
-		playlist: function (title) {
+		playlist: function (pl_id, pl_name) {
 			this._renderHead("playlist");
-			if (!title) {
+			if (!pl_id && !pl_name) {
 				var playlistModel = MainPlaylist.Model();
 				var PlaylistView = MainPlaylist.View();
 				var playlistView = new PlaylistView({ model: playlistModel });
 				this.AppView.showView(playlistView);
 			} else {
-				
+				var playlistModel = MainPlaylist.Model();
+				playlistModel.set({pl_id: pl_id, pl_name: pl_name});
+				var PlaylistContentView = MainPlaylist.ContentView();
+				var playlistContentView = new PlaylistContentView( { model: playlistModel } );
+				this.AppView.showView(playlistContentView);
 			}
 		},
 		

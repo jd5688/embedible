@@ -184,10 +184,12 @@ def application(environ, start_response):
 			status = '200 OK'
 			headers = [('Content-type', 'application/json')]
 			start_response(status, headers)
-			title = d.get('title', [''])[0]
+			pl_id = d.get('pl_id', [''])[0]
+			pl_name = d.get('pl_name', [''])[0]
+			username = d.get('u', [''])[0]
 			hash = d.get('hash', [''])[0]
 			publc = d.get('public', [''])[0]
-			response = b_user.playlist(hash, publc, title)
+			response = b_user.playlist(hash, publc, pl_id, pl_name, username)
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'add_to_playlist':
 			status = '200 OK'
