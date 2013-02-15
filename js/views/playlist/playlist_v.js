@@ -115,6 +115,7 @@ define([
 		ContentView: function () {
 			return Backbone.View.extend({
 				events: {
+					'click div[class=btn]': 'hider'
 				},
 				render: function () {
 					// get the username if user is logged in
@@ -152,16 +153,29 @@ define([
 					//render the template
 					this.$el.html( template );
 					
-					$('#foo5').carouFredSel({
-						width: '100%',
-						scroll: 2
-					});
-					
 					// enable the tooltips plugin
 					$('.thumbnail').tooltip({
 						selector: "input[rel=tooltip]",
 						placement: "bottom"
 					});
+				},
+				hider: function(e) {
+					var clickedEl = $(e.currentTarget);
+					var axion = clickedEl.attr("id");
+					
+					// hide the sidebar
+					if (axion === 'sidebar_hide') {
+						$('#sidebar').hide();
+						$('#sidebar_is_visible').hide();
+						$('#sidebar_is_hidden').fadeIn();
+					};
+					
+					// show the sidebar
+					if (axion === 'sidebar_reveal') {
+						$('#sidebar').fadeIn();
+						$('#sidebar_is_visible').fadeIn();
+						$('#sidebar_is_hidden').hide();
+					};
 				},
 				json: function() {
 					return this.model.toJSON();

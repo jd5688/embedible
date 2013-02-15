@@ -1,104 +1,61 @@
-<style type="text/css" media="all">
-	.aawrapper {
-		background-color: white;
-		width: 480px;
-		margin: 40px auto;
-		padding: 50px;
-		box-shadow: 0 0 5px #999;
-	}
-	.aalist_carousel {
-		background-color: #ccc;
-		margin: 0 0 30px 60px;
-		width: 360px;
-	}
-	.aalist_carousel ul {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-		display: block;
-	}
-	.aalist_carousel li {
-		font-size: 40px;
-		color: #999;
-		text-align: center;
-		background-color: #eee;
-		border: 5px solid #999;
-		width: 50px;
-		height: 50px;
-		padding: 0;
-		margin: 6px;
-		display: block;
-		float: left;
-	}
-	.aalist_carousel.responsive {
-		width: auto;
-		margin-left: 0;
-	}
-	.aaclearfix {
-		float: none;
-		clear: both;
-	}
-	.aaprev {
-		float: left;
-		margin-left: 10px;
-	}
-	.aanext {
-		float: right;
-		margin-right: 10px;
-	}
-	.aapager {
-		float: left;
-		width: 300px;
-		text-align: center;
-	}
-	.aapager a {
-		margin: 0 5px;
-		text-decoration: none;
-	}
-	.aapager a.selected {
-		text-decoration: underline;
-	}
-	.aatimer {
-		background-color: #999;
-		height: 6px;
-		width: 0px;
-	}
-</style>
-
 <%
 if (data.data) {
 	_.each(data.data, function(c) {
 	playlist_id = c.id;
 	is_public = c.is_public;
+	playlist_name = c.playlist_name;
 	if (typeof c.embeds[0] !== 'undefined') {
 %>
-			<div class="aalist_carousel responsive" >
-				<ul id="foo5">
+		<div class="row" >
+			<div id="sidebar" class="span2">
+				<ul class="thumbnails">
 <%
-		_.each(c.embeds, function(d) {
-			var dat = JSON.parse(d.data);
-			var title = dat.title;
-			title = title.replace(/"/g, '\\"');
-			var description = dat.description;
-			description = description.replace(/"/g, "'");
+				_.each(c.embeds, function(d) {
+					var dat = JSON.parse(d.data);
+					var title = dat.title;
+					title = title.replace(/"/g, '\\"');
+					var description = dat.description;
+					description = description.replace(/"/g, "'");
 %>
-					<li>
-						<span style="text-align:center">
-							<a>
-								<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
-							</a>
-							&nbsp;<a href="" class="remplay" style="width:100%;" data-toggle="modal" id="<%= playlist_id %>_<%= d.id %>" title="Remove from playlist"><i class="icon-trash"></i></a>
-						</span>
-					</li>
+				<li class="span2">
+					<span style="text-align:center">
+						<a class="thumbnail">
+							<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
+						</a>
+					</span>
+				</li>
 <%
 		}) // each
 %>				
 				</ul>
-				<div class="aaclearfix"></div>
-				<a id="prev2" class="aaprev" href="#">&lt;</a>
-				<a id="next2" class="aanext" href="#">&gt;</a>
-				<div id="pager2" class="aapager"></div>
 			</div>
+			<div class="span10" id="sidebar_is_visible">
+				<h4>
+					<span>
+						<div class="btn" id="sidebar_hide" title="Hide the sidebar"><i class="icon-chevron-left"></i>&nbsp;</div>
+					</span>
+					&nbsp;<%= playlist_name %>
+					<hr/>
+					
+					<div>
+						SIDEBAR IS VISIBLE
+					</div>
+				</h4>
+			</div>
+			<div class="span12" id="sidebar_is_hidden" style="display:none" title="Show the sidebar">
+				<h4>
+					<span>
+						<div class="btn" id="sidebar_reveal"><i class="icon-chevron-right"></i>&nbsp;</div>
+					</span>
+					&nbsp;<%= playlist_name %>
+					<hr/>
+					
+					<div>
+						SIDEBAR IS HIDDEN
+					</div>
+				</h4>
+			</div>
+		</div>
 <%
 	} // if
 	}) // each data.data

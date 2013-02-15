@@ -13,46 +13,40 @@
 		}
 	}
 	
-	// for testing purposes only
-	// remove after
-	var devWidth = $(window).width() - 50;
-			newWidth = 'width="' + devWidth + '"';
-			
-			// match the width value of showThis
-			var myReg = showThis.match(/width=(".*?"|'.*?'|[^"'][^\s]*)/)
-			// width="640"
-			var widthVal = myReg[0];
-			
-			myReg = showThis.match(/height=(".*?"|'.*?'|[^"'][^\s]*)/)
-			var heightVal = myReg[0];
-			
-			if (newWidth < widthVal) {
-				showThis = showThis.replace(widthVal, newWidth);
-				showThis = showThis.replace(heightVal, newWidth);
-			}
-	// for testing purposes
-	
-	
 	// detect if using a mobile device
 	if (dat.type === 'video' || dat.type === 'rich') {
 		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
-			// get the resolution of the device display less 50
-			var devWidth = $(window).width() - 50;
+			// get the resolution of the device display less 25%
+			var devWidth = $(window).width() * .75;
+		
+			// this is the new width with surrounding text -- width="xxx" --
 			newWidth = 'width="' + devWidth + '"';
-			
+				
 			// match the width value of showThis
 			var myReg = showThis.match(/width=(".*?"|'.*?'|[^"'][^\s]*)/)
-			// width="640"
 			var widthVal = myReg[0];
 			
+			// get the width without the surrounding text -width="xxx"-
+			var xW = myReg[1];
+			xW = xW.replace(/"/g, "");
 			myReg = showThis.match(/height=(".*?"|'.*?'|[^"'][^\s]*)/)
 			var heightVal = myReg[0];
+		
+			// get the height without the surrounding text -width="xxx"-
+			var xH = myReg[1];
+			xH = xH.replace(/"/g, "");
 			
-			if (newWidth < widthVal) {
-				showThis = showThis.replace(widthVal, newWidth);
-				showThis = showThis.replace(heightVal, newWidth);
+			newHeight = 'height="' + devWidth + '"';
+			
+			// if device's half of its max width width is less than the width of the embed
+			if (devWidth < xW) {
+				alert(xW + ' - ' + devWidth);
+				// convert the width to that of the device's half width
+				var re = new RegExp(widthVal,"g");
+				var reH = new RegExp(heightVal,"g");
+				showThis = showThis.replace(re, newWidth);
+				showThis = showThis.replace(reH, newHeight);
 			}
-			
 		};
 	}
 %>
