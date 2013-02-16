@@ -115,7 +115,8 @@ define([
 		ContentView: function () {
 			return Backbone.View.extend({
 				events: {
-					'click div[class=btn]': 'hider'
+					'click .pull-right': 'hider',
+					'click .thumbnail': 'redir'
 				},
 				render: function () {
 					// get the username if user is logged in
@@ -123,7 +124,7 @@ define([
 					if (!username) { username = ''; }
 					var publc = DEM.ux();
 					
-					uniq_id = this.model.get('uniq_id');
+					var uniq_id = this.model.get('uniq_id');
 					
 					var ckey = publc + uniq_id + DEM.key();
 				
@@ -148,6 +149,24 @@ define([
 					var data = {};
 					data.data = this.json();
 					data.website = DEM.website;
+					data.vid_uniq = this.model.get('vid_uniq');
+					data.detectEmbed = this.detectEmbedType();
+					
+					// check if vid_uniq is in the URL.
+					// if it's in the url, we need to get its embed code
+					if (data.vid_uniq) {
+						// we need to hide the sidebar
+						data.sidebar_is_visible = 'style="display:none"';
+						data.sidebar_is_hidden = '';
+						data.sidebar = 'style="display:none"';
+					} else {
+						// we need to show the sidebar
+						data.sidebar_is_visible = '';
+						data.sidebar_is_hidden = 'style="display:none"';
+						data.sidebar = '';
+					}
+					
+					
 					
 					var template = _.template( content_tpl, data );
 					//render the template
@@ -158,6 +177,23 @@ define([
 						selector: "input[rel=tooltip]",
 						placement: "bottom"
 					});
+				},
+				detectEmbedType: function () {
+					return function (dat) {
+						var showThis;
+						if (dat.type === 'video' || dat.type === 'rich') {
+							showThis = dat.html;
+						} else if (dat.type === 'photo') {
+							showThis = '<a href="' + dat.thumbnail_url + '"><img src="' + dat.url + '" border="0"/></a>'
+						} else if (dat.type === 'link') {
+							if (typeof thumbnail_url !== "undefined" && thumbnail_url !== "") {
+								showThis = '<a href="' + dat.url + '" target="_blank"><img src="' + dat.thumbnail_url + '"/></a>'
+							} else {
+								showThis = '<a href="' + dat.url + '" target="_blank">' + dat.url + '</a>'
+							}
+						}
+						return showThis;
+					};
 				},
 				hider: function(e) {
 					var clickedEl = $(e.currentTarget);
@@ -176,6 +212,15 @@ define([
 						$('#sidebar_is_visible').fadeIn();
 						$('#sidebar_is_hidden').hide();
 					};
+				},
+				redir: function (e) {
+					e.preventDefault();
+					var clickedEl = $(e.currentTarget);
+					var vid_uniq = clickedEl.attr("id");
+					
+					pl_uniq = this.model.get('uniq_id');
+					var url = 'playlist/' + pl_uniq + '/' + vid_uniq;
+					Backbone.history.navigate(url, true);;
 				},
 				json: function() {
 					return this.model.toJSON();

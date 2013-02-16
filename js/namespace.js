@@ -1,8 +1,8 @@
 define(function() {
 	var DEM = DEM || {};
 	
-	DEM.domain 		= 	"http://192.168.254.112:8000/"; //python is listening on this port
-	DEM.website		=	"http://192.168.254.112/~admin/"; //website url here
+	DEM.domain 		= 	"http://localhost:8000/"; //python is listening on this port
+	DEM.website		=	"http://localhost/~admin/"; //website url here
 	DEM.root		=	"/~admin"; // the root url
 	DEM.key			=	function () {
 							return "ph1li9sVAi0";

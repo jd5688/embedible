@@ -64,11 +64,6 @@ define([
 					var mod_tpl = _.template( modal_template );
 					$('#modal_container').html( mod_tpl );
 					
-					// the modal Add to Playlist template
-					//var mod_atpl_tpl = _.template( modalAddToPlaylist_tpl, data );
-					//$('#modalAddToPLaylistContainer').html( mod_atpl_tpl );
-					
-					
 					// check the uri and make the appropriate tab active at the dashboard
 					var cURL = location.protocol + '//' + location.hostname + location.pathname
 					

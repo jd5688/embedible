@@ -16,11 +16,11 @@
 		  <li <%= uri === "playlist" ? 'class="active"' : ''%>><a href="#" id="pubPlaylist">Playlist</a></li>
 		  <% if (username !== '') { %>
 				<li <%= uri === "dashboard" ? 'class="active"' : ''%>>
-					<a href="" id="dashboard">Dashboard</a>
+					<a href="#" id="dashboard">Dashboard</a>
 				</li>
-				<li><a href="" id="logout">Logout</a></li>
+				<li><a href="#" id="logout">Logout</a></li>
 			<% } else { %>
-				<li <%= uri === "login" ? 'class="active"' : ''%>><a href="" id="login">Login</a></li>
+				<li <%= uri === "login" ? 'class="active"' : ''%>><a href="#" id="login">Login</a></li>
 			<% } %>
 		</ul>
 		

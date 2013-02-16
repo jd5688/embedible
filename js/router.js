@@ -34,11 +34,11 @@ define([
 			""								: "index",
 			"dashboard"						: "dashboard",
 			"dashboard/"					: "dashboard",
-			"dashboard/playlists/"			: "playlists",
-			"dashboard/playlists"			: "playlists",
-			"dashboard/playlists/add"		: "playlists",
-			"dashboard/:option"				: "dashboard",
-			"dashboard/:option/"			: "dashboard",
+			"dashboard/:page/"				: "dashboard",
+			"dashboard/:page"				: "dashboard",
+			"dashboard/:page/:option"		: "dashboard",
+			"dashboard/:page"				: "dashboard",
+			"dashboard/:page/"				: "dashboard",
 			"embed"							: "embed",
 			"embed/"						: "embed",
 			"embed/save"					: "save_embed",
@@ -59,7 +59,8 @@ define([
 			"rich/:id"						: "rich",
 			"playlist"						: "playlist",
 			"playlist/"						: "playlist",
-			"playlist/:id"					: "playlist",
+			"playlist/:uniq_id"				: "playlist",
+			"playlist/:uniq_id/:vid_uniq"	: "playlist",
 			"logout"						: "logout",
 			"404"							: "fourfour",
 			"*anything"						: "defaultRoute"
@@ -90,16 +91,20 @@ define([
 		},
 		
 		// logged in users go here
-		dashboard: function (option) {
+		dashboard: function (page, option) {
+			this._renderHead('dashboard');
+		
 			var gPass = '';
-			if (typeof option === 'undefined' || option === 'show_all' || option === 'my_videos' || option === 'my_photos' || option === 'my_rich' || option === 'my_links') {
+			if (typeof page === 'undefined' || page === 'show_all' || page === 'my_videos' || page === 'my_photos' || page === 'my_rich' || page === 'my_links') {
 				gPass = 1;
+			} else if (page === 'playlists'){
+				this.playlists(option);
+				return;
 			}
 
 			username = session.checkCookie();
 			if (typeof username === 'string') {
 				if (gPass === 1) {
-					this._renderHead('dashboard');
 					var dashboardMain = Dashboard.Main(); // create the model
 					dashboardMain.fetch({ url: DEM.domain + "getembed?username=" + username + "&callback=?" });
 					var DashboardView = Dashboard.View();
@@ -238,7 +243,10 @@ define([
 			this.AppView.showView(playlistView);
 		},
 		
-		playlist: function (uniq_id) {
+		playlist: function (uniq_id, vid_uniq) {
+			// uniq_id is the playlist uniq id
+			// vid_uniq is the db table 'Videos' uniq_id
+			// Videos table does not just contain embedded videos but all types of embeds
 			this._renderHead("playlist");
 			if (!uniq_id) {
 				var playlistModel = MainPlaylist.Model();
@@ -246,8 +254,11 @@ define([
 				var playlistView = new PlaylistView({ model: playlistModel });
 				this.AppView.showView(playlistView);
 			} else {
+				if (typeof vid_uniq === 'undefined') {
+					vid_uniq = '';
+				}
 				var playlistModel = MainPlaylist.Model();
-				playlistModel.set({uniq_id: uniq_id});
+				playlistModel.set({uniq_id: uniq_id, vid_uniq: vid_uniq});
 				var PlaylistContentView = MainPlaylist.ContentView();
 				var playlistContentView = new PlaylistContentView( { model: playlistModel } );
 				this.AppView.showView(playlistContentView);
