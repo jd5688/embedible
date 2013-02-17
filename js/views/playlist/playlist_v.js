@@ -217,6 +217,11 @@ define([
 					e.preventDefault();
 					var clickedEl = $(e.currentTarget);
 					var vid_uniq = clickedEl.attr("id");
+					if (vid_uniq === this.model.get('vid_uniq')) {
+						// no need to redirect, vid_uniq is in the url
+						this.main_body();
+						return;
+					}
 					
 					pl_uniq = this.model.get('uniq_id');
 					var url = 'playlist/' + pl_uniq + '/' + vid_uniq;

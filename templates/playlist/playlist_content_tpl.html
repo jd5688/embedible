@@ -47,7 +47,7 @@ if (data.data) {
 					var description = dat.description;
 					description = description.replace(/"/g, "'");
 					
-					if (vid_uniq === d.uniq || i === 1) {
+					if (vid_uniq === d.uniq || !i) {
 						var showThis = detectEmbed(dat);
 						var zTitle = title;
 					}

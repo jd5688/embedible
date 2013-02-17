@@ -127,7 +127,7 @@ define([
 					
 
 					// prevent special characters
-					if (/[^a-zA-Z 0-9]+/.test(pl_name)){
+					if (/[^a-zA-Z 0-9]'+/.test(pl_name)){
 						// show the alerter
 						$('#alerter_add').fadeIn();
 						$('#playlist_name').val('');

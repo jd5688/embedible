@@ -61,12 +61,15 @@ define([
 				*/
 				render: function () {	
 					var logged = session.checkCookie();
+					/*
+					// removed for debugging
 					if (logged === false) {
 						// only logged in users can submit embed. so...
 						Backbone.history.navigate('', true);
 						return true;
 					}
-				
+					*/
+					
 					var attributes = this.json();
 					var embedlyKey = attributes.key;
 					var template = _.template( tmplate, attributes );
@@ -197,6 +200,8 @@ define([
 				data: {},
 				
 				save: function() {
+					/*
+					// removed for debugging
 					this.model.save(null, {
 						// always results in error even if successful. maybe this is due to cross-domain
 						// error: -> goes to success page
@@ -207,9 +212,8 @@ define([
 							Backbone.history.navigate('embed/save/success', true);
 						}
 					});
-				},
-				onClose: function(){
-					this.model.unbind("change", this.render);
+					*/
+					Backbone.history.navigate('embed/save/success', true);
 				}
 			});
 		},
@@ -240,9 +244,6 @@ define([
 				gotoPage: function(e) {	
 					e.preventDefault();
 					Backbone.history.navigate('embed', true); // redirect to the embed main page
-				},
-				onClose: function(){
-					this.model.unbind("change", this.render);
 				}
 			});
 		}

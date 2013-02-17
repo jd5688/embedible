@@ -41,10 +41,10 @@ define([
 			"dashboard/:page/"				: "dashboard",
 			"embed"							: "embed",
 			"embed/"						: "embed",
-			"embed/save"					: "save_embed",
-			"embed/save/"					: "save_embed",
-			"embed/save/:opt"				: "save_embed",
-			"embed/save/:opt/"				: "save_embed",
+			"embed/:save"					: "save_embed",
+			"embed/:save/"					: "save_embed",
+			"embed/:save/:opt"				: "save_embed",
+			"embed/:save/:opt/"				: "save_embed",
 			"login"							: "login",
 			"login/"						: "login",
 			"login/:failed"					: "login",
@@ -138,17 +138,22 @@ define([
 		},
 		
 		// saving the user-submitted content to the db
-		save_embed: function(opt) {
+		save_embed: function(save, opt) {
+			this._renderHead('dashboard');
 			// check wether category radio selection exists in the DOM.
 			// if not, means user typed the URL (/embed/save) directly
 			// we do not allow user to go directly to /embed/save,
 			// so...		
 			var cat = $("input:radio[name=category]:checked").val();
+
+			/*
+			// debugging
 			if (cat === undefined) {
 				Backbone.history.navigate('embed', true); // redirect to the embed main page
 				return true;
 			};
-				
+			*/
+			
 			// else, do the following
 			if (opt === 'success' || opt === 'fail') {
 				var EmbedSucFail = Embed.SuccessFail();
@@ -157,13 +162,14 @@ define([
 				// we don't need the embedView event anymore
 				// this will create embedSucFail view and destroy the previous
 				// view embedView
-				this.AppView.showView(embedSucFail);
+				var that = this.AppView.showView(embedSucFail);
 				
 				if (opt === 'success') {
 					//embedSucFail.success();
-					this.currentview.success();
+					that.currentView.success();
 				} else if (opt === 'fail') {			
-					embedSucFail.fail();
+					//embedSucFail.fail();
+					that.currentView.fail();
 				}
 				
 				// now destroy/close the saveEmbed view
@@ -279,6 +285,7 @@ define([
 		 
 				// display the new view
 				$("#main").html(this.currentView.el);
+				return this;
 			},
 			showHeadView: function(view) {
 				if (this.headView){

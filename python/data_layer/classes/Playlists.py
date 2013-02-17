@@ -300,7 +300,7 @@ class Playlists:
 		db = Db.con()
 		cur = db.cursor()
 		q = """
-			INSERT INTO playlist (uniq, playlist_name, owner, is_public) 
+			INSERT INTO playlist (uniq_id, playlist_name, owner, is_public) 
 			VALUES 
 			('xdemx', %(playlist)s, %(username)s, 1)
 			"""
@@ -318,7 +318,7 @@ class Playlists:
 			'uniq': myUniq
 		}
 		
-		cur.execute("""UPDATE playlist SET uniq = %(uniq)s WHERE uniq = 'xdemx'""", par)
+		cur.execute("""UPDATE playlist SET uniq_id = %(uniq)s WHERE uniq_id = 'xdemx'""", par)
 		db.commit()
 		return 'success'
 		
