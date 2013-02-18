@@ -60,7 +60,7 @@ define([
 					$('#alerter_public_playlists').fadeIn();
 					setTimeout(function () {
 						$('#alerter_public_playlists').fadeOut();
-					},10000);
+					},5000);
 				},
 				show_playlist_content: function (e) {
 					e.preventDefault();
@@ -97,9 +97,9 @@ define([
 				redir2: function (e) {
 					e.preventDefault();
 					var clickedEl = $(e.currentTarget); // which element was clicked?
-					var playlist_id = clickedEl.attr("id");
-					var title = encodeURIComponent(clickedEl.attr("name"));
-					Backbone.history.navigate( 'playlist/' + playlist_id + '/' + title, true);
+					var ids = clickedEl.attr("id");
+					ids = ids.split("_");
+					Backbone.history.navigate( 'playlist/' + ids[0] + '/' + ids[1], true);
 				},
 				json: function() {
 					return this.model.toJSON();

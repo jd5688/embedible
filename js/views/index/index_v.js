@@ -7,7 +7,8 @@ define([
   'models/index_main_m',
   'DEM',
   'text!templates/index/main_body_tpl.html',
-], function($, bootstrap, tooltip, _, Backbone, Index_m, DEM, body_tpl){
+  'text!templates/page_desc_title_tpl.html',
+], function($, bootstrap, tooltip, _, Backbone, Index_m, DEM, body_tpl, seo_tpl){
 	var Index = {
 		'View'	: function () { 
 			return Backbone.View.extend({
@@ -25,12 +26,18 @@ define([
 				},
 				main_body: function () {
 					var data = {};
+					
+					// for seo
+					data.meta_desc = "All your favorites videos, music, photos, and links embedded in one place.";
+					data.page_title = "Embed, create a playlist, then share -- Embedible.com";
+					var template = _.template( seo_tpl, data );
+					$('#meta_desc-title').html( template );
+					
 					data.data = this.json();
 					data.website = DEM.website;
 					var template = _.template( body_tpl, data );
 					//render the template
 					this.$el.html( template );
-
 				},
 				json: function() {
 					return this.model.toJSON();

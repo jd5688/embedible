@@ -61,14 +61,12 @@ define([
 				*/
 				render: function () {	
 					var logged = session.checkCookie();
-					/*
-					// removed for debugging
+
 					if (logged === false) {
 						// only logged in users can submit embed. so...
 						Backbone.history.navigate('', true);
 						return true;
 					}
-					*/
 					
 					var attributes = this.json();
 					var embedlyKey = attributes.key;
@@ -179,8 +177,6 @@ define([
 		},
 		'Save' : function () {
 			return Backbone.View.extend({
-				//model: embedSave,
-				
 				/*
 				initialize: function () {
 					this.render();
@@ -200,8 +196,6 @@ define([
 				data: {},
 				
 				save: function() {
-					/*
-					// removed for debugging
 					this.model.save(null, {
 						// always results in error even if successful. maybe this is due to cross-domain
 						// error: -> goes to success page
@@ -212,7 +206,6 @@ define([
 							Backbone.history.navigate('embed/save/success', true);
 						}
 					});
-					*/
 					Backbone.history.navigate('embed/save/success', true);
 				}
 			});
@@ -227,21 +220,28 @@ define([
 					//this is a blank render 
 					// the AppView function from router.js file invokes
 					// render() by default.
-					// do nothing.
+					return;
 				},
 				success: function() {
 					var template = _.template( esuccess );
 					//render the template
 					this.$el.html( template );
+					setTimeout(function () {
+						Backbone.history.navigate('embed', true);
+					}, 3000);
 				},
 				
 				fail: function() {
 					var template = _.template( efail );
 					//render the template
 					this.$el.html( template );
+					setTimeout(function () {
+						Backbone.history.navigate('embed', true);
+					}, 3000);
 				},
 				
 				gotoPage: function(e) {	
+					alert('hi');
 					e.preventDefault();
 					Backbone.history.navigate('embed', true); // redirect to the embed main page
 				}

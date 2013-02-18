@@ -54,7 +54,7 @@ if (data.data) {
 								%>
 									<li class="span2" id="<%= playlist_id %>_<%= d.id %>">
 									<span style="text-align:center">
-										<a class="thumbnail" id="<%= playlist_id %>" name="<%= title %>">
+										<a class="thumbnail" id="<%= uniq_id %>_<%= d.uniq %>" name="<%= title %>">
 											<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
 										</a>
 									</span>

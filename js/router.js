@@ -123,6 +123,9 @@ define([
 		
 		// user submitting content
 		embed: function() {	
+			this.AppView.closeView('saveEmbed');
+			this.AppView.closeView('embedSucFail');
+			
 			this._renderHead('dashboard');
 			var cat = Embed.Cat(); // category model
 			
@@ -146,34 +149,28 @@ define([
 			// so...		
 			var cat = $("input:radio[name=category]:checked").val();
 
-			/*
-			// debugging
 			if (cat === undefined) {
 				Backbone.history.navigate('embed', true); // redirect to the embed main page
 				return true;
 			};
-			*/
 			
 			// else, do the following
 			if (opt === 'success' || opt === 'fail') {
 				var EmbedSucFail = Embed.SuccessFail();
 				var embedSucFail = new EmbedSucFail();
 				
-				// we don't need the embedView event anymore
-				// this will create embedSucFail view and destroy the previous
-				// view embedView
-				var that = this.AppView.showView(embedSucFail);
+				var that = this.AppView.showViewNoClose(embedSucFail);
 				
 				if (opt === 'success') {
 					//embedSucFail.success();
-					that.currentView.success();
+					that[embedSucFail].success();
 				} else if (opt === 'fail') {			
 					//embedSucFail.fail();
-					that.currentView.fail();
+					that[embedSucFail].fail();
 				}
 				
 				// now destroy/close the saveEmbed view
-				this.AppView.closeView('saveEmbed');
+				//this.AppView.closeView('saveEmbed');
 			} else if (opt === undefined) {
 				var embedSave = Embed.SaveM(); // create the model
 				
@@ -312,6 +309,7 @@ define([
 				this[view].render();
 		 
 				$("#main").html(this[view].el);
+				return this;
 			}
 		},
 		
