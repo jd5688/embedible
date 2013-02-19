@@ -1,4 +1,85 @@
 <div class="row-fluid">
+
+<%
+// display the playlists
+// this is used by the tags search
+if (data.data2) { 
+	var spa_i = 0;
+	var playlist_id;
+	var is_public;
+	var playlist_name;
+
+	_.each(data.data2, function(c) { 
+		spa_i += 1;
+		playlist_id = c.id;
+		uniq_id = c.uniq;
+		is_public = c.is_public;
+		playlist_name = c.playlist_name;
+		//replace double quotes with single quotes
+		playlist_name = playlist_name.replace(/"/g, "'");
+	%> 
+		<div class="row-fluid" id="<%= playlist_id %>">
+			<div class="span10">
+				<blockquote>
+					<span>
+						<a href="" class="btn btn-small" alt="pl_name_list" id="<%= playlist_id %>xpl_name_show_list" title="Show list"><i class="icon-chevron-down"></i></a>
+						<a href="" class="btn btn-small" alt="pl_name_list" id="<%= playlist_id %>xpl_name_hide_list" style="display:none" title="Hide list"><i class="icon-chevron-up"></i></a>
+					</span>
+					&nbsp;
+					<a name="playlist_details" id="<%= uniq_id %>" href=""><%= c.playlist_name %></a>
+					<small><%= c.description %></small>
+				</blockquote>
+				<span id="<%= playlist_id %>_list_container" style="display:none">
+					<div class="row-fluid">
+						<div class="span1">&nbsp;</div>
+						<div class="well span10">
+							<%
+							if (typeof c.embeds[0] !== 'undefined') {
+							%>
+								<ul class="thumbnails">
+							<%
+									_.each(c.embeds, function(d) {
+										var dat = JSON.parse(d.data);
+										console.log(dat);
+										var title = dat.title;
+										title = title.replace(/"/g, '\\"');
+										var description = dat.description;
+										description = description.replace(/"/g, "'");
+								%>
+									<li class="span3" id="<%= playlist_id %>_<%= d.id %>">
+									<span style="text-align:center">
+										<a class="thumbnail" id="<%= uniq_id %>_<%= d.uniq %>" name="<%= title %>">
+											<img rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
+										</a>
+									</span>
+									</li>
+							<%
+								}); // each
+							%>
+								</ul>
+							<%
+							} else {
+							%>
+								<p class="muted">
+									<small>
+										This playlist is empty. Check out some <abbr title="Videos, Photos, Rich Media, or Links" class="initialism">embedibles</abbr> and add them to this list.
+									</small>
+								</p>
+							<%
+							}
+							%>
+						</div>
+						
+					</div>
+				</span>
+			</div>
+		</div>
+	<% 
+	}); 
+	%>
+<% } %>
+
+
 <% 
 var i = 0;
 if (data.data) {
@@ -40,9 +121,6 @@ if (data.data) {
 <% 
 	}); // each
 %>
-<% } else { %>
-	<div class="alert alert-info">
-    	No record yet. Please start embedding.
-    </div>
 <% } %>
+<br/><br/>
 </div>

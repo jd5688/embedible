@@ -125,6 +125,22 @@ class Videos:
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
 			return rows
+		else:
+			return False;
+	
+	def allPublicByTag(self,tag):
+		db = Db.con()
+		cur = db.cursor()
+		obj = {
+			'tag' : '%' + tag + '%'
+		}
+		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = 1 AND tags like %(tag)s"
+		cur.execute(qry, obj)
+		if cur.rowcount > 0:
+			rows = cur.fetchall()
+			return rows
+		else:
+			return False;
 	
 	# get public content by id
 	def allPublicById(self,id):

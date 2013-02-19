@@ -2,6 +2,7 @@
 
 import sys, os
 from data_layer.classes.Videos import Videos
+from data_layer.classes.Playlists import Playlists
 import urllib
 #from cgi import escape
 
@@ -111,6 +112,35 @@ def contents(type):
 	dat = {
 		'id': 1234, # just a random id
 		'data': obj
+	}
+	return dat
+
+def contentsByTag(tag):
+	x = Videos()
+	p = Playlists()
+	data = x.allPublicByTag(tag)
+	data2 = p.getPublicPlaylistsByTag(tag)
+	
+	obj = {}
+	obj2 = {}
+	i = 0
+	if data:
+		for item in data:
+			obj[i] = {
+				'id' : item[0],
+				'category' : item[1],
+				'tags' : item[2],
+				'data' : item[3]
+				#'date_added': item[4]
+			}
+			i = i + 1
+	else:
+		obj = data
+		
+	dat = {
+		'id': 1234, # just a random id
+		'data': obj,
+		'data2': data2
 	}
 	return dat
 	

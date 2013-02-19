@@ -6,7 +6,7 @@
 	} else if (dat.type === 'photo') {
 		showThis = '<a href="' + dat.thumbnail_url + '"><img src="' + dat.url + '" border="0"/></a>'
 	} else if (dat.type === 'link') {
-		if (typeof thumbnail_url !== "undefined" && thumbnail_url !== "") {
+		if (typeof dat.thumbnail_url !== "undefined" && dat.thumbnail_url !== "") {
 			showThis = '<a href="' + dat.url + '" target="_blank"><img src="' + dat.thumbnail_url + '"/></a>'
 		} else {
 			showThis = '<a href="' + dat.url + '" target="_blank">' + dat.url + '</a>'
@@ -49,29 +49,24 @@
 		};
 	}
 %>
-
 <div class="row-fluid">
 	<div class="span10">
 		<h4>
 			<%= dat.title %>
-			<!--
-			<span id="showDetBut"><a href="" title="Show details"><img src="<%= website %>images/icons/button_forward.png" border="0" width="28" height="28" /></a></span>
-			<span id="hideDetBut" style="display:none"><a href="" title="Hide details"><img src="<%= website %>images/icons/button_rewind.png" border="0" width="28" height="28" /></a></span>
-			-->
-			
 			<span id="showDetBut"><a href="" class="btn btn-small" title="Show details"><i class="icon-chevron-down"></i></a></span>
 			<span id="hideDetBut" style="display:none"><a href="" class="btn btn-small" title="Hide details"><i class="icon-chevron-up"></i></a></span>
-			
 		</h4>
 		<span id="conDetails" style="display:none">
 			<b>Description:</b><br/>
 			<p class="text-info"><%= dat.description %></p>
+			<b>Tags:</b><br/>
+			<%= data.tags %><br/>
 		</span>
 		<%= showThis %>                                                                       
 		<br/>
 		<hr/>
-		<div class="row">
-			<div class="span7">
+		<div class="row-fluid">
+			<div class="span6">
 			  <h4>Post a comment:</h4>
 			  <div class="fb-comments" data-href="<%= location.hostname + location.pathname %>" data-width="470" data-num-posts="10"></div>
 			</div>
@@ -89,4 +84,4 @@
 		</div>
     </div>
 </div>
-<br/><br/>
+<br/><br/><br/>

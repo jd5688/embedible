@@ -71,6 +71,8 @@ class Playlists:
 						'playlist_name' : item[2],
 						'owner': item[3],
 						'is_public': item[4],
+						'description': item[5],
+						'tags' : item[6],
 						'embeds': yobj
 					}
 				else:
@@ -85,6 +87,8 @@ class Playlists:
 						'playlist_name' : item[2],
 						'owner': item[3],
 						'is_public': item[4],
+						'description': item[5],
+						'tags' : item[6],
 						'embeds': yobj
 					}
 				i = i + 1
@@ -174,6 +178,8 @@ class Playlists:
 						'playlist_name' : item[2],
 						'owner': item[3],
 						'is_public': item[4],
+						'description': item[5],
+						'tags' : item[6],
 						'embeds': yobj
 					}
 				else:
@@ -188,6 +194,8 @@ class Playlists:
 						'playlist_name' : item[2],
 						'owner': item[3],
 						'is_public': item[4],
+						'description': item[5],
+						'tags' : item[6],
 						'embeds': yobj
 					}
 				i = i + 1
@@ -272,6 +280,8 @@ class Playlists:
 						'playlist_name' : item[2],
 						'owner': item[3],
 						'is_public': item[4],
+						'description': item[5],
+						'tags' : item[6],
 						'embeds': yobj
 					}
 				else:
@@ -286,6 +296,109 @@ class Playlists:
 						'playlist_name' : item[2],
 						'owner': item[3],
 						'is_public': item[4],
+						'description': item[5],
+						'tags' : item[6],
+						'embeds': yobj
+					}
+				i = i + 1
+		try:
+			test = robj[0]
+		except:
+			robj = False
+		
+		return robj
+		
+	def getPublicPlaylistsByTag(self, tag):
+		param = {
+			'tag' : '%' + tag + '%',
+			'username' : ''
+		}
+		
+		db = Db.con()
+		cur = db.cursor()
+		robj = {}
+		
+		i = 0
+		
+		qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and playlist.is_public = 1 AND playlist.tags like %(tag)s GROUP BY playlist.id"
+			
+		cur.execute(qry, param)
+		# playlists exist
+		if cur.rowcount > 0:
+			rows = cur.fetchall()
+			
+			# check each playlist as item
+			for item in rows:
+				# make sure yobj is inialized inside the for loop where you are 
+				# assigning the value to it. Otherwise, unexpected and bizzare
+				# things happen when it is not properly re-initiazed upon loop
+				# in this case:
+				### obj[0].yobj is blank, obj[1].yobj is not blank.
+				### if yobj is not re-initialized below, obj[0].yobj inherits
+				### the value of obj[1].yobj.... totally strange!!!!
+				yobj = {}
+				plid = item[0] # get the playlist id
+				# get the video ids related to this playlist
+				qry = "SELECT vid_id FROM playlist_contents WHERE pl_id = %s"
+				cur.execute(qry, plid)
+				k = 0
+				
+				# if video ids exist
+				if cur.rowcount > 0:
+					xrows = cur.fetchall()
+					# loop each one
+					for xitem in xrows:
+						vid_id = xitem[0]
+						param['vid_id'] = vid_id
+						
+						if param['username']:
+							qry = "SELECT uniq,category,tags,data,id FROM videos WHERE id = %(vid_id)s AND (username = %(username)s OR is_public = 1)"
+						else:
+							# just get the public ones
+							qry = "SELECT uniq,category,tags,data,id FROM videos WHERE id = %(vid_id)s AND is_public = 1"
+							
+						cur.execute(qry, param)
+						if cur.rowcount > 0:
+							yrows = cur.fetchall()
+							for yitem in yrows:
+								yobj[k] = {
+									'uniq': yitem[0],
+									'category': yitem[1],
+									'tags': yitem[2],
+									'data': yitem[3],
+									'id':yitem[4]
+								}
+								k = k + 1
+					
+					try:
+						test = yobj[0]
+					except:
+						yobj = False
+						
+					robj[i] = {
+						'id' : item[0],
+						'uniq': item[1],
+						'playlist_name' : item[2],
+						'owner': item[3],
+						'is_public': item[4],
+						'description': item[5],
+						'tags' : item[6],
+						'embeds': yobj
+					}
+				else:
+					try:
+						test = yobj[0]
+					except:
+						yobj = False
+						
+					robj[i] = {
+						'id' : item[0],
+						'uniq': item[1],
+						'playlist_name' : item[2],
+						'owner': item[3],
+						'is_public': item[4],
+						'description': item[5],
+						'tags' : item[6],
 						'embeds': yobj
 					}
 				i = i + 1
@@ -300,9 +413,9 @@ class Playlists:
 		db = Db.con()
 		cur = db.cursor()
 		q = """
-			INSERT INTO playlist (uniq_id, playlist_name, owner, is_public) 
+			INSERT INTO playlist (uniq_id, playlist_name, owner, is_public, description, tags) 
 			VALUES 
-			('xdemx', %(playlist)s, %(username)s, 1)
+			('xdemx', %(playlist)s, %(username)s, 1, %(description)s, %(tags)s)
 			"""
 		cur.execute(q, param)
 		db.commit()
@@ -358,11 +471,16 @@ class Playlists:
 	def add_to_playlist(self, param):
 		db = Db.con()
 		cur = db.cursor()
-		splt = string.split(param['list_ids'], ",")
-		for item in splt:
+
+		# sample list_ids - ['23,34']
+		for item in param['list_ids']:
+			# becomes - 23,34
 			if item:
+				# becomes ['23','34']
+				splt = string.split(item, ",")
+			for y in splt:
 				newPar = {
-					'pl_id': item,
+					'pl_id': y,
 					'atpl_id': param['atpl_id']
 				}
 				q = """
@@ -373,9 +491,7 @@ class Playlists:
 				cur.execute(q, newPar)
 				db.commit()
 			
-				return 'success'
-			else:
-				return 'failed'
+			return 'success'
 
 	# set the embed to public or private
 	def playlistToPublic(self, param):

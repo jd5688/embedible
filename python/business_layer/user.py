@@ -243,17 +243,19 @@ def add_playlist(param):
 	data = {
 		'username' 	: param['username'],
 		'playlist' 	: param['pl_name'],
+		'description': param['pl_desc'],
+		'tags'		: param['pl_tags'],
 		'key'		: _private_key()
 	}
 	
 	return x.add_playlist(data)
 
 # add contents to playlist
-def add_to_playlist(hash, atpl_id, list_ids):
+def add_to_playlist(hash, publc, atpl_id, list_ids):
 	x = Playlists()
 	
 	# create a hash
-	m = md5.new(atpl_id + _private_key())
+	m = md5.new(atpl_id + publc + _private_key())
 	
 	# check if this hash is equal to the one transmitted
 	if m.hexdigest() == hash:
@@ -264,6 +266,6 @@ def add_to_playlist(hash, atpl_id, list_ids):
 		data = x.add_to_playlist(param)
 		dat = { 'response' : data }
 	else:
-		dat = { 'response' : data }
+		dat = { 'response' : '' }
 		
 	return dat

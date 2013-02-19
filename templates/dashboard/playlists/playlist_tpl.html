@@ -27,7 +27,7 @@
 				<div class="span10">
 					<blockquote>
 						<%= c.playlist_name %>
-						<span class="pull-right">&nbsp;
+						<span class="pull-right" style="vertical-align:top">&nbsp;
 							<a href="" class="btn" alt="pl_name_list" id="<%= playlist_id %>xpl_name_show_list" title="Show list"><i class="icon-folder-close"></i></a>
 							<a href="" class="btn" alt="pl_name_list" id="<%= playlist_id %>xpl_name_hide_list" style="display:none" title="Hide list"><i class="icon-folder-open"></i></a>
 							<span id="<%= playlist_id %>_propu">	
@@ -39,6 +39,7 @@
 							</span>
 							<a href="" class="btn del_playlist" id="playlist_<%= playlist_id %>" title="Delete this playlist"><icon class="icon-remove"></icon></a>
 						</span>
+						<small><%= c.description %></small>
 					</blockquote>
 					<span id="<%= playlist_id %>_list_container" style="display:none">
 						<div class="row-fluid">
@@ -55,7 +56,7 @@
 											var description = dat.description;
 											description = description.replace(/"/g, "'");
 									%>
-										<li class="span2" id="<%= playlist_id %>_<%= d.id %>">
+										<li class="span3" id="<%= playlist_id %>_<%= d.id %>">
 										<span style="text-align:center">
 											<a class="thumbnail">
 												<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
@@ -87,6 +88,7 @@
 		<% 
 		}); 
 		%>
+		<br/><br/>
 	<% } else { %>
 		<div class="alert alert-info">
 			You don't have playlists yet. Please start adding.
@@ -98,7 +100,19 @@
 	<span id="alerter_add" style="display:none">
 		<div class="alert alert-block alert-error">
 			<h4 class="alert-heading">Uh oh!</h4>
-			<p>Playlist cannot contain special characters.</p>
+			<p>Playlist name contains disallowed characters.</p>
+		</div>
+	</span>
+	<span id="alerter_desc" style="display:none">
+		<div class="alert alert-block alert-error">
+			<h4 class="alert-heading">Uh oh!</h4>
+			<p>Description contains disallowed characters.</p>
+		</div>
+	</span>
+	<span id="alerter_tags" style="display:none">
+		<div class="alert alert-block alert-error">
+			<h4 class="alert-heading">Uh oh!</h4>
+			<p>Tags contains disallowed characters.</p>
 		</div>
 	</span>
 	<span id="alerter_success" style="display:none">
@@ -108,12 +122,14 @@
 	</span>
 	<span id="blank_playlist" style="display:none">
 		<div class="alert alert-error">
-			Oops! Please enter a playlist name.
+			Oops! Playlist name and description are required.
 		</div>
     </span>
 	<form>
-		<div class="input-append">
-			<input class="span3" id="playlist_name" type="text" placeholder="Playlist name">
+		<div>
+			<input class="span3" id="playlist_name" type="text" placeholder="Playlist name"><br/>
+			<textarea id="playlist_description" rows="3" placeholder="Playlist description"></textarea><br/>
+			<input class="span3" type="text" id="playlist_tags" placeholder="Playlist tags"/><br/>
 			<button class="btn btn-primary" id="add_submit" type="button">Go!</button>
 		</div>
 	</form>

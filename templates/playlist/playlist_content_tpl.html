@@ -4,8 +4,14 @@ if (data.data) {
 	var playlist_id = c.id;
 	var is_public = c.is_public;
 	var playlist_name = c.playlist_name;
+	var playlist_desc = c.description;
 	var showThis;
 	var zTitle;
+	
+	//get the tags
+	var tags = c.tags;
+	var tagsArr = tags.split(',');
+	pl_tags = createTagLinks(tagsArr);
 	
 	if (typeof c.embeds[0] !== 'undefined') {
 		i = 0;
@@ -18,10 +24,12 @@ if (data.data) {
 						<div class="btn pull-right" id="sidebar_hide" title="Hide the sidebar"><i class="icon-chevron-right"></i>&nbsp;</div>
 					</span>
 				</h4>
+					<small><%= playlist_desc %></small>
 					<hr/>
 					
 					<div>
-						SIDEBAR IS VISIBLE
+						Tags:<br/>
+						<%= pl_tags %>
 					</div>
 			</div>
 			<div class="span12" id="sidebar_is_hidden" <%= sidebar_is_hidden %>>
@@ -31,9 +39,11 @@ if (data.data) {
 						<div class="btn pull-right" id="sidebar_reveal" title="Show the sidebar"><i class="icon-chevron-left"></i>&nbsp;</div>
 					</span>
 				</h4>
+					<small><%= playlist_desc %></small>
 					<hr/>
 					<div>
 						<h5 id="content_title"></h5>
+						<small id="content_description"></small> 
 						<p id="embedible"></p>
 					</div>
 			</div>
@@ -92,6 +102,7 @@ if (data.data) {
 						
 							// show the content
 							$('#content_title').html(zTitle);
+							$('#content_description').html(description);
 							$('#embedible').html(showThis);
 						},100);
 					}

@@ -17,6 +17,7 @@ define([
 					'click #video': 'videos',
 					'click #photo': 'photos',
 					'click #rich': 'rich',
+					'click #link': 'link',
 					'click #pubPlaylist': 'playlist',
 					'click #dashboard': 'dashboard',
 					'click #login': 'login',
@@ -51,6 +52,11 @@ define([
 				rich: function(e) {
 					e.preventDefault();
 					Backbone.history.navigate('rich', true);
+				},
+				
+				link: function(e) {
+					e.preventDefault();
+					Backbone.history.navigate('link', true);
 				},
 				
 				playlist: function(e) {

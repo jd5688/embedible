@@ -35,6 +35,7 @@ if (data.data) {
 					</span>
 					&nbsp;
 					<a name="playlist_details" id="<%= uniq_id %>" href=""><%= c.playlist_name %></a>
+					<small><%= c.description %></small>
 				</blockquote>
 				<span id="<%= playlist_id %>_list_container" style="display:none">
 					<div class="row-fluid">
@@ -52,7 +53,7 @@ if (data.data) {
 										var description = dat.description;
 										description = description.replace(/"/g, "'");
 								%>
-									<li class="span2" id="<%= playlist_id %>_<%= d.id %>">
+									<li class="span3" id="<%= playlist_id %>_<%= d.id %>">
 									<span style="text-align:center">
 										<a class="thumbnail" id="<%= uniq_id %>_<%= d.uniq %>" name="<%= title %>">
 											<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
@@ -83,6 +84,7 @@ if (data.data) {
 	<% 
 	}); 
 	%>
+	<br/><br/>
 <% } else { %>
 	<div class="alert alert-info">
 		There's no playlists found.

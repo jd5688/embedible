@@ -373,7 +373,8 @@ define([
 						// modal will get updated even without refreshing the page
 						that.atpl_callback.set(this.value, this.name, atpl_id);
 					});
-					var ckey = atpl_id + DEM.key();
+					var ux = DEM.ux();
+					var ckey = atpl_id + ux + DEM.key();
 					// use jcrypt to encrypt
 					var hash = $().crypt({
 						method: "md5",
@@ -381,7 +382,7 @@ define([
 					);
 					
 					var atpl = new Atpl_m();
-					atpl.fetch({ url: DEM.domain + "add_to_playlist?hash=" + hash + "&atpl_id=" + atpl_id + "&list_ids=" + list_ids + "&callback=?" });
+					atpl.fetch({ url: DEM.domain + "add_to_playlist?hash=" + hash + "&publc=" + ux + "&atpl_id=" + atpl_id + "&list_ids=" + list_ids + "&callback=?" });
 					atpl.on('change', function() {
 						obj = atpl.toJSON();
 						response = obj.response;

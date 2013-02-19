@@ -90,37 +90,19 @@ def application(environ, start_response):
 				response = b_main.main()
 			
 			response = callback + "(" + json.dumps(response) + ");"
-        elif requested_resource == 'contents_video':
+        elif requested_resource == 'contents':
 			status = '200 OK'
 			headers = [('Content-type', 'application/json')]
 			start_response(status, headers)
 			id = d.get('id', [''])[0]
+			type = d.get('type', [''])[0]
+			tag = d.get('tag', [''])[0]
 			if id:
 				response = b_main.contentById(id);
+			elif type:
+				response = b_main.contents(type);
 			else:
-				response = b_main.contents('video');
-
-			response = callback + "(" + json.dumps(response) + ");"
-        elif requested_resource == 'contents_photo':
-			status = '200 OK'
-			headers = [('Content-type', 'application/json')]
-			start_response(status, headers)
-			id = d.get('id', [''])[0]
-			if id:
-				response = b_main.contentById(id);
-			else:
-				response = b_main.contents('photo');
-		
-			response = callback + "(" + json.dumps(response) + ");"
-        elif requested_resource == 'contents_rich':
-			status = '200 OK'
-			headers = [('Content-type', 'application/json')]
-			start_response(status, headers)
-			id = d.get('id', [''])[0]
-			if id:
-				response = b_main.contentById(id);
-			else:
-				response = b_main.contents('rich');
+				response = b_main.contentsByTag(tag);
 		
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'makepriv':
@@ -197,8 +179,9 @@ def application(environ, start_response):
 			start_response(status, headers)
 			hash = d.get('hash', [''])[0]
 			atpl_id = d.get('atpl_id', [''])[0]
-			list_ids = d.get('list_ids', [''])[0]
-			response = b_user.add_to_playlist(hash, atpl_id, list_ids)
+			list_ids = d.get('list_ids', [''])
+			publc = d.get('publc', [''])[0]
+			response = b_user.add_to_playlist(hash, publc, atpl_id, list_ids)
 			response = callback + "(" + json.dumps(response) + ");"
 			
 			

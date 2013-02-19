@@ -115,31 +115,48 @@ define([
 					e.preventDefault();
 					
 					var pl_name = $('#playlist_name').val();
+					var pl_desc = $('#playlist_description').val();
+					var pl_tags = $('#playlist_tags').val();
 					
-					if (pl_name === '') {
+					if (pl_name === '' || pl_desc === '') {
 						$('#blank_playlist').fadeIn();
 						$('#playlist_name').val('');
 						setTimeout(function () {
 							$('#blank_playlist').fadeOut();
-						},1500);
+						},3000);
 						return;
 					}
 					
-
 					// prevent special characters
-					if (/[^a-zA-Z 0-9]'+/.test(pl_name)){
+					if (/[^a-zA-Z 0-9,'()"]+/.test(pl_name)){
 						// show the alerter
 						$('#alerter_add').fadeIn();
 						$('#playlist_name').val('');
 						setTimeout(function () {
 							$('#alerter_add').fadeOut();
 						},3000);
+					} else if (/[^a-zA-Z 0-9,'()"]+/.test(pl_desc)){
+						// show the alerter
+						$('#alerter_desc').fadeIn();
+						$('#playlist_description').val('');
+						setTimeout(function () {
+							$('#alerter_desc').fadeOut();
+						},3000);
+					} else if (/[^a-zA-Z 0-9,'()"]+/.test(pl_tags)){
+						// show the alerter
+						$('#alerter_tags').fadeIn();
+						$('#playlist_tags').val('');
+						setTimeout(function () {
+							$('#alerter_tags').fadeOut();
+						},3000);
 					} else {
 						var addPlaylist = new AddPlaylist();
 						var username = session.checkCookie();
 						var data = {
 							'username' : username,
-							'pl_name' : $('#playlist_name').val()
+							'pl_name' : pl_name,
+							'pl_desc' : pl_desc,
+							'pl_tags' : pl_tags
 						};
 						// set the data
 						addPlaylist.set(data);
@@ -149,6 +166,8 @@ define([
 							error : function(options) {
 								$('#alerter_success').fadeIn();
 								$('#playlist_name').val('');
+								$('#playlist_description').val('');
+								$('#playlist_tags').val('');
 								setTimeout(function () {
 									$('#alerter_success').fadeOut();
 								},1500);

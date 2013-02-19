@@ -17,7 +17,7 @@ define([
 				events: {
 					'click a[alt=pl_name_list]': 'show_playlist_content',
 					'click a[name=playlist_details]': 'redir',
-					'click a[class=thumbnail]': 'redir2',
+					'click a[class=thumbnail]': 'redir2',	
 				},
 				render: function () {
 					// get the username if user is logged in
@@ -116,7 +116,8 @@ define([
 			return Backbone.View.extend({
 				events: {
 					'click .pull-right': 'hider',
-					'click .thumbnail': 'redir'
+					'click .thumbnail': 'redir',
+					'click a[name=linktags]' : 'redir2',
 				},
 				render: function () {
 					// get the username if user is logged in
@@ -164,9 +165,9 @@ define([
 						data.sidebar_is_visible = '';
 						data.sidebar_is_hidden = 'style="display:none"';
 						data.sidebar = '';
-					}
+					};
 					
-					
+					data.createTagLinks = this._createTagLinks();
 					
 					var template = _.template( content_tpl, data );
 					//render the template
@@ -186,7 +187,7 @@ define([
 						} else if (dat.type === 'photo') {
 							showThis = '<a href="' + dat.thumbnail_url + '"><img src="' + dat.url + '" border="0"/></a>'
 						} else if (dat.type === 'link') {
-							if (typeof thumbnail_url !== "undefined" && thumbnail_url !== "") {
+							if (typeof dat.thumbnail_url !== "undefined" && dat.thumbnail_url !== "") {
 								showThis = '<a href="' + dat.url + '" target="_blank"><img src="' + dat.thumbnail_url + '"/></a>'
 							} else {
 								showThis = '<a href="' + dat.url + '" target="_blank">' + dat.url + '</a>'
@@ -213,6 +214,19 @@ define([
 						$('#sidebar_is_hidden').hide();
 					};
 				},
+				_createTagLinks: function () {
+					return function (tagsArr) {
+						var tags = '';
+						for (i = 0; i < tagsArr.length; i+= 1) {
+							if (i === 0) {
+								tags += '<a name="linktags" href="" id="' + $.trim(tagsArr[i]) + '">' + $.trim(tagsArr[i]) + '</a>';
+							} else {
+								tags += ', <a name="linktags" href="" id="' + $.trim(tagsArr[i]) + '">' + $.trim(tagsArr[i]) + '</a>';
+							}
+						}
+						return tags;
+					}
+				},
 				redir: function (e) {
 					e.preventDefault();
 					var clickedEl = $(e.currentTarget);
@@ -226,6 +240,15 @@ define([
 					pl_uniq = this.model.get('uniq_id');
 					var url = 'playlist/' + pl_uniq + '/' + vid_uniq;
 					Backbone.history.navigate(url, true);;
+				},
+				redir2: function (e) {
+					var clickedEl = $(e.currentTarget); // which element was clicked?
+					var tag = clickedEl.attr("id");
+					tag = tag.replace(/ /g, "+");
+					tag = encodeURIComponent(tag);
+					var uri = 'tags/' + tag;
+					e.preventDefault();
+					Backbone.history.navigate(uri, true);
 				},
 				json: function() {
 					return this.model.toJSON();

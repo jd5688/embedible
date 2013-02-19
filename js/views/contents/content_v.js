@@ -14,7 +14,7 @@ define([
 				events: {
 					'click #showDetBut':  'showDetails',
 					'click #hideDetBut':  'hideDetails',
-					
+					'click a[name=linktags]' : 'redir',	
 				},
 				initialize: function () {
 					this.render();
@@ -42,11 +42,27 @@ define([
 						var fbTemplate = _.template( fb_comments );
 						$("#head").append( fbTemplate );
 						
+						//get the tags
+						var tags = data.data.tags;
+						var tagsArr = tags.split(',');
+						data.data.tags = this._createTagLinks(tagsArr);
+						
 						data.website = DEM.website;
 						var template = _.template( detail_tpl, data );
 						//render the template
 						this.$el.html( template );
 					}
+				},
+				_createTagLinks: function (tagsArr) {
+					var tags = '';
+					for (i = 0; i < tagsArr.length; i+= 1) {
+						if (i === 0) {
+							tags += '<a name="linktags" href="" id="' + $.trim(tagsArr[i]) + '">' + $.trim(tagsArr[i]) + '</a>';
+						} else {
+							tags += ', <a name="linktags" href="" id="' + $.trim(tagsArr[i]) + '">' + $.trim(tagsArr[i]) + '</a>';
+						}
+					}
+					return tags;
 				},
 				json: function() {
 					return this.model.toJSON();
@@ -62,6 +78,18 @@ define([
 					$("#showDetBut").show();
 					$("#hideDetBut").hide();
 					return false;
+				},
+				redir: function (e) {
+					var clickedEl = $(e.currentTarget); // which element was clicked?
+					var tag = clickedEl.attr("id");
+					tag = tag.replace(/ /g, "+");
+					tag = encodeURIComponent(tag);
+					var uri = 'tags/' + tag;
+					e.preventDefault();
+					Backbone.history.navigate(uri, true);
+				},
+				onClose: function(){
+					this.model.unbind("change", this.render);
 				}
 			});
 		},

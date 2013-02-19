@@ -50,6 +50,9 @@ define([
 						e.preventDefault();
 						Backbone.history.navigate(uri, true);
 					}
+				},
+				onClose: function(){
+					this.model.unbind("change", this.render);
 				}
 			});
 		},

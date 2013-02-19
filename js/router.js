@@ -17,8 +17,9 @@ define([
 	'views/dashboard/playlists/playlist_v',
 	'views/playlist/playlist_v',
 	'views/heading_v',
+	'views/footer_v',
 	'DEM',
-], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, Dashboard, Playlist, MainPlaylist, Head, DEM){
+], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, Dashboard, Playlist, MainPlaylist, Head, Foot, DEM){
 	// create a close function on the view prototype
 	Backbone.View.prototype.close = function(){
 		this.remove();
@@ -57,6 +58,12 @@ define([
 			"rich"							: "rich",
 			"rich/"							: "rich",
 			"rich/:id"						: "rich",
+			"link"							: "link",
+			"link/"							: "link",
+			"link/:id"						: "link",
+			"tags"							: "tags",
+			"tags/"							: "tags",
+			"tags/:id"						: "tags",
 			"playlist"						: "playlist",
 			"playlist/"						: "playlist",
 			"playlist/:uniq_id"				: "playlist",
@@ -78,6 +85,11 @@ define([
 			var HeadView = Head.View();
 			var headView = new HeadView({ model: headModel });
 			this.AppView.showHeadView(headView);
+			
+			// render the footer
+			var FootView = Foot.View();
+			var footView = new FootView();
+			this.AppView.showFootView(footView);
 		},
 		
 		// the index or home page
@@ -191,12 +203,12 @@ define([
 			
 			if (id) {
 				var contentModel = Content.Model({ noCache: true });
-				contentModel.fetch({ url : DEM.domain + "contents_video?id=" + id +"&callback=?"}); // fetch data from the server
+				contentModel.fetch({ url : DEM.domain + "contents?id=" + id +"&callback=?"}); // fetch data from the server
 				var ContentView = Content.View(); // the view constructor
 				var contentView = new ContentView({ el: $("#main"), model: contentModel });
 			} else {
 				var contentsModel = Contents.Model();
-				contentsModel.fetch({ url : DEM.domain + "contents_video?callback=?"}); // fetch data from the server
+				contentsModel.fetch({ url : DEM.domain + "contents?type=video&callback=?"}); // fetch data from the server
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ el: $("#main"), model: contentsModel });
 			}
@@ -209,14 +221,16 @@ define([
 			
 			if (id) {
 				var contentModel = Content.Model({ noCache: true });
-				contentModel.fetch({ url : DEM.domain + "contents_photo?id=" + id +"&callback=?"}); // fetch data from the server
+				contentModel.fetch({ url : DEM.domain + "contents?id=" + id +"&callback=?"}); // fetch data from the server
 				var ContentView = Content.View(); // the view constructor
-				var contentView = new ContentView({ el: $("#main"), model: contentModel });
+				var contentView = new ContentView({ model: contentModel });
+				this.AppView.showView(contentView);
 			} else {
 				var contentsModel = Contents.Model();
-				contentsModel.fetch({ url : DEM.domain + "contents_photo?callback=?"}); // fetch data from the server
+				contentsModel.fetch({ url : DEM.domain + "contents?type=photo&callback=?"}); // fetch data from the server
 				var ContentsView = Contents.View(); // the view constructor
-				var contentsView = new ContentsView({ el: $("#main"), model: contentsModel });
+				var contentsView = new ContentsView({ model: contentsModel });
+				this.AppView.showView(contentsView);
 			}	
 		},
 		
@@ -225,14 +239,49 @@ define([
 			
 			if (id) {
 				var contentModel = Content.Model({ noCache: true });
-				contentModel.fetch({ url : DEM.domain + "contents_rich?id=" + id +"&callback=?"}); // fetch data from the server
+				contentModel.fetch({ url : DEM.domain + "contents?id=" + id +"&callback=?"}); // fetch data from the server
 				var ContentView = Content.View(); // the view constructor
-				var contentView = new ContentView({ el: $("#main"), model: contentModel });
+				var contentView = new ContentView({ model: contentModel });
+				this.AppView.showView(contentView);
 			} else {
 				var contentsModel = Contents.Model();
-				contentsModel.fetch({ url : DEM.domain + "contents_rich?callback=?"}); // fetch data from the server
+				contentsModel.fetch({ url : DEM.domain + "contents?type=rich&callback=?"}); // fetch data from the server
 				var ContentsView = Contents.View(); // the view constructor
-				var contentsView = new ContentsView({ el: $("#main"), model: contentsModel });
+				var contentsView = new ContentsView({ model: contentsModel });
+				this.AppView.showView(contentsView);
+			}	
+		},
+		
+		link: function (id) {
+			this._renderHead("link");
+			if (id) {
+				var contentModel = Content.Model({ noCache: true });
+				contentModel.fetch({ url : DEM.domain + "contents?id=" + id + "&callback=?"}); // fetch data from the server
+				var ContentView = Content.View(); // the view constructor
+				var contentView = new ContentView({ model: contentModel });
+				this.AppView.showView(contentView);
+			} else {
+				var contentsModel = Contents.Model();
+				contentsModel.fetch({ url : DEM.domain + "contents?type=link&callback=?"}); // fetch data from the server
+				var ContentsView = Contents.View(); // the view constructor
+				var contentsView = new ContentsView({ model: contentsModel });
+				this.AppView.showView(contentsView);
+			}	
+		},
+		
+		tags: function (id) {
+			id = decodeURIComponent(id);
+			id = id.replace(/\+/g, " ");
+
+			this._renderHead();
+			if (id) {
+				var contentsModel = Contents.Model();
+				contentsModel.fetch({ url : DEM.domain + "contents?tag=" + id + "&callback=?"}); // fetch data from the server
+				var ContentsView = Contents.View(); // the view constructor
+				var contentsView = new ContentsView({ model: contentsModel });
+				this.AppView.showView(contentsView);
+			} else {
+				this.fourfour();
 			}	
 		},
 		
@@ -294,6 +343,17 @@ define([
 		 
 				// display the new view
 				$("#head").html(this.headView.el);
+			},
+			showFootView: function(view) {
+				if (this.footView){
+					this.footView.close();
+				}
+		 
+				this.footView = view;
+				this.footView.render();
+		 
+				// display the new view
+				$("#footer_links").html(this.footView.el);
 			},
 			closeView: function(view){
 			// this is the partner of showViewNoClose
