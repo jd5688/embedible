@@ -4,7 +4,7 @@
 	if (dat.type === 'video' || dat.type === 'rich') {
 		showThis = dat.html;
 	} else if (dat.type === 'photo') {
-		showThis = '<a href="' + dat.thumbnail_url + '"><img src="' + dat.url + '" border="0"/></a>'
+		showThis = '<a href="' + dat.url + '" target="_blank"><img src="' + dat.url + '" border="0"/></a>'
 	} else if (dat.type === 'link') {
 		if (typeof dat.thumbnail_url !== "undefined" && dat.thumbnail_url !== "") {
 			showThis = '<a href="' + dat.url + '" target="_blank"><img src="' + dat.thumbnail_url + '"/></a>'
