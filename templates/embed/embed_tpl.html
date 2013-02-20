@@ -9,8 +9,14 @@
 <br/>
 </span>
 
-	<h2>Submit a Link to Embed</h2>
+	<h2>Submit a <abbr title="Uniform Resource Locator" class="initialism">URL</abbr> to Embed</h2>
 	<hr/>
+	<span id="alerter_tags" style="display:none">
+		<div class="alert alert-block alert-error">
+			<h4 class="alert-heading">Uh oh!</h4>
+			<p>Tags contain invalid characters.</p>
+		</div>
+	</span>
 	<span id="embed_alert"></span>
 	<span id="b1"><b>Category:</b> <span id="disp_cat" class="text-info">choose...</span> <a class="btn" id="choose_cat" href="#"><i class="icon-chevron-down"></i></a></span>
 	<span id="b2" style="display:none">Category: <span class="text-info">choose...</span> <a class="btn" id="hide_cat" href="#"><i class="icon-chevron-up"></i></a></span>
@@ -22,7 +28,7 @@
 	<br/>
 	<div>
 		<p>
-			<b>Paste your link:</b><br/>
+			<b>Paste your URL:</b><br/>
 			<input class="input-xxlarge" type="text" id="url" name="url" size="100"/>
 		</p>
 	</div>

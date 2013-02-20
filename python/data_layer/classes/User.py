@@ -11,4 +11,7 @@ class Users:
 		cur.execute(q, param)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
+			db.close()
 			return rows
+		else:
+			return False

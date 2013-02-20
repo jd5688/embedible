@@ -21,6 +21,7 @@ class Videos:
 		db.commit()
 		
 		lastId = cur.lastrowid
+		db.close()
 		return self._insertUniq(lastId, param['username'])
 	
 	def deleteEmbed(self, param):
@@ -54,7 +55,8 @@ class Videos:
 			resp = 'success'
 		except:
 			resp = False
-			
+		
+		db.close()
 		return resp
 	
 	def _insertUniq(self, id, username):
@@ -68,6 +70,7 @@ class Videos:
 		
 		cur.execute("""UPDATE videos SET uniq = %(uniq)s WHERE uniq = 'xdemx'""", par)
 		db.commit()
+		db.close()
 		return 'success'
 	
 	# set the embed to public or private
@@ -82,7 +85,8 @@ class Videos:
 			resp = 'success'
 		except:
 			resp = False
-			
+		
+		db.close()
 		return resp
 	
 	# get all contents that are marked as public
@@ -106,8 +110,10 @@ class Videos:
 		cur.execute(qry, username)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
+			db.close()
 			return rows
 		else:
+			db.close()
 			return False
 			
 	# get all public contents by type (photo, video, link, rich)
@@ -124,8 +130,10 @@ class Videos:
 		cur.execute(qry, obj)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
+			db.close()
 			return rows
 		else:
+			db.close()
 			return False;
 	
 	def allPublicByTag(self,tag):
@@ -138,8 +146,10 @@ class Videos:
 		cur.execute(qry, obj)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
+			db.close()
 			return rows
 		else:
+			db.close()
 			return False;
 	
 	# get public content by id
@@ -150,27 +160,12 @@ class Videos:
 		cur.execute(qry, id)
 		if cur.rowcount > 0:
 			row = cur.fetchall()
+			db.close()
 			return row
 		else:
+			db.close()
 			return False
 			
-	def publicize(key):
-		cur = Db.con()
-		cur.execute("UPDATE videos SET is_public = 1 WHERE mkey = 'key'")
-		return true
-		
-	def privatize(key):
-		cur = Db.con()
-		cur.execute("UPDATE videos SET is_public = 0 WHERE mkey = 'key'")
-		return true
-			
-	def allPublicByCategory(cat):
-		cur = Db.con()
-		cur.execute("SELECT embed FROM videos WHERE category = 'cat'")
-		if cur.rowcount > 0:
-			rows = cur.fetchall()
-			return rows
-
 	def allCategories(self):
 	    db = Db.con()
 	    cur = db.cursor()
@@ -178,7 +173,10 @@ class Videos:
 	    cur.execute("SELECT * FROM category")
 	    if cur.rowcount > 0:
 			rows = cur.fetchall()
+			db.close()
 			return rows
+	    else:
+			return False
 			
 	def embedlyKey(self):
 		return 'c08c28b368a34012a555be062cd495c4'

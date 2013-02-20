@@ -97,6 +97,7 @@ class Playlists:
 		except:
 			robj = False
 		
+		db.close()
 		return robj
 	
 	#get specific playlist and all its embeds
@@ -204,6 +205,7 @@ class Playlists:
 		except:
 			robj = False
 		
+		db.close()
 		return robj
 		
 	def getPublicPlaylists(self, param):
@@ -306,6 +308,7 @@ class Playlists:
 		except:
 			robj = False
 		
+		db.close()
 		return robj
 		
 	def getPublicPlaylistsByTag(self, tag):
@@ -407,6 +410,7 @@ class Playlists:
 		except:
 			robj = False
 		
+		db.close()
 		return robj
 
 	def add_playlist(self, param):
@@ -420,6 +424,7 @@ class Playlists:
 		cur.execute(q, param)
 		db.commit()
 		lastId = cur.lastrowid
+		db.close()
 		return self._insertUniq(lastId, param['key'])
 
 	def _insertUniq(self, id, key):
@@ -433,6 +438,7 @@ class Playlists:
 		
 		cur.execute("""UPDATE playlist SET uniq_id = %(uniq)s WHERE uniq_id = 'xdemx'""", par)
 		db.commit()
+		db.close()
 		return 'success'
 		
 	def removeEmbed(self, param):
@@ -445,7 +451,8 @@ class Playlists:
 			resp = 'success'
 		except:
 			resp = False
-			
+		
+		db.close()
 		return resp
 
 	def deletePlaylist(self, param):
@@ -465,7 +472,8 @@ class Playlists:
 		
 		except:
 			resp = False
-			
+		
+		db.close()
 		return resp
 		
 	def add_to_playlist(self, param):
@@ -490,8 +498,9 @@ class Playlists:
 				"""
 				cur.execute(q, newPar)
 				db.commit()
-			
-			return 'success'
+				
+		db.close()
+		return 'success'
 
 	# set the embed to public or private
 	def playlistToPublic(self, param):
@@ -506,5 +515,6 @@ class Playlists:
 			resp = 'success'
 		except:
 			resp = False
-			
+		
+		db.close()		
 		return resp

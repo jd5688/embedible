@@ -11,7 +11,9 @@ define([
   	'text!templates/embed/embed_fail_tpl.html',
   	'text!templates/embed/embed_alert_tpl.html',
   	'text!templates/embed/embed_nav_tpl.html',
-], function($, _, Backbone, session, Cat, EmbedSaveM, tmplate, embed_result, esuccess, efail, alert_tpl, nav_tab){
+	'text!templates/loading_horizontal_tpl.html',
+	'DEM'
+], function($, _, Backbone, session, Cat, EmbedSaveM, tmplate, embed_result, esuccess, efail, alert_tpl, nav_tab, loading_tpl, DEM){
 	var Embed = {
 		'Cat' : function () {
 			return new Cat();
@@ -102,28 +104,48 @@ define([
 					// update the span #disp_cat
 					this.$('#disp_cat').html(rvalue);
 				},
-						
 				embedly: function() {
 					var embedlyKey = this.json().key;
 					var url = this.$('#url').val();
-		
 					if (typeof embedlyKey !== "undefined" && url !== '') {
+						//check if tags are valid characters
+						var tagz = $('#tags').val();
+						if (/[^a-zA-Z 0-9 ,() " '-_]+/.test(tagz)){
+							// show the alerter
+							$('#alerter_tags').fadeIn();
+							//$('#tags').val('');
+							setTimeout(function () {
+								$('#alerter_tags').fadeOut();
+							},3000);
+							return;
+						};
+						
+						var data = {};
+						data.website = DEM.website;
+						var template = _.template( loading_tpl, data );
+						//render the loading gif template
+						$('#embedible').html( template );
+						
 						var api = 'http://api.embed.ly/1/oembed?key=' + embedlyKey + '&url=' + url + '&format=json';
-						$.get(api, function(data) {
-							// data in firefox is 'string'. in chrome it's an 'object'
-							// so convert to jSON obj if not yet an object
-							if (typeof data !== 'object') {
-								var strData = data; // assign the 'string' type data
-								data = $.parseJSON(data); // then parse
-								data.data = strData; // finally, assign the original 'string' data to a property
-							} else {
-								// data is already an object
-								var strData = JSON.stringify(data); // assign as a string
-								data.data = strData;
-							}
-							var template = _.template( embed_result, data );
-							$('#embedible').html( template );
-						});
+						try {
+							$.get(api, function(data) {
+								// data in firefox is 'string'. in chrome it's an 'object'
+								// so convert to jSON obj if not yet an object
+								if (typeof data !== 'object') {
+									var strData = data; // assign the 'string' type data
+									data = $.parseJSON(data); // then parse
+									data.data = strData; // finally, assign the original 'string' data to a property
+								} else {
+									// data is already an object
+									var strData = JSON.stringify(data); // assign as a string
+									data.data = strData;
+								}
+								var template = _.template( embed_result, data );
+								$('#embedible').html( template );
+							});
+						} catch(err) {
+							alert(err.message);
+						}
 					} else {
 						// display an error message. user did not input any URL
 						var data = { message : 'Please enter a link or URL.' };
@@ -135,6 +157,17 @@ define([
 				
 				navi: function() {
 					var categ = $("input:radio[name=category]:checked").val();
+					
+					var tagz = $('#tags').val();
+					if (/[^a-zA-Z 0-9 ,() " '-_]+/.test(tagz)){
+						// show the alerter
+						$('#alerter_tags').fadeIn();
+						//$('#tags').val('');
+						setTimeout(function () {
+							$('#alerter_tags').fadeOut();
+						},3000);
+						return;
+					};
 					
 					if (categ !== undefined) {
 						Backbone.history.navigate('embed/save', true);

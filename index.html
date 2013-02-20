@@ -8,37 +8,57 @@
 	<div id="css_container">
 		<style>
 			html,
-			body {
-				height: 100%;
-			}
-			
-			/* Wrapper for page content to push down footer */
-			#wrap {
-				min-height: 100%;
-				height: auto !important;
-				height: 100%;
-				/* Negative indent footer by it's height */
-				margin: 0 auto -60px;
-			}
-			
-			/* Set the fixed height of the footer here */
-			#push,
-			#footer {
-				height: auto !important;
-			}
-			#footer {
-				background-color: #252525;
-			}
+      body {
+        height: 100%;
+        /* The html and body elements cannot have any padding or margin. */
+      }
 
-			/* Lastly, apply responsive CSS fixes as necessary */
-			@media (max-width: 767px) {
-			#footer {
-			  margin-left: -20px;
-			  margin-right: -20px;
-			  padding-left: 20px;
-			  padding-right: 20px;
-			}
-			}
+      /* Wrapper for page content to push down footer */
+      #wrap {
+        min-height: 100%;
+        height: auto !important;
+        height: 100%;
+        /* Negative indent footer by it's height */
+        margin: 0 auto -60px;
+      }
+
+      /* Set the fixed height of the footer here */
+      #push {
+		height: 60px;
+      }
+      #footer {
+		height: auto !important;
+      }
+      #footer {
+        background-color: #252525;
+      }
+
+      /* Lastly, apply responsive CSS fixes as necessary */
+      @media (max-width: 767px) {
+        #footer {
+          margin-left: -20px;
+          margin-right: -20px;
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+      }
+
+
+
+      /* Custom page CSS
+      -------------------------------------------------- */
+      /* Not required for template or sticky footer method. */
+
+      #wrap > .container {
+        padding-top: 60px;
+      }
+      .container .credit {
+        margin: 20px 0;
+      }
+
+      code {
+        font-size: 80%;
+      }
 		</style>
 	</div>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -55,6 +75,8 @@
 <div id="wrap">
 	<div id="head"></div>
 	<div class="container" id="main"></div>
+	
+	<div id="push"></div>
 </div>
 <div id="footer">
 	<div class="container">
