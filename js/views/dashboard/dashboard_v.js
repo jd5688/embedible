@@ -212,7 +212,6 @@ define([
 					var id = preArr[1];
 					var prefix = preArr[0] + '_';
 					var publc = DEM.ux();
-					var ckey = id + DEM.key();
 					var ckey = id + publc + DEM.key();
 					
 					// use jcrypt to encrypt
