@@ -132,6 +132,7 @@ define([
 				if (gPass === 1) {
 					var dashboardMain = Dashboard.Main(); // create the model
 					dashboardMain.fetch({ url: DEM.domain + "getembed?username=" + username + "&callback=?" });
+					dashboardMain.set({ uri: activ });
 					var DashboardView = Dashboard.View();
 					var dashboardView = new DashboardView({ model: dashboardMain });
 					this.AppView.showView(dashboardView);
@@ -304,9 +305,10 @@ define([
 			}	
 		},
 		
-		playlists: function(activ) {		
+		playlists: function(activ) {
 			this._renderHead(activ);
 			var playlistModel = Playlist.Model();
+			playlistModel.set({ uri: activ });
 			//playlistModel.fetch({ url : DEM.domain + "playlists?hash=" + hash + "&id=" + id +"&callback=?"});
 			var PlaylistView = Playlist.View(); // the view constructor
 			var playlistView = new PlaylistView({ model: playlistModel });

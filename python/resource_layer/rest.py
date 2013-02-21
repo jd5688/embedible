@@ -183,12 +183,18 @@ def application(environ, start_response):
 			publc = d.get('publc', [''])[0]
 			response = b_user.add_to_playlist(hash, publc, atpl_id, list_ids)
 			response = callback + "(" + json.dumps(response) + ");"
-			
+        elif requested_resource == 'save_embed':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			data = d.get('data', [''])[0]
+			jbody = json.loads(r + data)
+			response = b_main.embed_data(data)
 			
 	elif method == 'OPTIONS':
 		#somehow, OPTIONS requests are not getting in here but at the 'else' statement
 		
-		print 'opt ' + method + ' ; ' + requested_resource
+		#print 'opt ' + method + ' ; ' + requested_resource
 		status = '200 OK'
 		headers = [
 			('Content-type', 'text/plain; charset=utf-8'),

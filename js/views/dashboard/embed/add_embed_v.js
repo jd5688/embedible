@@ -1,10 +1,12 @@
 define([
 	'jquery',
 	'underscore',
+	'jcrypt',
   	'backbone',
   	'mysession',
   	'models/add_embed_m',
   	'models/embed_save_m',
+	'models/content_m',
 	'text!templates/embed/embed_tpl.html',
 	'text!templates/embed/embed_data_tpl.html',
 	'text!templates/embed/embed_success_tpl.html',
@@ -12,7 +14,7 @@ define([
   	'text!templates/embed/embed_alert_tpl.html',
 	'text!templates/loading_horizontal_tpl.html',
 	'DEM'
-], function($, _, Backbone, session, Cat, EmbedSaveM, tmplate, embed_result, esuccess, efail, alert_tpl, loading_tpl, DEM){
+], function($, _, jcrypt, Backbone, session, Cat, EmbedSaveM, Embedly_m, tmplate, embed_result, esuccess, efail, alert_tpl, loading_tpl, DEM){
 	var Embed = {
 		'Cat' : function () {
 			return new Cat();
@@ -56,23 +58,37 @@ define([
 				json: function() {
 					return this.model.toJSON();
 				},
-				showSelect: function() {
+				showSelect: function(e) {
+					e.preventDefault();
 					// display the radio buttons
 					this.$('#sf').fadeIn();
 					this.$('#b1').hide();
 					this.$('#b2').show();
 				},
 						
-				hideSelect: function() {
+				hideSelect: function(e) {
+					e.preventDefault();
+					// hide the radio buttons
+					this.$('#sf').fadeOut();
+					this.$('#b1').show();
+					this.$('#b2').hide();
+				},
+				
+				// called by 'onRadioClick'
+				// almost identical with 'hideSelect' but there's an issue with IE
+				// redirecting without the e.preventDefault upon clicking the 'chevron-up' button
+				// but calling hideSelect from onRadioClick prevents the radio button from being
+				// 'checked'. This is the solution.
+				hideSelect2: function() {
 					// hide the radio buttons
 					this.$('#sf').fadeOut();
 					this.$('#b1').show();
 					this.$('#b2').hide();
 				},
 						
-				onRadioClick: function() {
+				onRadioClick: function(e) {
 					// if radio button clicked
-					this.hideSelect();
+					this.hideSelect2();
 					// assign the value of the 'checked' radio to rvalue;
 					rvalue = $("input:radio[name=category]:checked").val();
 					// update the span #disp_cat
@@ -93,15 +109,16 @@ define([
 							},3000);
 							return;
 						};
-						
-						var data = {};
-						data.website = DEM.website;
-						var template = _.template( loading_tpl, data );
+
+						var dat = {};
+						dat.website = DEM.website;
+						var template = _.template( loading_tpl, dat );
 						//render the loading gif template
 						$('#embedible').html( template );
 						
-						var api = 'http://api.embed.ly/1/oembed?key=' + embedlyKey + '&url=' + url + '&format=json';
+						var api = 'http://api.embed.ly/1/oembed?key=' + embedlyKey + '&url=' + url + '&format=json&callback=?';
 						try {
+							/*
 							$.get(api, function(data) {
 								// data in firefox is 'string'. in chrome it's an 'object'
 								// so convert to jSON obj if not yet an object
@@ -114,9 +131,22 @@ define([
 									var strData = JSON.stringify(data); // assign as a string
 									data.data = strData;
 								}
-								var template = _.template( embed_result, data );
-								$('#embedible').html( template );
+							*/
+							var Embedly = new Embedly_m();
+							Embedly.fetch({
+								url: api,
+								cache: false,
+								success: function () { 
+									var data = {};
+									data = Embedly.toJSON();
+									data.data = JSON.stringify(data); // convert original data to string
+									var template = _.template( embed_result, data );
+									$('#embedible').html( template );
+								}
 							});
+								//var template = _.template( embed_result, data );
+								//$('#embedible').html( template );
+							//});
 						} catch(err) {
 							alert(err.message);
 						}
@@ -190,14 +220,37 @@ define([
 				},
 				*/
 				render: function () {
+					this.data.publc = DEM.ux();				
+					var ckey = 'save_embed' + this.data.publc + DEM.key();		
+					// use jcrypt to encrypt
+					this.data.hash = $().crypt({
+						method: "md5",
+						source: ckey}
+					);
+				
 					this.data.data = $("#data").val();
 					this.data.tags = $("#tags").val();
 					this.data.is_public = $("#is_public").val();
 					this.data.category = $("input:radio[name=category]:checked").val();
 					this.data.username = session.getCookie("username");
-					this.model.set(this.data);
-					//this.model.on('change', this.save, this);
-					this.save();
+				
+					// detect if using IE
+					var b = $.browser;
+					if (typeof b.msie === 'undefined') {
+						this.model.set(this.data);
+						// not using ie
+						this.save();
+					} else {
+						// convert json data to string
+						var data = JSON.stringify(this.data);
+						
+						this.model.fetch({
+							url : DEM.domain + "save_embed?data=" + data + "&callback=?",
+							success: function() {
+								Backbone.history.navigate('embed/save/success', true);
+							}
+						});
+					}
 				},
 				
 				data: {},

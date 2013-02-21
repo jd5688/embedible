@@ -51,19 +51,18 @@ define([
 					$('#modal_container').html( mod_tpl );
 					
 					// check the uri and make the appropriate tab active at the dashboard
-					var cURL = location.protocol + '//' + location.hostname + location.pathname
+					//var cURL = location.protocol + '//' + location.hostname + location.pathname
+					var cURL = this.model.get('uri');
 					
-					//alert(cURL + ' - ' + DEM.website + 'dashboard/');
-					
-					if (cURL === DEM.website + 'dashboard' || cURL === DEM.website + 'dashboard/') {
+					if (cURL === show_all) {
 						this._show_all();
-					} else if (cURL === DEM.website + "dashboard/my_videos" || cURL === DEM.website + "dashboard/my_videos/") {
+					} else if (cURL === 'my_videos') {
 						this._my_videos();
-					} else  if (cURL === DEM.website + "dashboard/my_photos" || cURL === DEM.website + "dashboard/my_photos/") {
+					} else  if (cURL === 'my_photos') {
 						this._my_photos();
-					} else  if (cURL === DEM.website + "dashboard/my_links" || cURL === DEM.website + "dashboard/my_links/") {
+					} else  if (cURL === 'my_links') {
 						this._my_links();
-					} else  if (cURL === DEM.website + "dashboard/my_rich" || cURL === DEM.website + "dashboard/my_rich/") {
+					} else  if (cURL === 'my_rich') {
 						this._my_rich();
 					}
 

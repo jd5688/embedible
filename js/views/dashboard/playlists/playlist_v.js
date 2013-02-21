@@ -87,11 +87,11 @@ define([
 					// check the uri
 					// http://site.com/dashboard/playlists
 					// or http://site.com/dashboard/playlists/add
-					var cURL = location.protocol + '//' + location.hostname + location.pathname
+					var cURL = this.model.get('uri');
 					
-					if (cURL === DEM.website + 'dashboard/playlists' || cURL === DEM.website + 'dashboard/playlists/') {
+					if (cURL === 'playlists') {
 						this._show_pl_active_el();
-					} else if (cURL === DEM.website + "dashboard/playlists/add" || cURL === DEM.website + "dashboard/playlists/add/") {
+					} else if (cURL === 'add_playlist') {
 						this._show_add_active_el();
 					} else {
 						// you don't belong here, go to the home page
