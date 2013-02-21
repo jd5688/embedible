@@ -18,16 +18,24 @@ define([
 					'click #photo': 'photos',
 					'click #rich': 'rich',
 					'click #link': 'link',
+					'click #show_all': 'redir',
+					'click #my_videos': 'redir',
+					'click #my_photos': 'redir',
+					'click #my_rich': 'redir',
+					'click #my_links': 'redir',
+					'click #playlists': 'redir2',
+					'click #embed': 'redir2',
+					'click #add_playlist': 'redir3',
 					'click #pubPlaylist': 'playlist',
 					'click #dashboard': 'dashboard',
 					'click #login': 'login',
-					'click #logout': 'logout'
+					'click #logout': 'logout',
 				},
 				render: function () {
 					var username = session.checkCookie() || '';
 					var attrib = {
 							'username' : username,
-							'uri': this.model.get("uri")
+							'uri': this.model.get("uri"),
 						}
 					var template = _.template( header, attrib );
 					//render the template
@@ -77,7 +85,42 @@ define([
 				dashboard: function(e) {
 					e.preventDefault();
 					Backbone.history.navigate('dashboard', true);
-				}
+				},
+				redir: function (e) {
+					if (typeof e !== "undefined") {
+						var clickedEl = $(e.currentTarget); // which element was clicked?
+						var uri = decodeURIComponent(clickedEl.attr("id")); // get the value
+						uri = uri === "show_all" ? "" : uri;
+						uri = "dashboard/" + uri;
+						e.preventDefault();
+						Backbone.history.navigate(uri, true);
+					}
+				},
+				redir2: function(e) {
+					e.preventDefault();
+					var clickedEl = $(e.currentTarget); // which element was clicked?
+					var uri = clickedEl.attr("id");
+					if (uri === 'playlists') {
+						uri = 'dashboard/' + uri;
+					};
+					
+					if (uri === 'my_dashboard') {
+						uri = 'dashboard';
+					};
+					
+					if (uri === 'redir_to_add_playlist') {
+						$('#addToPlaylistModal').modal('hide');
+						uri = 'dashboard/playlists/add';
+					};
+					e.preventDefault();
+					Backbone.history.navigate(uri, true);
+					
+				},
+				redir3: function(e) {
+					uri = 'dashboard/playlists/add';					
+					e.preventDefault();
+					Backbone.history.navigate(uri, true);
+				},
 			});
 		},
 		Model: function () {

@@ -10,10 +10,9 @@ define([
 	'text!templates/embed/embed_success_tpl.html',
   	'text!templates/embed/embed_fail_tpl.html',
   	'text!templates/embed/embed_alert_tpl.html',
-  	'text!templates/embed/embed_nav_tpl.html',
 	'text!templates/loading_horizontal_tpl.html',
 	'DEM'
-], function($, _, Backbone, session, Cat, EmbedSaveM, tmplate, embed_result, esuccess, efail, alert_tpl, nav_tab, loading_tpl, DEM){
+], function($, _, Backbone, session, Cat, EmbedSaveM, tmplate, embed_result, esuccess, efail, alert_tpl, loading_tpl, DEM){
 	var Embed = {
 		'Cat' : function () {
 			return new Cat();
@@ -36,31 +35,6 @@ define([
 					'click #playlists'			: 'redir2',
 					'click #embed'				: 'redir2'
 				},
-				/*
-				initialize: function () {
-					// check if user is logged
-					var logged = session.checkCookie();
-					if (logged === false) {
-						// only logged in users can submit embed. so...
-						Backbone.history.navigate('', true);
-						return true;
-					}
-				
-					if (this.model.has("key")) {
-						// if model has attribute named 'key', render immediately.
-						// means that the model has already been preloaded before and no need to
-						// wait for change anymore. Waiting for change at this time, will result in
-						// render() function not firing. So...
-						this.render();
-					} else {
-						// Otherwise, wait. if change happens, then render.
-						// means that this model has no attribute named 'key' yet. Probably this is a fresh connection
-						// or a reload on /embed page. Calling the render() function without waiting
-						// for change at this time will result in page not properly loaded. So...
-						this.model.on('change', this.render, this);
-					}
-				},
-				*/
 				render: function () {	
 					var logged = session.checkCookie();
 

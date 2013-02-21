@@ -1,57 +1,46 @@
-<span id="nav_tabs">
-<ul class="nav nav-pills pull-right">
-	<li><a href="#" id="my_dashboard">My Dashboard</a></li>
-	<li class="active">
-		<a href="#" id="embed">Submit Embed</a>
-	</li>
-	<li><a href="#" id="playlists">My Playlists</a></li>
-</ul>
-<br/>
+<h2>Submit a <abbr title="Uniform Resource Locator" class="initialism">URL</abbr> to Embed</h2>
+<hr/>
+<span id="alerter_tags" style="display:none">
+	<div class="alert alert-block alert-error">
+		<h4 class="alert-heading">Uh oh!</h4>
+		<p>Tags contain invalid characters.</p>
+	</div>
 </span>
+<span id="embed_alert"></span>
+<span id="b1"><b>Category:</b> <span id="disp_cat" class="text-info">choose...</span> <a class="btn" id="choose_cat" href="#"><i class="icon-chevron-down"></i></a></span>
+<span id="b2" style="display:none">Category: <span class="text-info">choose...</span> <a class="btn" id="hide_cat" href="#"><i class="icon-chevron-up"></i></a></span>
+<div id="sf" style="display:none">
+	<% _.each(data, function(c) { %> 
+		<input type="radio" id="category" name="category" value="<%= c.name %>"/> <%= c.name %><br/>
+	<% }); %>
+</div>
+<br/>
+<div>
+	<p>
+		<b>Paste your URL:</b><br/>
+		<input class="input-xxlarge" type="text" id="url" name="url" size="100"/>
+	</p>
+</div>
 
-	<h2>Submit a <abbr title="Uniform Resource Locator" class="initialism">URL</abbr> to Embed</h2>
-	<hr/>
-	<span id="alerter_tags" style="display:none">
-		<div class="alert alert-block alert-error">
-			<h4 class="alert-heading">Uh oh!</h4>
-			<p>Tags contain invalid characters.</p>
-		</div>
-	</span>
-	<span id="embed_alert"></span>
-	<span id="b1"><b>Category:</b> <span id="disp_cat" class="text-info">choose...</span> <a class="btn" id="choose_cat" href="#"><i class="icon-chevron-down"></i></a></span>
-	<span id="b2" style="display:none">Category: <span class="text-info">choose...</span> <a class="btn" id="hide_cat" href="#"><i class="icon-chevron-up"></i></a></span>
-	<div id="sf" style="display:none">
-		<% _.each(data, function(c) { %> 
-			<input type="radio" id="category" name="category" value="<%= c.name %>"/> <%= c.name %><br/>
-		<% }); %>
-	</div>
-	<br/>
-	<div>
-		<p>
-			<b>Paste your URL:</b><br/>
-			<input class="input-xxlarge" type="text" id="url" name="url" size="100"/>
-		</p>
-	</div>
-	
-	<div>
-		<p>
-			<b>Tags:</b> <span class="text-info">(separate your tags with a comma - ",")</span><br/>
-			<input class="input-xxlarge" type="text" id="tags" name="tags" size="100"/>
-		</p>
-	</div>
-	
-	<div>
-		<p>
-			<b>This content is:</b><br/>
-			<input type="radio" id="is_public" name="is_public" value="1" checked="checked"/> public &nbsp;
-			<input type="radio" id="is_public" name="is_public" value="0"/> private
-		</p>
-	</div>
-	
-	<div id="embedible">
-		<button class="btn btn-small btn-primary" id="submit" name="submit">Send</button>
-	</div>
-	<br/>
-	<span id="embed_alert_bottom">
-		<br/><br/>
-	</span>
+<div>
+	<p>
+		<b>Tags:</b> <span class="text-info">(separate your tags with a comma - ",")</span><br/>
+		<input class="input-xxlarge" type="text" id="tags" name="tags" size="100"/>
+	</p>
+</div>
+
+<div>
+	<p>
+		<b>This content is:</b><br/>
+		<input type="radio" id="is_public" name="is_public" value="1" checked="checked"/> public &nbsp;
+		<input type="radio" id="is_public" name="is_public" value="0"/> private
+	</p>
+</div>
+
+<div id="embedible">
+	<button class="btn btn-small btn-primary" id="submit" name="submit">Send</button>
+</div>
+<br/>
+<span id="embed_alert_bottom">
+	<br/><br/>
+</span>

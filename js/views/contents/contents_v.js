@@ -18,9 +18,6 @@ define([
 					'click a[name=playlist_details]': 'playlist_details',
 					'click a[class=thumbnail]': 'redir2',
 				},
-				initialize: function () {
-					this.render();
-				},
 				render: function () {
 					if (this.model.has("id") || this.model.has("username")) {
 						// if model has attribute named 'id' or 'username', load main_body immediately.
@@ -34,6 +31,7 @@ define([
 					var data = {};
 					data.data = this.json();
 					data.website = DEM.website;
+					data.uri = this.model.get('uri');
 					var template = _.template( body_tpl, data );
 					//render the template
 					this.$el.html( template );

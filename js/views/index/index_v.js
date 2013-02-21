@@ -35,6 +35,7 @@ define([
 					
 					data.data = this.json();
 					data.website = DEM.website;
+					data.uri = this.model.get('uri');
 					var template = _.template( body_tpl, data );
 					//render the template
 					this.$el.html( template );

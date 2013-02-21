@@ -20,10 +20,9 @@ define([
 			return Backbone.View.extend({
 				events: {
 					'click #embed': 'redir',
-					'click #my_dashboard': 'redir',
 					'click #playlists': 'redir',
 					'click #show_playlists': 'redir',
-					'click #add_playlist': 'redir',
+					//'click #add_playlist': 'redir',
 					'click #add_submit': 'add_playlist',
 					'keypress input[type=text]': 'filterOnEnter',
 					'click #button_close': 'close_alerter',
@@ -76,8 +75,8 @@ define([
 					//render the template
 					this.$el.html( template );
 					
-					var navTpl = _.template( nav_tpl, data );
-					$('#nav_tabs').html( navTpl );
+					//var navTpl = _.template( nav_tpl, data );
+					//$('#nav_tabs').html( navTpl );
 					
 					// enable the tooltips plugin
 					$('.thumbnail').tooltip({
@@ -85,7 +84,7 @@ define([
 						placement: "bottom"
 					});
 					
-					// check the uri and make the appropriate tab active at the dashboard
+					// check the uri
 					// http://site.com/dashboard/playlists
 					// or http://site.com/dashboard/playlists/add
 					var cURL = location.protocol + '//' + location.hostname + location.pathname
@@ -206,21 +205,23 @@ define([
 					$('#alerter_add').fadeOut();
 				},
 				_show_pl_active_el: function () {
+					/*
 					var data = {};
 					data.activ = "show_playlists";
 					var naviTabs = _.template( nav_tpl, data );
 					$('#nav_tabs').html( naviTabs );
-					
+					*/
 					$('#show_add_active').hide();
 					$('#show_pl_active').fadeIn();
 					return true;
 				},
 				_show_add_active_el: function () {
+					/*
 					var data = {};
 					data.activ = "add_playlist";
 					var naviTabs = _.template( nav_tpl, data );
 					$('#nav_tabs').html( naviTabs );
-					
+					*/
 					$('#show_add_active').fadeIn();
 					$('#show_pl_active').hide();
 					return true;

@@ -96,6 +96,7 @@ define([
 		index: function () {
 			this._renderHead('home');
 			var indexMain = Index.Main(); // create the model
+			indexMain.set({ uri : 'Most Recent' });
 			indexMain.fetch();
             var IndexView = Index.View();
 			var indexView = new IndexView({ model: indexMain });
@@ -104,13 +105,25 @@ define([
 		
 		// logged in users go here
 		dashboard: function (page, option) {
-			this._renderHead('dashboard');
+			var activ;
+			if (page !== undefined) {
+				if (page === 'playlists' && option === undefined) {
+					activ = 'playlists';
+				} else if (page === 'playlists' && option !== undefined) {
+					activ = 'add_playlist';
+				} else {
+					activ = page;
+				};
+			} else {
+				activ = 'show_all';
+			};
+			this._renderHead(activ);
 		
 			var gPass = '';
 			if (typeof page === 'undefined' || page === 'show_all' || page === 'my_videos' || page === 'my_photos' || page === 'my_rich' || page === 'my_links') {
 				gPass = 1;
 			} else if (page === 'playlists'){
-				this.playlists(option);
+				this.playlists(activ);
 				return;
 			}
 
@@ -138,7 +151,7 @@ define([
 			this.AppView.closeView('saveEmbed');
 			this.AppView.closeView('embedSucFail');
 			
-			this._renderHead('dashboard');
+			this._renderHead('embed');
 			var cat = Embed.Cat(); // category model
 			
 			// fetch data from the server
@@ -205,12 +218,15 @@ define([
 				var contentModel = Content.Model({ noCache: true });
 				contentModel.fetch({ url : DEM.domain + "contents?id=" + id +"&callback=?"}); // fetch data from the server
 				var ContentView = Content.View(); // the view constructor
-				var contentView = new ContentView({ el: $("#main"), model: contentModel });
+				var contentView = new ContentView({ model: contentModel });
+				this.AppView.showView(contentView);
 			} else {
 				var contentsModel = Contents.Model();
-				contentsModel.fetch({ url : DEM.domain + "contents?type=video&callback=?"}); // fetch data from the server
+				contentsModel.set({ uri: 'Videos' });
+				contentsModel.fetch({ url : DEM.domain + "contents?type=video&callback=?" }); // fetch data from the server
 				var ContentsView = Contents.View(); // the view constructor
-				var contentsView = new ContentsView({ el: $("#main"), model: contentsModel });
+				var contentsView = new ContentsView({ model: contentsModel });
+				this.AppView.showView(contentsView);
 			}
 			
 			
@@ -227,7 +243,8 @@ define([
 				this.AppView.showView(contentView);
 			} else {
 				var contentsModel = Contents.Model();
-				contentsModel.fetch({ url : DEM.domain + "contents?type=photo&callback=?"}); // fetch data from the server
+				contentsModel.set({ uri: 'Photos' });
+				contentsModel.fetch({ url : DEM.domain + "contents?type=photo&callback=?" }); // fetch data from the server
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);
@@ -245,7 +262,8 @@ define([
 				this.AppView.showView(contentView);
 			} else {
 				var contentsModel = Contents.Model();
-				contentsModel.fetch({ url : DEM.domain + "contents?type=rich&callback=?"}); // fetch data from the server
+				contentsModel.set({ uri: 'Rich Media' });
+				contentsModel.fetch({ url : DEM.domain + "contents?type=rich&callback=?" }); // fetch data from the server
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);
@@ -262,7 +280,8 @@ define([
 				this.AppView.showView(contentView);
 			} else {
 				var contentsModel = Contents.Model();
-				contentsModel.fetch({ url : DEM.domain + "contents?type=link&callback=?"}); // fetch data from the server
+				contentsModel.set({ uri: 'Links' });
+				contentsModel.fetch({ url : DEM.domain + "contents?type=link&callback=?" }); // fetch data from the server
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);
@@ -285,8 +304,8 @@ define([
 			}	
 		},
 		
-		playlists: function() {		
-			this._renderHead("dashboard");
+		playlists: function(activ) {		
+			this._renderHead(activ);
 			var playlistModel = Playlist.Model();
 			//playlistModel.fetch({ url : DEM.domain + "playlists?hash=" + hash + "&id=" + id +"&callback=?"});
 			var PlaylistView = Playlist.View(); // the view constructor

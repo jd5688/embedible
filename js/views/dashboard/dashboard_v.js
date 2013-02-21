@@ -21,27 +21,13 @@ define([
 			return Backbone.View.extend({
 				events: {
 					'click input[type=image]':  'redir',
-					'click #show_all': 'redir2',
-					'click #my_videos': 'redir2',
-					'click #my_photos': 'redir2',
-					'click #my_rich': 'redir2',
-					'click #my_links': 'redir2',
 					'click #propu': 'propu',
 					'click .fordelete': 'show_modal',
 					'click .addToPlaylist': 'show_modal_atpl',
 					'click #modal_confirm': 'do_delete',
-					'click #embed': 'redir3',
-					'click #playlists': 'redir3',
-					'click #my_dashboard': 'redir3',
 					'click #redir_to_add_playlist': 'redir3',
 					'click #modal_confirm_add': 'add_to_playlist',
 				},
-				/*
-				initialize: function () {
-					this.atpl_callback = this.iclosure(); // initialize callback
-					this.render();
-				},
-				*/
 				render: function () {
 					this.atpl_callback = this.iclosure();
 					if (this.model.has("username") || this.model.has("id")) {
@@ -80,7 +66,7 @@ define([
 					} else  if (cURL === DEM.website + "dashboard/my_rich" || cURL === DEM.website + "dashboard/my_rich/") {
 						this._my_rich();
 					}
-					
+
 					// enable the tooltips plugin
 					$('.thumbnail').tooltip({
 						selector: "input[rel=tooltip]",
@@ -245,11 +231,6 @@ define([
 					
 				},
 				_show_all: function () {
-					var data = {};
-					data.activ = "show_all";
-					var naviTabs = _.template( d_nav, data );
-					$('#nav_tabs').html( naviTabs );
-					
 					$('#xmy_videos').hide();
 					$('#xshow_all').fadeIn();
 					$('#xmy_photos').hide();
@@ -258,11 +239,6 @@ define([
 					return true;
 				},
 				_my_videos: function () {
-					var data = {};
-					data.activ = "my_videos";
-					var naviTabs = _.template( d_nav, data );
-					$('#nav_tabs').html( naviTabs );
-					
 					$('#xmy_videos').fadeIn();
 					$('#xshow_all').hide();
 					$('#xmy_photos').hide();
@@ -271,11 +247,6 @@ define([
 					return true;
 				},
 				_my_photos: function () {
-					var data = {};
-					data.activ = "my_photos";
-					var naviTabs = _.template( d_nav, data );
-					$('#nav_tabs').html( naviTabs );
-					
 					$('#xmy_videos').hide();
 					$('#xshow_all').hide();
 					$('#xmy_photos').fadeIn();
@@ -284,11 +255,6 @@ define([
 					return true;
 				},
 				_my_links: function () {
-					var data = {};
-					data.activ = "my_links";
-					var naviTabs = _.template( d_nav, data );
-					$('#nav_tabs').html( naviTabs );
-					
 					$('#xmy_videos').hide();
 					$('#xshow_all').hide();
 					$('#xmy_photos').hide();
@@ -297,11 +263,6 @@ define([
 					return true;
 				},
 				_my_rich: function () {
-					var data = {};
-					data.activ = "my_rich";
-					var naviTabs = _.template( d_nav, data );
-					$('#nav_tabs').html( naviTabs );
-					
 					$('#xmy_videos').hide();
 					$('#xshow_all').hide();
 					$('#xmy_photos').hide();
