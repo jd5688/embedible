@@ -221,7 +221,7 @@ define([
 				*/
 				render: function () {
 					this.data.publc = DEM.ux();				
-					var ckey = 'save_embed' + this.data.publc + DEM.key();		
+					var ckey = this.data.publc + DEM.key();		
 					// use jcrypt to encrypt
 					this.data.hash = $().crypt({
 						method: "md5",
@@ -236,20 +236,27 @@ define([
 				
 					// detect if using IE
 					var b = $.browser;
-					if (typeof b.msie !== 'undefined') {
+					if (typeof b.msie === 'undefined') {
 						this.model.set(this.data);
 						// not using ie
 						this.save();
 					} else {
+						// this is IE
+						
 						// decode from URI. we are converting to JSON
 						this.data.data = decodeURIComponent(this.data.data);
-						// convert object data to string
+						// convert object data to JSON string
 						var data = JSON.stringify(this.data);
 						
 						this.model.fetch({
 							url : DEM.domain + "save_embed?data=" + encodeURIComponent(data) + "&callback=?",
 							success: function () { 
 								//Backbone.history.navigate('embed/save/success', true);
+								
+								// for some f#$#king strange reason, redirect above does not work
+								// but this.save() used by non-ie browsers redirect fine with the same exact statement above.
+								// this.$el.html() does not work either
+								// below works
 								var template = _.template( esuccess );
 								//render the template
 								$('#main').html( template );
@@ -273,6 +280,9 @@ define([
 						}
 					});
 					Backbone.history.navigate('embed/save/success', true);
+				},
+				onClose: function(){
+					this.model.unbind("change", this.render);
 				}
 			});
 		},
@@ -310,6 +320,9 @@ define([
 					alert('hi');
 					e.preventDefault();
 					Backbone.history.navigate('embed', true); // redirect to the embed main page
+				},
+				onClose: function(){
+					this.model.unbind("change", this.render);
 				}
 			});
 		}

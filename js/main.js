@@ -12,6 +12,7 @@ require.config({
     templates: '../templates', // the templates folder
     text: 'text', // required for require-ing templates
     DEM: 'namespace', // set globals here
+	Paginator: 'paginator',
     mysession: 'models/session_m' // user session
   }
 });

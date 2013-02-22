@@ -81,13 +81,25 @@ def application(environ, start_response):
 					]
 			start_response(status, headers)
 			username = d.get('username', [''])[0]
+			hash = d.get('hash', [''])[0]
+			publc = d.get('publc', [''])[0]
+			curPage = d.get('curPage', [''])[0]
+			limit = d.get('limit', [''])[0]
+			
+			param = {
+				'username' : username,
+				'hash' : hash,
+				'publc' : publc,
+				'curPage' : curPage,
+				'limit' : limit
+			}
 			
 			# if username is not blank, get all user embed data
 			if username:
-				response = b_user.allEmbed(username)
+				response = b_user.allEmbed(param)
 			else:
 				# else, get all public embed data
-				response = b_main.main()
+				response = b_main.main(param)
 			
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'contents':
@@ -185,11 +197,19 @@ def application(environ, start_response):
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'save_embed':
 			status = '200 OK'
-			headers = [('Content-type', 'application/json')]
+			headers = [('Content-type', 'text/plain; charset=utf-8')]
 			start_response(status, headers)
 			data = d.get('data', [''])[0]
 			jbody = json.loads(r""" %s """ % (data))
 			response = b_main.embed_data(jbody)
+			response = callback + "(" + json.dumps(response) + ");"
+        elif requested_resource == 'add_playlist':
+			status = '200 OK'
+			headers = [('Content-type', 'text/plain; charset=utf-8')]
+			start_response(status, headers)
+			data = d.get('data', [''])[0]
+			jbody = json.loads(r""" %s """ % (data))
+			response = b_user.add_playlist(jbody)
 			response = callback + "(" + json.dumps(response) + ");"
 			
 	elif method == 'OPTIONS':
@@ -211,7 +231,7 @@ def application(environ, start_response):
     elif method == 'POST':
         if requested_resource == 'save_embed':
         	status = '200 OK'
-        	headers = [('Content-type', 'application/json')]
+        	headers = [('Content-type', 'text/plain; charset=utf-8')]
         	start_response(status, headers)
         		
         	try:
@@ -228,7 +248,7 @@ def application(environ, start_response):
         	response = b_main.embed_data(jbody)
         if requested_resource == 'add_playlist':
 			status = '200 OK'
-			headers = [('Content-type', 'application/json')]
+			headers = [('Content-type', 'text/plain; charset=utf-8')]
 			start_response(status, headers)
 			
 			try:

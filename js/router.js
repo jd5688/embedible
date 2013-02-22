@@ -97,7 +97,6 @@ define([
 			this._renderHead('home');
 			var indexMain = Index.Main(); // create the model
 			indexMain.set({ uri : 'Most Recent' });
-			indexMain.fetch();
             var IndexView = Index.View();
 			var indexView = new IndexView({ model: indexMain });
 			this.AppView.showView(indexView);

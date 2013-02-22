@@ -52,8 +52,59 @@ def _private_key():
 # get all embeds. If username is not blank, get embeds submitted by the user
 # and the playlists created by the user
 # if username is blank, get all latest 100 embeds
-def allEmbed(username):
+def allEmbed(param):
 	x = Videos()
+	username = param['username']
+	hash = param['hash']
+	publc = param['publc']
+	
+	# create a hash
+	m = md5.new(publc + _private_key())
+
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
+		
+		data = x.allUserData(param)
+
+		if data:
+			embeds = {}
+			i = 0
+			for item in data:
+				embeds[i] = {
+					'id' : item[0],
+					'category' : item[1],
+					'tags' : item[2],
+					'data' : item[3],
+					'is_public' : item[4],
+					'pkid' : item[5]
+					#'date_added': item[5]
+				}
+				i = i + 1
+		else:
+			embeds = False
+
+		# get the user's playlists
+		# if username is blank, data will be false
+		pl = Playlists()
+		playlists = pl.getPlaylists(param)
+		
+		dat = {
+				'data': embeds,
+				'playlists': playlists,
+				'id': 1234
+			}
+	else:
+		dat = {
+				'data': False,
+				'playlists': False,
+				'id': 1234
+			}
+		
+	return dat
+	
+def allEmbedFromTags(param):
+	x = Videos()
+	username = param['username']
 	data = x.allUserData(username)
 
 	if data:
@@ -240,15 +291,25 @@ def playlist(hash, publc, uniq_id, username=""):
 def add_playlist(param):
 	x = Playlists()
 	
-	data = {
-		'username' 	: param['username'],
-		'playlist' 	: param['pl_name'],
-		'description': param['pl_desc'],
-		'tags'		: param['pl_tags'],
-		'key'		: _private_key()
-	}
-	
-	return x.add_playlist(data)
+	hash = param['hash']
+	publc = str(param['publc'])
+
+	# create a hash
+	m = md5.new(publc + _private_key())
+
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
+		data = {
+			'username' 	: param['username'],
+			'playlist' 	: param['pl_name'],
+			'description': param['pl_desc'],
+			'tags'		: param['pl_tags'],
+			'key'		: _private_key()
+		}
+		
+		return x.add_playlist(data)
+	else:
+		return 'failed'
 
 # add contents to playlist
 def add_to_playlist(hash, publc, atpl_id, list_ids):

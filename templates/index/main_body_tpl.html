@@ -1,6 +1,4 @@
 <div class="row-fluid">
-<h2><%= (uri) ? uri : 'Most Recent' %></h2>
-<hr/>
 <%
 // display the playlists
 // this is used by the tags search
@@ -80,9 +78,15 @@ if (data.data2) {
 <% } %>
 
 
+
 <% 
 var i = 0;
 if (data.data) {
+%>
+
+<h2><%= (uri) ? uri : 'Most Recent' %></h2>
+<hr/>
+<%
 	_.each(data.data, function(c) { 
 		i += 1;
 		var dat = JSON.parse(c.data);
@@ -122,4 +126,10 @@ if (data.data) {
 	}); // each
 %>
 <% } %>
+
+<% if (showNextButton) { %>
+<span id="showMore">
+	<button id="show_more_button" class="btn btn-large btn-block btn-primary" type="button">Show more</button><br/>
+</span>
+<% } // showNextButton %>
 </div>

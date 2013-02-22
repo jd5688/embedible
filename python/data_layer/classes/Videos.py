@@ -71,7 +71,7 @@ class Videos:
 		cur.execute("""UPDATE videos SET uniq = %(uniq)s WHERE uniq = 'xdemx'""", par)
 		db.commit()
 		db.close()
-		return { 'success' : 'success' }
+		return 'success'
 	
 	# set the embed to public or private
 	def embedToPublic(self, param):
@@ -90,24 +90,50 @@ class Videos:
 		return resp
 	
 	# get all contents that are marked as public
-	def allPublic(self):
+	def allPublic(self, param):
 		db = Db.con()
 		cur = db.cursor()
-		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' ORDER BY id DESC LIMIT 0, 100"
-		cur.execute(qry)
+		
+		limit = param['limit'] # 20 per page
+		curPage = param['curPage'] # 1
+		endAt = int(curPage) * int(limit) # 20
+		startAt = endAt - int(limit) # 20 - 20 = 0
+		
+		newPar = {
+			'startAt' : startAt,
+			'endAt' : endAt
+		}
+		
+		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' ORDER BY id DESC LIMIT %(startAt)s, %(endAt)s"
+		cur.execute(qry, newPar)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
+			db.close()
 			return rows
-		#return false
+		else:
+			db.close()
+			return rows
 	
-	def allUserData(self, username):
+	def allUserData(self, param):
+		username = param['username']
 		if username == False:
 			return False;
-			
+		
+		limit = param['limit'] # 20 per page
+		curPage = param['curPage'] # 1 is the current page
+		endAt = int(curPage) * int(limit) # 20 is the record number to end at
+		startAt = endAt - int(limit) # 20 - 20 = 0 is the record number to start at
+		
+		newPar = {
+			'username': username,
+			'startAt' : startAt,
+			'endAt' : endAt
+		}
+		
 		db = Db.con()
 		cur = db.cursor()
-		qry = "SELECT uniq,category,tags,data,is_public,id,date_added FROM videos WHERE username = %s ORDER BY id DESC"
-		cur.execute(qry, username)
+		qry = "SELECT uniq,category,tags,data,is_public,id,date_added FROM videos WHERE username = %(username)s ORDER BY id DESC LIMIT %(startAt)s, %(limit)s"
+		cur.execute(qry, newPar)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
 			db.close()
@@ -152,6 +178,24 @@ class Videos:
 			db.close()
 			return False;
 	
+	def countRecords(self, dbtable, isPublic):
+		db = Db.con()
+		cur = db.cursor()
+		par = {
+			'dbtable': dbtable,
+			'isPublic': isPublic
+		}
+		
+		qry = "SELECT id FROM %s WHERE is_public = %s" %(dbtable, isPublic)
+		cur.execute(qry)
+		if cur.rowcount > 0:
+			rec = cur.rowcount
+			db.close()
+			return rec
+		else:
+			db.close()
+			return 0
+			
 	# get public content by id
 	def allPublicById(self,id):
 		db = Db.con()

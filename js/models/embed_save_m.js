@@ -12,7 +12,8 @@ define([
 			username	:	'',
 			category	:	'',
 			tags		:	'',
-			
+			hash		:	'',
+			publc		:	''
 		}
 	});
 	

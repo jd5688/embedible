@@ -8,7 +8,9 @@ define([
 		url: DEM.domain + "add_playlist",
 		defaults: {
 			username	:	'',
-			pl_name		:	''
+			pl_name		:	'',
+			publc		:	'',
+			hash		:	''
 		}
 	});
 	

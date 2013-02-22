@@ -54,7 +54,7 @@ define([
 					//var cURL = location.protocol + '//' + location.hostname + location.pathname
 					var cURL = this.model.get('uri');
 					
-					if (cURL === show_all) {
+					if (cURL === 'show_all') {
 						this._show_all();
 					} else if (cURL === 'my_videos') {
 						this._my_videos();

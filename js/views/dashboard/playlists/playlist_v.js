@@ -41,7 +41,6 @@ define([
 					var username = session.checkCookie();
 					if (typeof username === 'string') {
 						// set the hash
-						var ux = new Date().getTime();
 						var publc = DEM.ux();
 						var ckey = publc + DEM.key();
 					
@@ -151,30 +150,61 @@ define([
 					} else {
 						var addPlaylist = new AddPlaylist();
 						var username = session.checkCookie();
+						
+						var publc = DEM.ux();				
+						var ckey = publc + DEM.key();		
+						// use jcrypt to encrypt
+						var hash = $().crypt({
+							method: "md5",
+							source: ckey}
+						);
+						
 						var data = {
-							'username' : username,
-							'pl_name' : pl_name,
-							'pl_desc' : pl_desc,
-							'pl_tags' : pl_tags
+							'username' 	: username,
+							'pl_name' 	: pl_name,
+							'pl_desc' 	: pl_desc,
+							'pl_tags' 	: pl_tags,
+							'hash'		: hash,
+							'publc'		: publc
 						};
-						// set the data
-						addPlaylist.set(data);
-						addPlaylist.save(null, {
-							// always results in error even if successful. maybe this is due to cross-domain
-							// error: -> goes to success page
-							error : function(options) {
-								$('#alerter_success').fadeIn();
-								$('#playlist_name').val('');
-								$('#playlist_description').val('');
-								$('#playlist_tags').val('');
-								setTimeout(function () {
-									$('#alerter_success').fadeOut();
-								},1500);
-							},
-							success: function() {
-								alert('ewan');
-							}
-						});
+						
+						// detect if using IE
+						var b = $.browser;
+						if (typeof b.msie === 'undefined') {			
+							// set the data
+							addPlaylist.set(data);
+							addPlaylist.save(null, {
+								// always results in error even if successful. maybe this is due to cross-domain
+								// error: -> goes to success page
+								error : function(options) {
+									$('#alerter_success').fadeIn();
+									$('#playlist_name').val('');
+									$('#playlist_description').val('');
+									$('#playlist_tags').val('');
+									setTimeout(function () {
+										$('#alerter_success').fadeOut();
+									},1500);
+								},
+								success: function() {
+									alert('ewan');
+								}
+							});
+						} else {
+							// this is IE
+							data = JSON.stringify(data);
+							this.model.fetch({
+								url : DEM.domain + "add_playlist?data=" + encodeURIComponent(data) + "&callback=?",
+								success: function () { 
+									$('#alerter_success').fadeIn();
+									$('#playlist_name').val('');
+									$('#playlist_description').val('');
+									$('#playlist_tags').val('');
+									setTimeout(function () {
+										$('#alerter_success').fadeOut();
+									},1500);
+								}
+							});
+						};
 					};
 				},
 				show_playlist_content: function (e) {
