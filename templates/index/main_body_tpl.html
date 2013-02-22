@@ -77,8 +77,6 @@ if (data.data2) {
 	%>
 <% } %>
 
-
-
 <% 
 var i = 0;
 if (data.data) {
@@ -127,9 +125,12 @@ if (data.data) {
 %>
 <% } %>
 
-<% if (showNextButton) { %>
-<span id="showMore">
+<span id="embed_area"></span>
+<span id="showMore" style="display:none">
 	<button id="show_more_button" class="btn btn-large btn-block btn-primary" type="button">Show more</button><br/>
 </span>
-<% } // showNextButton %>
+<span id="scrollTop" style="display:none">
+	<button id="scrollToTop" class="btn btn-large btn-block btn-primary" type="button">Scroll to top of page</button><br/>
+</span>
+
 </div>

@@ -101,10 +101,10 @@ class Videos:
 		
 		newPar = {
 			'startAt' : startAt,
-			'endAt' : endAt
+			'limit' : int(limit)
 		}
 		
-		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' ORDER BY id DESC LIMIT %(startAt)s, %(endAt)s"
+		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' ORDER BY id DESC LIMIT %(startAt)s, %(limit)s"
 		cur.execute(qry, newPar)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()

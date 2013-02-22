@@ -1,0 +1,27 @@
+<% 
+var i = 0;
+if (data.data) {
+	_.each(data.data, function(c) { 
+		i += 1;
+		var dat = JSON.parse(c.data);
+		var title = dat.title;
+		title = title.replace(/"/g, '\\"');
+		var description = dat.description;
+		description = description.replace(/"/g, "'");
+		
+	%>
+	<div class="media">
+		<a class="pull-left" href="">
+			<input type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="64" height="64" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
+		</a>
+		
+		<div class="media-body">
+			<h4 class="media-heading"><%= title %></h4>
+			<p><%= dat.description %></p>
+		</div>
+    </div>
+    <hr/>
+<% 
+	}); // each
+%>
+<% } %>
