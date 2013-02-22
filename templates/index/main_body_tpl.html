@@ -41,7 +41,6 @@ if (data.data2) {
 							<%
 									_.each(c.embeds, function(d) {
 										var dat = JSON.parse(d.data);
-										console.log(dat);
 										var title = dat.title;
 										title = title.replace(/"/g, '\\"');
 										var description = dat.description;

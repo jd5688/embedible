@@ -188,8 +188,9 @@ def application(environ, start_response):
 			headers = [('Content-type', 'application/json')]
 			start_response(status, headers)
 			data = d.get('data', [''])[0]
-			jbody = json.loads(r + data)
-			response = b_main.embed_data(data)
+			jbody = json.loads(r""" %s """ % (data))
+			response = b_main.embed_data(jbody)
+			response = callback + "(" + json.dumps(response) + ");"
 			
 	elif method == 'OPTIONS':
 		#somehow, OPTIONS requests are not getting in here but at the 'else' statement

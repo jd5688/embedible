@@ -71,7 +71,7 @@ class Videos:
 		cur.execute("""UPDATE videos SET uniq = %(uniq)s WHERE uniq = 'xdemx'""", par)
 		db.commit()
 		db.close()
-		return 'success'
+		return { 'success' : 'success' }
 	
 	# set the embed to public or private
 	def embedToPublic(self, param):

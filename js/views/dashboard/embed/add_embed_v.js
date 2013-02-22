@@ -236,18 +236,26 @@ define([
 				
 					// detect if using IE
 					var b = $.browser;
-					if (typeof b.msie === 'undefined') {
+					if (typeof b.msie !== 'undefined') {
 						this.model.set(this.data);
 						// not using ie
 						this.save();
 					} else {
-						// convert json data to string
+						// decode from URI. we are converting to JSON
+						this.data.data = decodeURIComponent(this.data.data);
+						// convert object data to string
 						var data = JSON.stringify(this.data);
 						
 						this.model.fetch({
-							url : DEM.domain + "save_embed?data=" + data + "&callback=?",
-							success: function() {
-								Backbone.history.navigate('embed/save/success', true);
+							url : DEM.domain + "save_embed?data=" + encodeURIComponent(data) + "&callback=?",
+							success: function () { 
+								//Backbone.history.navigate('embed/save/success', true);
+								var template = _.template( esuccess );
+								//render the template
+								$('#main').html( template );
+								setTimeout(function () {
+									Backbone.history.navigate('embed', true);
+								}, 3000);
 							}
 						});
 					}
@@ -257,9 +265,7 @@ define([
 				
 				save: function() {
 					this.model.save(null, {
-						// always results in error even if successful. maybe this is due to cross-domain
-						// error: -> goes to success page
-						error : function(options) {
+						error : function() {
 							Backbone.history.navigate('embed/save/success', true);
 						},
 						success: function() {

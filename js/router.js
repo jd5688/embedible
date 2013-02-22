@@ -174,7 +174,6 @@ define([
 			// we do not allow user to go directly to /embed/save,
 			// so...		
 			var cat = $("input:radio[name=category]:checked").val();
-
 			if (cat === undefined) {
 				Backbone.history.navigate('embed', true); // redirect to the embed main page
 				return true;

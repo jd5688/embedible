@@ -11,7 +11,8 @@ define([
 			is_public	:	'',
 			username	:	'',
 			category	:	'',
-			tags		:	''
+			tags		:	'',
+			
 		}
 	});
 	
