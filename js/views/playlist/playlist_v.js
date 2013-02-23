@@ -6,11 +6,14 @@ define([
   'backbone',
   'carousel',
   'models/playlist_m',
+  'models/content_m',
   'text!templates/playlist/playlist_tpl.html',
+  'text!templates/playlist/playlist_page_tpl.html',
   'text!templates/playlist/playlist_content_tpl.html',
   'DEM',
+  'Paginator',
   'mysession',
-], function($, bootstrap, jcrypt, _, Backbone, carousel, Playlist_m, main_tpl, content_tpl, DEM, session){
+], function($, bootstrap, jcrypt, _, Backbone, carousel, Playlist_m, Content_m, main_tpl, main_page_tpl, content_tpl, DEM, Paginator, session){
 	var Playlist = {
 		View : function () {
 			return Backbone.View.extend({
@@ -18,8 +21,12 @@ define([
 					'click a[alt=pl_name_list]': 'show_playlist_content',
 					'click a[name=playlist_details]': 'redir',
 					'click a[class=thumbnail]': 'redir2',	
+					'click #show_more_button': 'paginate',
+					'click #scrollToTop': 'scrollToTop',
 				},
 				render: function () {
+					Paginator.initialize()
+					
 					// get the username if user is logged in
 					var username = session.checkCookie();
 					var publc = DEM.ux();
@@ -33,7 +40,7 @@ define([
 				
 					// get the playlists from the server
 					// this is coming from homepage
-					this.model.fetch({ url : DEM.domain + "playlists?hash=" + hash + "&public=" + publc + "&u=" + username + "&src=home&callback=?"});
+					this.model.fetch({ url : DEM.domain + "playlists?hash=" + hash + "&public=" + publc + "&u=" + username + "&src=home&limit=" + Paginator.limit + "&curPage=1&callback=?"});
 					
 					if (this.model.has("id")) {
 						this.main_body();
@@ -47,9 +54,18 @@ define([
 					data.data = this.json();
 					data.website = DEM.website;
 					
+					Paginator.curPage = (Paginator.curPage) ? Paginator.curPage : 1; 
+					Paginator.totalRec = data.data.records
+					data.showNextButton = Paginator.showMore();
+					
 					var template = _.template( main_tpl, data );
 					//render the template
 					this.$el.html( template );
+					
+					// show the 'show more' button if there's more data to display
+					if (data.showNextButton) {
+						$('#showMore').show();
+					}
 					
 					// enable the tooltips plugin
 					$('.thumbnail').tooltip({
@@ -61,6 +77,50 @@ define([
 					setTimeout(function () {
 						$('#alerter_public_playlists').fadeOut();
 					},5000);
+				},
+				paginate: function (e) {
+					e.preventDefault();
+					var data = {};
+					// get the username if user is logged in
+					var username = session.checkCookie();
+					var publc = DEM.ux();
+					var ckey = publc + DEM.key();
+				
+					// use jcrypt to encrypt
+					var hash = $().crypt({
+						method: "md5",
+						source: ckey}
+					);
+					
+					Paginator.curPage += 1; // increment
+					
+					// we cannot use the same model (this.model). appending on the same model proves to be
+					// buggy -- unexpected behaviour happens.
+					// we need to use another model.
+					Contents = new Content_m();
+					Contents.fetch({
+						url : DEM.domain + "playlists?hash=" + hash + "&public=" + publc + "&u=" + username + "&src=home&limit=" + Paginator.limit + "&curPage=" + Paginator.curPage + "&callback=?",
+						success: function (model, response) {
+							data.data = model.toJSON();
+							data.website = DEM.website;
+							data.curPage = Paginator.curPage;
+							 
+							Paginator.totalRec = data.data.records
+							data.showNextButton = Paginator.showMore();
+							
+							var tpl = _.template( main_page_tpl, data );
+							//render the template
+							$('#embed_area').append( tpl );
+							
+							if (!data.showNextButton) {
+								$('#showMore').fadeOut();
+								$('#scrollTop').fadeIn();
+							}
+						}
+					});
+				},
+				scrollToTop: function () {
+					$("html, body").animate({ scrollTop: 0 }, "fast");
 				},
 				show_playlist_content: function (e) {
 					e.preventDefault();

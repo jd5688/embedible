@@ -109,12 +109,44 @@ def application(environ, start_response):
 			id = d.get('id', [''])[0]
 			type = d.get('type', [''])[0]
 			tag = d.get('tag', [''])[0]
-			if id:
-				response = b_main.contentById(id);
-			elif type:
-				response = b_main.contents(type);
+			
+			hash = d.get('hash', [''])[0]
+			publc = d.get('publc', [''])[0]
+			curPage = d.get('curPage', [''])[0]
+			limit = d.get('limit', [''])[0]
+			
+			param = {
+				'id' : id,
+				'type': type,
+				'tag': tag,
+				'hash' : hash,
+				'publc' : publc,
+				'curPage' : curPage,
+				'limit' : limit
+			}
+			
+			if param['id']:
+				response = b_main.contentById(param);
+			elif param['type']:
+				response = b_main.contents(param);
 			else:
-				response = b_main.contentsByTag(tag);
+				response = b_main.contentsByTag(param);
+		
+			response = callback + "(" + json.dumps(response) + ");"
+        elif requested_resource == 'content':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			id = d.get('id', [''])[0]
+			hash = d.get('hash', [''])[0]
+			publc = d.get('publc', [''])[0]
+	
+			param = {
+				'id' : id,
+				'hash' : hash,
+				'publc' : publc,
+			}	
+			response = b_main.contentById(param);
 		
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'makepriv':
@@ -173,7 +205,19 @@ def application(environ, start_response):
 			hash = d.get('hash', [''])[0]
 			publc = d.get('public', [''])[0]
 			src = d.get('src', [''])[0]
-			response = b_user.playlists(hash, publc, username, src)
+			curPage = d.get('curPage', [''])[0]
+			limit = d.get('limit', [''])[0]
+			
+			param = {
+				'username' : username,
+				'src': src,
+				'hash': hash,
+				'publc' : publc,
+				'curPage' : curPage,
+				'limit' : limit
+			}
+			
+			response = b_user.playlists(param)
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'playlistContent':
 			status = '200 OK'

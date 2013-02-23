@@ -214,14 +214,20 @@ class Playlists:
 		db = Db.con()
 		cur = db.cursor()
 		robj = {}
+		limit = param['limit'] # 20 per page
+		curPage = param['curPage'] # 1
+		endAt = int(curPage) * int(limit) # 20
+		startAt = endAt - int(limit) # 20 - 20 = 0
+		
+		param['startAt'] = startAt
+		param['limit'] = int(limit)
 		
 		i = 0
 		
-		# get 100 new most recent playlists
 		if param['username']:
-			qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and (playlist.owner = %(username)s OR playlist.is_public = 1) GROUP BY playlist.id DESC LIMIT 0, 100"
+			qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and (playlist.owner = %(username)s OR playlist.is_public = 1) GROUP BY playlist.id DESC LIMIT %(startAt)s, %(limit)s"
 		else:
-			qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and playlist.is_public = 1 GROUP BY playlist.id DESC LIMIT 0, 100"
+			qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and playlist.is_public = 1 GROUP BY playlist.id DESC LIMIT %(startAt)s, %(limit)s"
 			
 		cur.execute(qry, param)
 		# playlists exist
@@ -310,6 +316,27 @@ class Playlists:
 		
 		db.close()
 		return robj
+	
+	def getPublicPlaylistsCount(self, param):
+		#param may contain username
+		
+		db = Db.con()
+		cur = db.cursor()
+		
+		if param['username']:
+			qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and (playlist.owner = %(username)s OR playlist.is_public = 1) GROUP BY playlist.id"
+		else:
+			qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and playlist.is_public = 1 GROUP BY playlist.id"
+			
+		cur.execute(qry, param)
+		# playlists exist
+		if cur.rowcount > 0:
+			records = cur.rowcount
+		else:
+			records = 0
+		
+		return records
+			
 		
 	def getPublicPlaylistsByTag(self, tag):
 		param = {

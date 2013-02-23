@@ -96,7 +96,7 @@ define([
 		index: function () {
 			this._renderHead('home');
 			var indexMain = Index.Main(); // create the model
-			indexMain.set({ uri : 'Most Recent' });
+			indexMain.set({ uri : '' });
             var IndexView = Index.View();
 			var indexView = new IndexView({ model: indexMain });
 			this.AppView.showView(indexView);
@@ -131,6 +131,7 @@ define([
 				if (gPass === 1) {
 					var dashboardMain = Dashboard.Main(); // create the model
 					dashboardMain.fetch({ url: DEM.domain + "getembed?username=" + username + "&callback=?" });
+
 					dashboardMain.set({ uri: activ });
 					var DashboardView = Dashboard.View();
 					var dashboardView = new DashboardView({ model: dashboardMain });
@@ -215,14 +216,14 @@ define([
 			
 			if (id) {
 				var contentModel = Content.Model({ noCache: true });
-				contentModel.fetch({ url : DEM.domain + "contents?id=" + id +"&callback=?"}); // fetch data from the server
+				contentModel.set({ uniq: id });
 				var ContentView = Content.View(); // the view constructor
 				var contentView = new ContentView({ model: contentModel });
 				this.AppView.showView(contentView);
 			} else {
 				var contentsModel = Contents.Model();
-				contentsModel.set({ uri: 'Videos' });
-				contentsModel.fetch({ url : DEM.domain + "contents?type=video&callback=?" }); // fetch data from the server
+				contentsModel.set({ uri: 'Videos', type: 'video' });
+				
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);
@@ -236,14 +237,15 @@ define([
 			
 			if (id) {
 				var contentModel = Content.Model({ noCache: true });
-				contentModel.fetch({ url : DEM.domain + "contents?id=" + id +"&callback=?"}); // fetch data from the server
+				contentModel.set({ uniq: id });
+				
 				var ContentView = Content.View(); // the view constructor
 				var contentView = new ContentView({ model: contentModel });
 				this.AppView.showView(contentView);
 			} else {
 				var contentsModel = Contents.Model();
-				contentsModel.set({ uri: 'Photos' });
-				contentsModel.fetch({ url : DEM.domain + "contents?type=photo&callback=?" }); // fetch data from the server
+				contentsModel.set({ uri: 'Photos', type: 'photo' });
+				
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);
@@ -255,14 +257,14 @@ define([
 			
 			if (id) {
 				var contentModel = Content.Model({ noCache: true });
-				contentModel.fetch({ url : DEM.domain + "contents?id=" + id +"&callback=?"}); // fetch data from the server
+				contentModel.set({ uniq: id });
 				var ContentView = Content.View(); // the view constructor
 				var contentView = new ContentView({ model: contentModel });
 				this.AppView.showView(contentView);
 			} else {
 				var contentsModel = Contents.Model();
-				contentsModel.set({ uri: 'Rich Media' });
-				contentsModel.fetch({ url : DEM.domain + "contents?type=rich&callback=?" }); // fetch data from the server
+				contentsModel.set({ uri: 'Rich Media', type: 'rich' });
+				
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);
@@ -273,14 +275,14 @@ define([
 			this._renderHead("link");
 			if (id) {
 				var contentModel = Content.Model({ noCache: true });
-				contentModel.fetch({ url : DEM.domain + "contents?id=" + id + "&callback=?"}); // fetch data from the server
+				contentModel.set({ uniq: id });
 				var ContentView = Content.View(); // the view constructor
 				var contentView = new ContentView({ model: contentModel });
 				this.AppView.showView(contentView);
 			} else {
 				var contentsModel = Contents.Model();
-				contentsModel.set({ uri: 'Links' });
-				contentsModel.fetch({ url : DEM.domain + "contents?type=link&callback=?" }); // fetch data from the server
+				contentsModel.set({ uri: 'Links', type: 'link' });
+				
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);

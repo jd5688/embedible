@@ -119,20 +119,21 @@ class Videos:
 		if username == False:
 			return False;
 		
-		limit = param['limit'] # 20 per page
-		curPage = param['curPage'] # 1 is the current page
-		endAt = int(curPage) * int(limit) # 20 is the record number to end at
-		startAt = endAt - int(limit) # 20 - 20 = 0 is the record number to start at
+		# pagination does not work at this time
+		#limit = param['limit'] # 20 per page
+		#curPage = param['curPage'] # 1 is the current page
+		#endAt = int(curPage) * int(limit) # 20 is the record number to end at
+		#startAt = endAt - int(limit) # 20 - 20 = 0 is the record number to start at
 		
 		newPar = {
 			'username': username,
-			'startAt' : startAt,
-			'endAt' : endAt
+			#'startAt' : startAt,
+			#'limit' : int(limit)
 		}
 		
 		db = Db.con()
 		cur = db.cursor()
-		qry = "SELECT uniq,category,tags,data,is_public,id,date_added FROM videos WHERE username = %(username)s ORDER BY id DESC LIMIT %(startAt)s, %(limit)s"
+		qry = "SELECT uniq,category,tags,data,is_public,id,date_added FROM videos WHERE username = %(username)s ORDER BY id DESC"
 		cur.execute(qry, newPar)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
@@ -142,17 +143,55 @@ class Videos:
 			db.close()
 			return False
 			
+	def allUserDataCount(self, param):
+		username = param['username']
+		if username == False:
+			return False;
+		
+		limit = param['limit'] # 20 per page
+		curPage = param['curPage'] # 1 is the current page
+		endAt = int(curPage) * int(limit) # 20 is the record number to end at
+		startAt = endAt - int(limit) # 20 - 20 = 0 is the record number to start at
+		
+		newPar = {
+			'username': username,
+			'startAt' : startAt,
+			'limit' : int(limit)
+		}
+		
+		db = Db.con()
+		cur = db.cursor()
+		qry = "SELECT uniq,category,tags,data,is_public,id,date_added FROM videos WHERE username = %(username)s ORDER BY id DESC LIMIT %(startAt)s, %(limit)s"
+		cur.execute(qry, newPar)
+		if cur.rowcount > 0:
+			records = cur.rowcount
+		else:
+			records = 0
+			
+		db.close()
+		return records
+			
 	# get all public contents by type (photo, video, link, rich)
-	def allPublicByType(self,type):
+	def allPublicByType(self,param):
+		type = param['type']
+		
+		limit = param['limit'] # 20 per page
+		curPage = param['curPage'] # 1
+		endAt = int(curPage) * int(limit) # 20
+		startAt = endAt - int(limit) # 20 - 20 = 0
+		
 		obj = {
 			'type1' : '%"type": "' + type + '"%',
 			'type2' : '%"type":"' + type + '"%',
 			'type3' : '%"type" : "' + type + '"%',
-			'type4' : '%"type" :"' + type + '"%'
+			'type4' : '%"type" :"' + type + '"%',
+			'startAt' : startAt,
+			'limit' : int(limit)
 		}
+		
 		db = Db.con()
 		cur = db.cursor()
-		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' AND (data like %(type1)s OR data like %(type2)s OR data like %(type3)s OR data like %(type4)s) ORDER BY id DESC LIMIT 0, 100"
+		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = '1' AND (data like %(type1)s OR data like %(type2)s OR data like %(type3)s OR data like %(type4)s) ORDER BY id DESC LIMIT %(startAt)s, %(limit)s"
 		cur.execute(qry, obj)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
@@ -178,16 +217,26 @@ class Videos:
 			db.close()
 			return False;
 	
-	def countRecords(self, dbtable, isPublic):
+	def countRecords(self, dbtable, type, isPublic):
 		db = Db.con()
 		cur = db.cursor()
+
 		par = {
-			'dbtable': dbtable,
-			'isPublic': isPublic
-		}
-		
-		qry = "SELECT id FROM %s WHERE is_public = %s" %(dbtable, isPublic)
-		cur.execute(qry)
+				'type1' : '%"type": "' + type + '"%',
+				'type2' : '%"type":"' + type + '"%',
+				'type3' : '%"type" : "' + type + '"%',
+				'type4' : '%"type" :"' + type + '"%',
+				'isPublic': isPublic
+			}
+			
+		if (type):
+			if dbtable == 'videos':
+				qry = "SELECT id FROM videos WHERE is_public = %(isPublic)s AND (data like %(type1)s OR data like %(type2)s OR data like %(type3)s OR data like %(type4)s)"
+		else:
+			if dbtable == 'videos':
+				qry = "SELECT id FROM videos WHERE is_public = %(isPublic)s"
+			
+		cur.execute(qry, par)
 		if cur.rowcount > 0:
 			rec = cur.rowcount
 			db.close()

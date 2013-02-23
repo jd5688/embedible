@@ -49,9 +49,8 @@ def login(param):
 def _private_key():
 	return 'ph1li9sVAi0'
 	
-# get all embeds. If username is not blank, get embeds submitted by the user
-# and the playlists created by the user
-# if username is blank, get all latest 100 embeds
+# get all embeds and the playlists created by the user
+# if username is blank, returns false
 def allEmbed(param):
 	x = Videos()
 	username = param['username']
@@ -59,7 +58,7 @@ def allEmbed(param):
 	publc = param['publc']
 	
 	# create a hash
-	m = md5.new(publc + _private_key())
+	m = md5.new(username + publc + _private_key())
 
 	# check if this hash is equal to the one transmitted
 	if m.hexdigest() == hash:
@@ -90,12 +89,14 @@ def allEmbed(param):
 		
 		dat = {
 				'data': embeds,
+				#'records': x.allUserDataCount(param),
 				'playlists': playlists,
 				'id': 1234
 			}
 	else:
 		dat = {
 				'data': False,
+				#'records' : 0,
 				'playlists': False,
 				'id': 1234
 			}
@@ -230,36 +231,45 @@ def set_pl_public(hash, publc, is_public, pl_id):
 		
 	return dat
 
-def playlists(hash, publc, username, src):
+def playlists(param):	
+	x = Playlists()
+	data = False
+	records = 0
+	
+	hash = param['hash']
+	publc = param['publc']
+	username = param['username']
+	src = param['src']
+	
 	if username == 'false':
 		username = ''
 	
-	x = Playlists()
-	data = False
-	
 	param = {
-			'username' : username
+			'username' : username,
+			'curPage' : param['curPage'],
+			'limit' : param['limit']
 		}
+	m = md5.new(publc + _private_key())
 	
 	if username:
-		# create a hash
-		m = md5.new(publc + _private_key())
 		# check if this hash is equal to the one transmitted
 		if m.hexdigest() == hash:
 			if src == 'home':
 				data = x.getPublicPlaylists(param)
+				records = x.getPublicPlaylistsCount(param)
 			else:
 				data = x.getPlaylists(param)
 	else:
-		m = md5.new(publc + _private_key())
 		# check if this hash is equal to the one transmitted
 		if m.hexdigest() == hash:
 			data = x.getPublicPlaylists(param)
+			records = x.getPublicPlaylistsCount(param)
 	
 	
 			
 	return {
 		'data': data,
+		'records': records,
 		'id': 1234
 	}
 

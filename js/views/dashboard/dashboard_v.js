@@ -11,11 +11,13 @@ define([
   'models/delete_embed_m',
   'models/add_to_playlist_m',
   'DEM',
+  'Paginator',
   'text!templates/dashboard/dashboard_nav_tpl.html',
   'text!templates/dashboard/main_body_tpl.html',
   'text!templates/modal_tpl.html',
   'text!templates/modalAddToPlaylist_tpl.html',
-], function($, bootstrap, jcrypt, tooltip, modal, _, Backbone, Index_m, Puborpriv_m, Dembed_m, Atpl_m, DEM, d_nav, body_tpl, modal_template, modalAddToPlaylist_tpl){
+  'mysession'
+], function($, bootstrap, jcrypt, tooltip, modal, _, Backbone, Index_m, Puborpriv_m, Dembed_m, Atpl_m, DEM, Paginator, d_nav, body_tpl, modal_template, modalAddToPlaylist_tpl, session){
 	var Dashboard = {
 		View : function () {
 			return Backbone.View.extend({
@@ -29,6 +31,22 @@ define([
 					'click #modal_confirm_add': 'add_to_playlist',
 				},
 				render: function () {
+					// get the username if user is logged in
+					var username = session.checkCookie();
+					
+					var publc = DEM.ux();
+					var ckey = username + publc + DEM.key();
+				
+					// use jcrypt to encrypt
+					var hash = $().crypt({
+						method: "md5",
+						source: ckey}
+					);
+					
+					// no pagination for now
+					//this.model.fetch({ url: DEM.domain + "getembed?hash=" + hash + "&publc=" + publc + "&limit=" + Paginator.limit + "&curPage=1&username=" + username + "&callback=?" });
+					
+					this.model.fetch({ url: DEM.domain + "getembed?hash=" + hash + "&publc=" + publc + "&username=" + username + "&callback=?" });
 					this.atpl_callback = this.iclosure();
 					if (this.model.has("username") || this.model.has("id")) {
 						// if model has attribute named 'username', load main_body immediately.
@@ -42,6 +60,7 @@ define([
 					var data = {};
 					data.data = this.json();
 					data.website = DEM.website;
+										
 					var template = _.template( body_tpl, data );
 					//render the template
 					this.$el.html( template );

@@ -18,10 +18,15 @@ define([
 			return Backbone.View.extend({
 				events: {
 					'click input[type=image]': 'redir',
+					'click a[id=goToDetail]': 'redir',
 					'click #show_more_button': 'paginate',
 					'click #scrollToTop': 'scrollToTop',
 				},
 				render: function () {
+					alert(DEM.$_GET('page'));
+					//console.log($_GET.page)
+				
+					//Paginator.initialize()
 					var publc = DEM.ux();
 					var ckey = publc + DEM.key();		
 					// use jcrypt to encrypt
@@ -59,7 +64,6 @@ define([
 					Paginator.curPage = (Paginator.curPage) ? Paginator.curPage : 1; 
 					Paginator.totalRec = data.data.records
 					data.showNextButton = Paginator.showMore();
-					console.log(Paginator.curPage);
 					
 					var template = _.template( body_tpl, data );
 					this.$el.html( template );
@@ -113,11 +117,17 @@ define([
 					return this.model.toJSON();
 				},
 				redir: function (e) {
-					if (typeof e !== "undefined") {						
+					if (typeof e !== "undefined") {	
+						e.preventDefault();
 						var clickedEl = $(e.currentTarget); // which element was clicked?
 						var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
-						//var uri = $("#" + id).val();
-						e.preventDefault();
+						// check if uri was literally assigned the value 'undefined'
+						// most probably default behaviour of decodeURIComponent if attribute does not exist
+						if (uri === "undefined") {
+							// check in the href
+							uri = decodeURIComponent(clickedEl.attr("href"));
+						};
+						
 						Backbone.history.navigate(uri, true);
 					}
 				},

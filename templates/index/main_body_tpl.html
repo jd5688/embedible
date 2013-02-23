@@ -80,11 +80,14 @@ if (data.data2) {
 <% 
 var i = 0;
 if (data.data) {
+	if (uri) {
 %>
 
-<h2><%= (uri) ? uri : 'Most Recent' %></h2>
-<hr/>
+	<h2><%= uri %></h2>
+	<hr/>
+
 <%
+	} // if uri
 	_.each(data.data, function(c) { 
 		i += 1;
 		var dat = JSON.parse(c.data);
@@ -104,7 +107,7 @@ if (data.data) {
 						<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + c.id) %>" />
 					</a>
 				</span>
-				<h5><%= title %></h5>
+				<h5><<%= title %></h5>
 				<p><%= dat.description %></p>
 			</div>
 		</li>
@@ -115,7 +118,7 @@ if (data.data) {
 		</a>
 		
 		<div class="media-body">
-			<h4 class="media-heading"><%= title %></h4>
+			<h4 class="media-heading"><a id="goToDetail" href="<%= encodeURIComponent(dat.type + "/" + c.id) %>"><%= title %></a></h4>
 			<p><%= dat.description %></p>
 		</div>
     </div>

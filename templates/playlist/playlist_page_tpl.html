@@ -1,22 +1,10 @@
-<h2>Playlists</h2>
-<hr/>
-
 <% 
 if (data.data) { 
 	var spa_i = 0;
 	var playlist_id;
 	var is_public;
 	var playlist_name;
-%>
 
-	<span id="alerter_public_playlists" style="display:none">
-		<div class="alert alert-success">
-			Click the playlist name to go to the details page.
-		</div>
-	</span>
-
-
-<%
 	_.each(data.data, function(c) { 
 		spa_i += 1;
 		playlist_id = c.id;
@@ -83,18 +71,5 @@ if (data.data) {
 		</div>
 	<% 
 	}); 
+}
 	%>
-	
-	<span id="embed_area"></span>
-	<span id="showMore" style="display:none">
-		<button id="show_more_button" class="btn btn-large btn-block btn-primary" type="button">Show more</button><br/>
-	</span>
-	<span id="scrollTop" style="display:none">
-		<button id="scrollToTop" class="btn btn-large btn-block btn-primary" type="button">Scroll to top of page</button><br/>
-	</span>
-	
-<% } else { %>
-	<div class="alert alert-info">
-		There's no playlists found.
-	</div>
-<% } %>

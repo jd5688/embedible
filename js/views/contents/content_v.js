@@ -1,13 +1,14 @@
 define([
   'jquery',
   'bootstrap',
+  'jcrypt',
   'underscore',
   'backbone',
   'models/content_m',
   'DEM',
   'text!templates/index/detail_tpl.html',
   'text!templates/facebook/fb_comments_tpl.html',
-], function($, bootstrap, _, Backbone, Content_m, DEM, detail_tpl, fb_comments){
+], function($, bootstrap, jcrypt, _, Backbone, Content_m, DEM, detail_tpl, fb_comments){
 	var Content = {
 		'View'	: function () { 
 			return Backbone.View.extend({
@@ -16,11 +17,18 @@ define([
 					'click #hideDetBut':  'hideDetails',
 					'click a[name=linktags]' : 'redir',	
 				},
-				initialize: function () {
-					this.render();
-				},
 				render: function () {
-					if (this.model.has("id") || this.model.has("username")) {
+					var publc = DEM.ux();
+					var id = this.model.get('uniq');
+					var ckey = id + publc + DEM.key();
+					// use jcrypt to encrypt
+					hash = $().crypt({
+						method: "md5",
+						source: ckey}
+					);
+				
+					this.model.fetch({ url : DEM.domain + "content?hash=" + hash + "&publc=" + publc + "&id=" + id +"&callback=?"}); // fetch data from the server
+					if (this.model.has("id")) {
 						if (this.model.hasChanged) {
 							this.model.on('change', this.main_body, this);
 						} else {

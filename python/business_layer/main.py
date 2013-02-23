@@ -39,7 +39,7 @@ def main(param):
 			
 		dat = {
 			'data': obj,
-			'records': x.countRecords('videos', 1),
+			'records': x.countRecords('videos', '', 1),
 			'id': 1234
 		}
 	else:
@@ -99,48 +99,80 @@ def embed_data(param):
 	else:
 		return 'failed'
 
-def contentById(id):
+def contentById(param):
+	id = param['id']
 	x = Videos()
 	obj = {}
 	
-	data = x.allPublicById(id)
+	hash = param['hash']
+	publc = str(param['publc'])
+
+	# create a hash
+	m = md5.new(id + publc + _private_key())
+
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
 	
-	if data:
-		obj = {
-			'detail': 1, # this is a detail page
-			'id': data[0][0],
-			'category':	data[0][1],
-			'tags':	data[0][2],
-			'data':	data[0][3]
-			#'date_added'	:	data[0][4]
-		}
+		data = x.allPublicById(id)
+		
+		if data:
+			obj = {
+				'detail': 1, # this is a detail page
+				'id': data[0][0],
+				'category':	data[0][1],
+				'tags':	data[0][2],
+				'data':	data[0][3]
+				#'date_added'	:	data[0][4]
+			}
+		else:
+			obj = {
+				'message': 'no record found'
+			}
 	else:
 		obj = {
-			'message': 'no record found'
+			'message': 'authentication failure'
 		}
 		
 	return obj
 	
-def contents(type):
+def contents(param):
 	x = Videos()
-	data = x.allPublicByType(type)
 	
-	obj = {}
-	i = 0
-	for item in data:
-		obj[i] = {
-			'id' : item[0],
-			'category' : item[1],
-            'tags' : item[2],
-            'data' : item[3]
-			#'date_added': item[4]
+	hash = param['hash']
+	publc = param['publc']
+	type = param['type']
+	
+	# create a hash
+	m = md5.new(publc + _private_key())
+
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
+	
+		data = x.allPublicByType(param)
+		
+		obj = {}
+		i = 0
+		for item in data:
+			obj[i] = {
+				'id' : item[0],
+				'category' : item[1],
+				'tags' : item[2],
+				'data' : item[3]
+				#'date_added': item[4]
+			}
+			i = i + 1
+		
+		dat = {
+			'id': 1234, # just a random id
+			'records': x.countRecords('videos', type, 1),
+			'data': obj
 		}
-		i = i + 1
-	
-	dat = {
-		'id': 1234, # just a random id
-		'data': obj
-	}
+	else:
+		dat = {
+			'id': 1234, # just a random id
+			'records': 0,
+			'data': False
+		}
 	return dat
 
 def contentsByTag(tag):

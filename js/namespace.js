@@ -10,5 +10,17 @@ define(function() {
 	DEM.ux			=	function () {
 							return new Date().getTime();
 						};
+	DEM.$_GET		=	function (val) {
+							var $GET = {}
+							document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+								function decode(s) {
+									return decodeURIComponent(s.split("+").join(" "));
+								}
+
+								$GET[decode(arguments[1])] = decode(arguments[2]);
+							});
+							
+							return $GET[val];
+						};
 	return DEM;
 });
