@@ -172,11 +172,16 @@ define([
 						},3000);
 						return;
 					};
-					
-					if (categ !== undefined) {
+					// blank categ is typeof undefined. blank tagz has '' value
+					if (categ !== undefined && tagz !== '') {
 						Backbone.history.navigate('embed/save', true);
-					} else {
+					} else if (categ === undefined) {
 						var data = { message: 'You need to choose a category' };
+						var template = _.template( alert_tpl, data );
+						//render the template
+						$('#embed_alert_bottom').html( template );
+					} else if (tagz === '') {
+						var data = { message: 'Please enter a tag.' };
 						var template = _.template( alert_tpl, data );
 						//render the template
 						$('#embed_alert_bottom').html( template );

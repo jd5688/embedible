@@ -23,8 +23,7 @@ define([
 					'click #scrollToTop': 'scrollToTop',
 				},
 				render: function () {
-					alert(DEM.$_GET('page'));
-					//console.log($_GET.page)
+					//alert(DEM.$_GET('page'));
 				
 					//Paginator.initialize()
 					var publc = DEM.ux();

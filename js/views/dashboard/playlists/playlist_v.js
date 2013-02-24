@@ -116,9 +116,8 @@ define([
 					var pl_desc = $('#playlist_description').val();
 					var pl_tags = $('#playlist_tags').val();
 					
-					if (pl_name === '' || pl_desc === '') {
+					if (pl_name === '' || pl_desc === '' || pl_tags === '') {
 						$('#blank_playlist').fadeIn();
-						$('#playlist_name').val('');
 						setTimeout(function () {
 							$('#blank_playlist').fadeOut();
 						},3000);
