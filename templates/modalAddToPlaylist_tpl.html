@@ -4,7 +4,7 @@
 	</div>
 	<div class="modal-body">
 		<h5>Add to Playlist</h5>
-		<hr/>
+		<div style="height:150px; overflow-y: scroll;">
 		<p id="modal_atpl_body">
 		<%
 		var i = 0;
@@ -36,7 +36,8 @@
 				}
 				i += 1;
 		%>
-				<div class="span2">
+				<div class="span3">
+					&nbsp; &nbsp;
 					<label class="checkbox inline">
 				<%
 				if (matched === true || cbMatched === true) {
@@ -52,14 +53,17 @@
 		<%
 			}); // each
 		%>
-			</div>
+			</div><!--/ class=row -->
 		<%
-		} else {
+		} else if (username) {
 		%>
 			<p>You do not have any playlist. <a href="" id="redir_to_add_playlist">Add a playlist</a></p>
-		<% } // else %>
+		<% } else {%>
+			<p>You need to be <a href="" id="toLogin">logged in</a></p>
+		<% } %>
 		</p>
-	</div>
+		</div>
+	</div><!--/ modal-body -->
 	<div class="modal-footer">
 		<a href="" class="btn" data-dismiss="modal">Cancel</a>
 		<a href="" class="btn btn-primary" id="modal_confirm_add">Add</a>

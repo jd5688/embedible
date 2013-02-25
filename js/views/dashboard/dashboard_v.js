@@ -330,7 +330,7 @@ define([
 					
 					// populate the modal template with some values
 					var title = $('#' + id + '_title').val();
-					$('#atpl_content_title').html(title);
+					$('#atpl_content_title').html(decodeURIComponent(title));
 					$('#modal_atpl_value').val(id);
 					
 					// then show it

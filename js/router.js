@@ -130,7 +130,7 @@ define([
 			if (typeof username === 'string') {
 				if (gPass === 1) {
 					var dashboardMain = Dashboard.Main(); // create the model
-					dashboardMain.fetch({ url: DEM.domain + "getembed?username=" + username + "&callback=?" });
+					//dashboardMain.fetch({ url: DEM.domain + "getembed?username=" + username + "&callback=?" });
 
 					dashboardMain.set({ uri: activ });
 					var DashboardView = Dashboard.View();

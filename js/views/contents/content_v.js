@@ -5,19 +5,33 @@ define([
   'underscore',
   'backbone',
   'models/content_m',
+  'models/add_to_playlist_m',
   'DEM',
   'text!templates/index/detail_tpl.html',
   'text!templates/facebook/fb_comments_tpl.html',
-], function($, bootstrap, jcrypt, _, Backbone, Content_m, DEM, detail_tpl, fb_comments){
+  'text!templates/modalAddToPlaylist_tpl.html',
+  'text!templates/index/detail_recommend_tpl.html',
+  'mysession'
+], function($, bootstrap, jcrypt, _, Backbone, Content_m, Atpl_m, DEM, detail_tpl, fb_comments, modalAddToPlaylist_tpl, recommend_tpl, session){
 	var Content = {
 		'View'	: function () { 
 			return Backbone.View.extend({
 				events: {
 					'click #showDetBut':  'showDetails',
 					'click #hideDetBut':  'hideDetails',
-					'click a[name=linktags]' : 'redir',	
+					'click a[name=linktags]' : 'redir',
+					'click .addToPlaylist': 'show_modal_atpl',
+					'click #modal_confirm_add': 'add_to_playlist',
+					'click a[id=goToDetail]': 'redir2',
+					'click input[type=image]': 'redir2',
+					'click #toLogin': 'toLogin',
+					'click #redir_to_add_playlist': 'redir_to_add_playlist'
 				},
 				render: function () {
+					// get the username so we can connect the user to this content
+					username = session.checkCookie();
+					this.atpl_callback = this.iclosure(); // initialize the callback function for the playlist modal
+					
 					var publc = DEM.ux();
 					var id = this.model.get('uniq');
 					var ckey = id + publc + DEM.key();
@@ -27,7 +41,7 @@ define([
 						source: ckey}
 					);
 				
-					this.model.fetch({ url : DEM.domain + "content?hash=" + hash + "&publc=" + publc + "&id=" + id +"&callback=?"}); // fetch data from the server
+					this.model.fetch({ url : DEM.domain + "content?hash=" + hash + "&publc=" + publc + "&id=" + id +"&username=" + username + "&callback=?"}); // fetch data from the server
 					if (this.model.has("id")) {
 						if (this.model.hasChanged) {
 							this.model.on('change', this.main_body, this);
@@ -48,7 +62,7 @@ define([
 					} else {
 						// load the fb comments plugin code
 						var fbTemplate = _.template( fb_comments );
-						$("#head").append( fbTemplate );
+						$("#fb_sdk").html( fbTemplate );
 						
 						//get the tags
 						var tags = data.data.tags;
@@ -59,6 +73,9 @@ define([
 						var template = _.template( detail_tpl, data );
 						//render the template
 						this.$el.html( template );
+						
+						var recom = _.template( recommend_tpl, data);
+						$('#recommend_container').html( recom )
 					}
 				},
 				_createTagLinks: function (tagsArr) {
@@ -95,6 +112,106 @@ define([
 					var uri = 'tags/' + tag;
 					e.preventDefault();
 					Backbone.history.navigate(uri, true);
+				},
+				redir2: function (e) {
+					if (typeof e !== "undefined") {	
+						e.preventDefault();
+						var clickedEl = $(e.currentTarget); // which element was clicked?
+						var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
+						// check if uri was literally assigned the value 'undefined'
+						// most probably default behaviour of decodeURIComponent if attribute does not exist
+						if (uri === "undefined") {
+							// check in the href
+							uri = decodeURIComponent(clickedEl.attr("href"));
+						};
+						
+						Backbone.history.navigate(uri, true);
+					}
+				},
+				toLogin: function (e) {
+					e.preventDefault();
+					$('#addToPlaylistModal').modal('hide');
+					Backbone.history.navigate("login", true);
+				},
+				redir_to_add_playlist: function (e) {
+					e.preventDefault();
+					$('#addToPlaylistModal').modal('hide');
+					Backbone.history.navigate("dashboard/playlists/add", true);
+				},
+				iclosure: function () {
+					var obj = [];
+					return {
+						set : function (id, name, atpl_id) {
+							obj.push(id + 'xdemx' + name + 'xdemx' + atpl_id);
+						},
+						get : function () {
+							return obj;
+						}
+					};
+				},
+				atpl_callback: [],
+				show_modal_atpl: function (e) {
+					var clickedEl = $(e.currentTarget);
+					var id = clickedEl.attr("id");
+					
+					var data = {};
+					data.data = this.json();
+					data.website = DEM.website;
+					data.mycallback = this.atpl_callback;
+					data.atpl_id = id;
+					data.username = session.checkCookie();
+					
+					// the modal Add to Playlist template
+					var mod_atpl_tpl = _.template( modalAddToPlaylist_tpl, data );
+					$('#modalAddToPLaylistContainer').html( mod_atpl_tpl );
+					
+					// populate the modal template with some values
+					var title = $('#h_' + id).val();
+					$('#atpl_content_title').html(decodeURIComponent(title));
+					$('#modal_atpl_value').val(id);
+					
+					// then show it
+					$('#addToPlaylistModal').modal('show');
+				},
+				add_to_playlist: function (e) {
+					e.preventDefault();
+					// hide the modal
+					$('#addToPlaylistModal').modal('hide');
+					var atpl_id = $('#modal_atpl_value').val(); // get the id of the content to be added to playlist
+					
+					// get all the checked boxes' value
+					var list_ids = [];
+					var that = this;
+					var cb;
+					$('#content_id input:checked').each(function() {
+						list_ids.push(this.value);
+						// this is a callback function so that the add playlist
+						// modal will get updated even without refreshing the page
+						that.atpl_callback.set(this.value, this.name, atpl_id);
+					});
+					var ux = DEM.ux();
+					var ckey = atpl_id + ux + DEM.key();
+					// use jcrypt to encrypt
+					var hash = $().crypt({
+						method: "md5",
+						source: ckey}
+					);
+					
+					var atpl = new Atpl_m();
+					atpl.fetch({ url: DEM.domain + "add_to_playlist?hash=" + hash + "&publc=" + ux + "&atpl_id=" + atpl_id + "&list_ids=" + list_ids + "&callback=?" });
+					atpl.on('change', function() {
+						obj = atpl.toJSON();
+						response = obj.response;
+						if (response === 'success') {
+							$('#alerter_success_atpl').fadeIn();
+							setTimeout(function () {
+								$('#alerter_success_atpl').fadeOut();
+							},1500);
+						} else {
+							//$('#alerter').fadeIn();
+						};
+						return true;
+					});
 				},
 				onClose: function(){
 					this.model.unbind("change", this.render);

@@ -876,7 +876,7 @@
     width: auto;
     margin: 0;
   }
-  .modal.fade {
+   .modal.fade {
     top: -100px;
   }
   .modal.fade.in {
@@ -885,6 +885,7 @@
 }
 
 @media (max-width: 480px) {
+  
   .nav-collapse {
     -webkit-transform: translate3d(0, 0, 0);
   }

@@ -103,6 +103,7 @@ def contentById(param):
 	id = param['id']
 	x = Videos()
 	obj = {}
+	obj2 = {}
 	
 	hash = param['hash']
 	publc = str(param['publc'])
@@ -112,18 +113,37 @@ def contentById(param):
 
 	# check if this hash is equal to the one transmitted
 	if m.hexdigest() == hash:
-	
+		# get the user's playlists
+		# if username is blank, data will be false
+		pl = Playlists()
+		playlists = pl.getPlaylists(param)
+
 		data = x.allPublicById(id)
-		
 		if data:
 			obj = {
 				'detail': 1, # this is a detail page
 				'id': data[0][0],
 				'category':	data[0][1],
 				'tags':	data[0][2],
-				'data':	data[0][3]
+				'data':	data[0][3],
+				'video_id': data[0][4],
+				'playlists': playlists
 				#'date_added'	:	data[0][4]
 			}
+			recommend = x.recommendedByTags(id, obj['tags'], obj['category'])
+			i = 0
+			if recommend:
+				for item in recommend:
+					obj2[i] = {
+						'id' : item[0],
+						'uniq': item[1],
+						'data' : item[7]
+					}
+					i = i + 1
+			else:
+				obj2 = False
+			
+			obj['recommend'] = obj2
 		else:
 			obj = {
 				'message': 'no record found'

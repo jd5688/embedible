@@ -140,11 +140,13 @@ def application(environ, start_response):
 			id = d.get('id', [''])[0]
 			hash = d.get('hash', [''])[0]
 			publc = d.get('publc', [''])[0]
+			username = d.get('username', [''])[0]
 	
 			param = {
 				'id' : id,
 				'hash' : hash,
 				'publc' : publc,
+				'username': username
 			}	
 			response = b_main.contentById(param);
 		

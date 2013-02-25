@@ -1,0 +1,32 @@
+<% 
+var i = 0;
+if (data.recommend) {
+%>
+<p><strong>Related Embedibles:</strong></p>
+<%
+	_.each(data.recommend, function(c) { 
+		i += 1;
+		var dat = JSON.parse(c.data);
+		var title = dat.title;
+		//title = title.replace(/"/g, '\\"');
+		var description = dat.description;
+		//description = description.replace(/"/g, "'");
+		
+		if (data.video_id !== c.id) {
+		
+	%>
+	<div class="media">
+		<a class="pull-left" href="">
+			<input type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="34" height="34" value="<%= encodeURIComponent(dat.type + "/" + c.uniq) %>" />
+		</a>
+		
+		<div class="media-body">
+			<small class="media-heading"><a id="goToDetail" href="<%= encodeURIComponent(dat.type + "/" + c.uniq) %>"><%= title %></a></small>
+		</div>
+    </div>
+	<hr/>
+<% 
+		}
+	}); // each
+%>
+<% } %>

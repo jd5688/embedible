@@ -249,7 +249,7 @@ class Videos:
 	def allPublicById(self,id):
 		db = Db.con()
 		cur = db.cursor()
-		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE uniq = %s"
+		qry = "SELECT uniq,category,tags,data,id, date_added FROM videos WHERE uniq = %s"
 		cur.execute(qry, id)
 		if cur.rowcount > 0:
 			row = cur.fetchall()
@@ -258,7 +258,77 @@ class Videos:
 		else:
 			db.close()
 			return False
+	
+	def recommendedByTags(self, id, tags, categ):
+		db = Db.con()
+		cur = db.cursor()
+		tags = False
+		if tags:
+			isWhere = ''
+			i = 0
+			spTags = tags.split(', ')
+			for item in spTags:
+				if i == 0:
+					isWhere = "tags like '%" + item + "%'"
+				else:
+					isWhere += " OR tags like '%" + item + "%'"
+				i += 1
+			qry = """
+					SELECT *
+					  FROM videos AS r1 JOIN
+						   (SELECT (RAND() *
+										 (SELECT MAX(id)
+											FROM videos)) AS id)
+							AS r2
+					 WHERE r1.id >= r2.id
+					 AND uniq <> '%s'
+					 AND (%s)
+					 ORDER BY r1.id ASC
+					 LIMIT 5
+					""" %(id, isWhere)
+			cur.execute(qry)
+			if cur.rowcount > 0:
+				rows = cur.fetchall()
+				db.close()
+				return rows
+			else:
+				db.close()
+				tags = False
+				
+		if categ:
+			return self.recommendedbByCateg(id, categ)
+		else:
+			return False
 			
+	def recommendedbByCateg(self, id, categ):
+		par = {
+			'categ' : categ,
+			'id' : id
+		}
+		db = Db.con()
+		cur = db.cursor()
+		qry = """
+				SELECT *
+				  FROM videos AS r1 JOIN
+					   (SELECT (RAND() *
+									 (SELECT MAX(id)
+										FROM videos)) AS id)
+						AS r2
+				 WHERE r1.id >= r2.id
+				 AND uniq <> %(id)s 
+				 AND category = %(categ)s
+				 ORDER BY r1.id ASC
+				 LIMIT 5
+				"""
+		cur.execute(qry, par)
+		if cur.rowcount > 0:
+			rows = cur.fetchall()
+			db.close()
+			return rows
+		else:
+			db.close()
+			tags = False
+	
 	def allCategories(self):
 	    db = Db.con()
 	    cur = db.cursor()
