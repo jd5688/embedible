@@ -11,8 +11,9 @@ define([
   'text!templates/facebook/fb_comments_tpl.html',
   'text!templates/modalAddToPlaylist_tpl.html',
   'text!templates/index/detail_recommend_tpl.html',
-  'mysession'
-], function($, bootstrap, jcrypt, _, Backbone, Content_m, Atpl_m, DEM, detail_tpl, fb_comments, modalAddToPlaylist_tpl, recommend_tpl, session){
+  'text!templates/facebook/fb_og_tpl.html',
+  'mysession',
+], function($, bootstrap, jcrypt, _, Backbone, Content_m, Atpl_m, DEM, detail_tpl, fb_comments, modalAddToPlaylist_tpl, recommend_tpl, fb_og_tpl, session){
 	var Content = {
 		'View'	: function () { 
 			return Backbone.View.extend({
@@ -60,7 +61,14 @@ define([
 					if (typeof data.data.id === 'undefined') {
 						Backbone.history.navigate('404', true); // not found
 					} else {
-						// load the fb comments plugin code
+						data.website = DEM.website;
+						
+						// render the facebook open graph template
+						// as well as the meta title and description for SEO purpose
+						var fbOg_tpl = _.template( fb_og_tpl, data );
+						$('#meta_desc-title').html( fbOg_tpl )
+						
+						// load the fb comments plugin js sdk code
 						var fbTemplate = _.template( fb_comments );
 						$("#fb_sdk").html( fbTemplate );
 						
@@ -69,13 +77,13 @@ define([
 						var tagsArr = tags.split(',');
 						data.data.tags = this._createTagLinks(tagsArr);
 						
-						data.website = DEM.website;
+						// render the main template
 						var template = _.template( detail_tpl, data );
-						//render the template
 						this.$el.html( template );
 						
+						// render the related/recommended embeds
 						var recom = _.template( recommend_tpl, data);
-						$('#recommend_container').html( recom )
+						$('#recommend_container').html( recom );
 					}
 				},
 				_createTagLinks: function (tagsArr) {
@@ -115,14 +123,14 @@ define([
 				},
 				redir2: function (e) {
 					if (typeof e !== "undefined") {	
-						e.preventDefault();
+						//e.preventDefault();
 						var clickedEl = $(e.currentTarget); // which element was clicked?
 						var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
 						// check if uri was literally assigned the value 'undefined'
 						// most probably default behaviour of decodeURIComponent if attribute does not exist
 						if (uri === "undefined") {
 							// check in the href
-							uri = decodeURIComponent(clickedEl.attr("href"));
+							uri = decodeURIComponent(clickedEl.attr("name"));
 						};
 						
 						Backbone.history.navigate(uri, true);

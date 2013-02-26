@@ -205,7 +205,7 @@ class Videos:
 		db = Db.con()
 		cur = db.cursor()
 		obj = {
-			'tag' : '%' + tag + '%'
+			'tag' : '%' + str(tag) + '%'
 		}
 		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = 1 AND tags like %(tag)s"
 		cur.execute(qry, obj)

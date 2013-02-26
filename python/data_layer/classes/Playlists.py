@@ -340,7 +340,7 @@ class Playlists:
 		
 	def getPublicPlaylistsByTag(self, tag):
 		param = {
-			'tag' : '%' + tag + '%',
+			'tag' : '%' + str(tag) + '%',
 			'username' : ''
 		}
 		

@@ -1,2 +1,12 @@
+<%
+	var origin = location.protocol + '//' + location.hostname + location.pathname;
+%>
+
 <meta name="description" content="<%= meta_desc %>">
 <title><%= page_title %></title>
+<meta property="og:title" content="<%= page_title %>" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="<%= origin %>" />
+<meta property="og:image" content="<%= thumbnail %>" />
+<meta property="og:site_name" content="Embedible.com" />
+<meta property="fb:admins" content="100004733376032" />

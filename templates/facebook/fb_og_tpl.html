@@ -1,0 +1,13 @@
+<%
+	var origin = location.protocol + '//' + location.hostname + location.pathname
+	var dat = JSON.parse(data.data);
+%>
+
+<meta name="description" content="<%= dat.description %>">
+<title><%= dat.title %> - Embedible.com</title>
+<meta property="og:title" content="<%= dat.title %>" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="<%= origin %>" />
+<meta property="og:image" content="<%= dat.thumbnail_url" />
+<meta property="og:site_name" content="Embedible.com" />
+<meta property="fb:admins" content="100004733376032" />

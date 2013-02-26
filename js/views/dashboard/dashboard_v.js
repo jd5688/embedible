@@ -110,7 +110,7 @@ define([
 						var clickedEl = $(e.currentTarget); // which element was clicked?
 						var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
 						//var uri = $("#" + id).val();
-						e.preventDefault();
+						//e.preventDefault();
 						Backbone.history.navigate(uri, true);
 					}
 				},

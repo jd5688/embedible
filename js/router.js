@@ -296,6 +296,7 @@ define([
 			this._renderHead();
 			if (id) {
 				var contentsModel = Contents.Model();
+				contentsModel.set({ type: 'tag'});
 				contentsModel.fetch({ url : DEM.domain + "contents?tag=" + id + "&callback=?"}); // fetch data from the server
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });

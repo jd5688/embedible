@@ -49,16 +49,16 @@ define([
 				},
 				main_body: function () {
 					var data = {};
+					data.data = this.json();
+					data.website = DEM.website;
+					data.uri = this.model.get('uri');
 					
 					// for seo
 					data.meta_desc = "All your favorites videos, music, photos, and links embedded in one place.";
 					data.page_title = "Embed, create a playlist, then share -- Embedible.com";
+					data.thumbnail = DEM.website + 'images/embedible_small.jpg';
 					var template = _.template( seo_tpl, data );
 					$('#meta_desc-title').html( template );
-					
-					data.data = this.json();
-					data.website = DEM.website;
-					data.uri = this.model.get('uri');
 					
 					Paginator.curPage = (Paginator.curPage) ? Paginator.curPage : 1; 
 					Paginator.totalRec = data.data.records
@@ -117,14 +117,14 @@ define([
 				},
 				redir: function (e) {
 					if (typeof e !== "undefined") {	
-						e.preventDefault();
+						//e.preventDefault();
 						var clickedEl = $(e.currentTarget); // which element was clicked?
 						var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
 						// check if uri was literally assigned the value 'undefined'
 						// most probably default behaviour of decodeURIComponent if attribute does not exist
 						if (uri === "undefined") {
 							// check in the href
-							uri = decodeURIComponent(clickedEl.attr("href"));
+							uri = decodeURIComponent(clickedEl.attr("name"));
 						};
 						
 						Backbone.history.navigate(uri, true);
