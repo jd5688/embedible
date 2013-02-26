@@ -36,6 +36,7 @@ define([
 					var attrib = {
 							'username' : username,
 							'uri': this.model.get("uri"),
+							'website': DEM.website
 						}
 					var template = _.template( header, attrib );
 					//render the template
