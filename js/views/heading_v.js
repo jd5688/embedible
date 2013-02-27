@@ -28,6 +28,7 @@ define([
 					'click #add_playlist': 'redir3',
 					'click #pubPlaylist': 'playlist',
 					'click #dashboard': 'dashboard',
+					'click #register': 'register',
 					'click #login': 'login',
 					'click #logout': 'logout',
 				},
@@ -86,6 +87,10 @@ define([
 				dashboard: function(e) {
 					e.preventDefault();
 					Backbone.history.navigate('dashboard', true);
+				},
+				register: function (e) {
+					e.preventDefault();
+					Backbone.history.navigate('register', true);
 				},
 				redir: function (e) {
 					if (typeof e !== "undefined") {

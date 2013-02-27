@@ -22,7 +22,7 @@ def login(param):
 		}
 	
 		# create a hash
-		m = md5.new(data['user_email'] + data['user_pass'] + _private_key())
+		m = md5.new(data['user_pass'] + param['publc'] + _private_key())
 	
 		# check if this hash is equal to the one transmitted
 		if m.hexdigest() == param['password']:
@@ -45,6 +45,41 @@ def login(param):
 		}
 		
 	return obj
+	
+def register(param):
+	u = Users()
+	
+	username = param['username']
+	hash = param['hash']
+	publc = param['publc']
+	
+	# create a hash
+	m = md5.new(username + publc + _private_key())
+	
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
+	
+		bool = u.user_query(param)
+		if bool:
+			#user exists
+			dat = {
+				'status' : 'Error!',
+				'message': 'Username exists. Try another one'
+			}
+		else:
+			reg = u.userRegister(param)
+			if reg:
+				dat = {
+					'status' : 'Success',
+					'message': 'Registration successful'
+				}
+			else:
+				dat = {
+					'status' : 'Error!',
+					'message' : 'Registration failed. Try again later.'
+				}
+		
+	return dat
 
 def _private_key():
 	return 'ph1li9sVAi0'

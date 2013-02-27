@@ -19,8 +19,9 @@ define([
 	'views/playlist/playlist_v',
 	'views/heading_v',
 	'views/footer_v',
+	'views/register/register_v',
 	'DEM',
-], function($, _, Backbone, session, Embed, Login, Index, Contents, Contents_pl, Content, Dashboard, Playlist, MainPlaylist, Head, Foot, DEM){
+], function($, _, Backbone, session, Embed, Login, Index, Contents, Contents_pl, Content, Dashboard, Playlist, MainPlaylist, Head, Foot, Register, DEM){
 	// create a close function on the view prototype
 	Backbone.View.prototype.close = function(){
 		this.remove();
@@ -79,6 +80,8 @@ define([
 			"playlist/:uniq_id/:vid_uniq"	: "playlist",
 			"playlist/:uniq_id/"			: "playlist",
 			"playlist/:uniq_id/:vid_uniq/"	: "playlist",
+			"register"						: "register",
+			"register/"						: "register",
 			"logout"						: "logout",
 			"404"							: "fourfour",
 			"*anything"						: "defaultRoute"
@@ -386,6 +389,12 @@ define([
 				$("#main").html(this.currentView.el);
 				return this;
 			},
+			logout: function() {
+				if (this.currentView){
+					this.currentView.close();
+				}
+				return this;
+			},
 			showHeadView: function(view) {
 				if (this.headView){
 					this.headView.close();
@@ -432,20 +441,31 @@ define([
 			alert('this is 404 -' + uri);
 		},
 		
+		register: function () {
+			this._renderHead('register');
+			var registerModel = Register.model();
+			var RegisterView = Register.View();
+			var registerView = new RegisterView({ model: registerModel });
+			this.AppView.showView(registerView);
+		},
+		
 		//login page
 		login: function(failed) {
 			this._renderHead("login");
 			if (failed) {
 				var LoginViewFail = Login.ViewFail();
-				var loginViewFail = new LoginViewFail({ el: $("#main") });
+				var loginViewFail = new LoginViewFail();
+				this.AppView.showView(loginViewFail);
 			} else {
 				var login = Login.login(); // create a login model 
 				var LoginView = Login.View();
-				var loginView = new LoginView({ el: $("#main"), model : login });
+				var loginView = new LoginView({ model : login });
+				this.AppView.showView(loginView);
 			}
 		},
 		
 		logout: function() {
+			this.AppView.logout()
 			// destroy cookie
 			var bool = session.delCookie("username");
 			if (bool === true) {

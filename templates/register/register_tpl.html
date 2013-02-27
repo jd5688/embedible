@@ -1,0 +1,51 @@
+<h2 class="form-signin-heading">User Registration</h2>
+<hr/>
+
+<span id="invalid_user" style="display:none">
+	<div class="alert alert-block alert-error">
+		<h4 class="alert-heading">Uh oh!</h4>
+		<p>Please enter a valid email</p>
+	</div>
+</span>
+<span id="invalid_pass" style="display:none">
+	<div class="alert alert-block alert-error">
+		<h4 class="alert-heading">Uh oh!</h4>
+		<p>Passwords don't match or are invalid</p>
+	</div>
+</span>
+<span id="invalid_pass_length" style="display:none">
+    <div class="alert alert-block">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    	<h4 class="alert-heading">Ooops!</h4>
+		Password must be at least 8 characters
+    </div>
+</span>
+<span id="invalid_chars" style="display:none">
+	<div class="alert alert-block alert-error">
+		<h4 class="alert-heading">Whoa!</h4>
+		<p>Password contains invalid characters</p>
+	</div>
+</span>
+<span id="reg_fail" style="display:none">
+	<div class="alert alert-block alert-error">
+		<h4 class="alert-heading">Oh snap!</h4>
+		<p id="reg_message"></p>
+	</div>
+</span>
+<form>
+<p>
+	Email:<br/>
+	<input type="email" name="username" id="username"/>
+</p>
+<p>
+	Password:<br/>
+	<input type="password" name="password" id="password" value=""/>
+</p>
+<p>
+	Confirm Password:<br/>
+	<input type="password" name="confirm_password" id="confirm_password" value=""/>
+</p>
+<p>
+	<button class="btn btn-large btn-primary" id="register" name="submit">Register</button>
+</p>
+</form>

@@ -66,12 +66,31 @@ def application(environ, start_response):
         	start_response(status, headers)
         	username = d.get('u', [''])[0]
         	password = d.get('p', [''])[0] # password is md5 encrypted
+        	publc = d.get('publc', [''])[0]
         	
         	data = {
         			'username' : username,
-        			'password' : password
+        			'password' : password,
+        			'publc': publc
         		}
         	response = b_user.login(data);
+        	response = callback + "(" + json.dumps(response) + ");"
+        elif requested_resource == 'register':
+        	status = '200 OK'
+        	headers = [('Content-type', 'application/json')]
+        	start_response(status, headers)
+        	username = d.get('u', [''])[0]
+        	password = d.get('p', [''])[0]
+        	hash = d.get('hash', [''])[0]
+        	publc = d.get('publc', [''])[0]
+        	
+        	data = {
+        			'username' : username,
+        			'password' : password,
+        			'hash' : hash,
+        			'publc' : publc
+        		}
+        	response = b_user.register(data);
         	response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'getembed':
 			status = '200 OK'
