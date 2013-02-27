@@ -34,7 +34,7 @@ if (data.data) {
 						<a href="" class="btn btn-small" alt="pl_name_list" id="<%= playlist_id %>xpl_name_hide_list" style="display:none" title="Hide list"><i class="icon-chevron-up"></i></a>
 					</span>
 					&nbsp;
-					<a name="playlist_details" id="<%= uniq_id %>" href=""><%= c.playlist_name %></a>
+					<a name="playlist_details" id="<%= uniq_id %>" href="<%= website + 'playlist/' + uniq_id %>"><%= c.playlist_name %></a>
 					<small><%= c.description %></small>
 				</blockquote>
 				<span id="<%= playlist_id %>_list_container" style="display:none">
@@ -55,7 +55,7 @@ if (data.data) {
 								%>
 									<li class="span3" id="<%= playlist_id %>_<%= d.id %>">
 									<span style="text-align:center">
-										<a class="thumbnail" id="<%= uniq_id %>_<%= d.uniq %>" name="<%= title %>">
+										<a href="" class="thumbnail" id="<%= uniq_id %>_<%= d.uniq %>" name="<%= title %>">
 											<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
 										</a>
 									</span>

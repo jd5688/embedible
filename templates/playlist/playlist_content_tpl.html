@@ -7,6 +7,7 @@ if (data.data) {
 	var playlist_desc = c.description;
 	var showThis;
 	var zTitle;
+	var browser = $.browser;
 	
 	//get the tags
 	var tags = c.tags;
@@ -27,16 +28,34 @@ if (data.data) {
 					<small><%= playlist_desc %></small>
 					<hr/>
 					
-					<div>
-						Tags:<br/>
-						<%= pl_tags %>
+					<div class="row">
+						<div class="alert alert-info span7">
+							<div>
+								<div class="fb-like" data-href="<%= website + 'playlist/' + uniq_id %>" data-send="true" data-layout="button_count" data-width="450" data-show-faces="false"></div>
+								&nbsp;|&nbsp;<a href="https://twitter.com/share" data-lang="en" alt="Tweet" title="Tweet" target="_blank"><img src="<%= website %>images/twitter.jpg" width="20px" height="20px"/></a>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="span7">
+							<h5>Post a comment:</h5>
+							<div class="fb-comments" data-href="<%= website + 'playlist/' + uniq_id %>" data-width="650" data-num-posts="10"></div>
+							<p>
+								Tags:<br/>
+								<%= pl_tags %>
+							</p>
+						</div>
 					</div>
 			</div>
 			<div class="span12" id="sidebar_is_hidden" <%= sidebar_is_hidden %>>
 				<h4>
 					<%= playlist_name %>
 					<span>
+					<% if (browser.mozilla) { %>
+						<div class="btn pull-right" title="Show the sidebar"><a href="<%= website + 'playlist/' + uniq_id%>"><i class="icon-chevron-left"></i></a>&nbsp;</div>
+					<% } else { %>
 						<div class="btn pull-right" id="sidebar_reveal" title="Show the sidebar"><i class="icon-chevron-left"></i>&nbsp;</div>
+					<% } %>
 					</span>
 				</h4>
 					<small><%= playlist_desc %></small>
@@ -109,7 +128,12 @@ if (data.data) {
 %>
 				<li class="span2">
 					<span style="text-align:center">
+						<!--
 						<a class="thumbnail" id="<%= d.uniq %>">
+							<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
+						</a>
+						-->
+						<a class="thumbnail" href="<%= website + 'playlist/' + uniq_id + '/' + d.uniq %>">
 							<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
 						</a>
 					</span>
@@ -130,4 +154,4 @@ if (data.data) {
 <%
 }
 %>
-<br/><br/>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>

@@ -10,16 +10,18 @@ define([
   'text!templates/playlist/playlist_tpl.html',
   'text!templates/playlist/playlist_page_tpl.html',
   'text!templates/playlist/playlist_content_tpl.html',
+  'text!templates/facebook/fb_og_tpl.html',
+  'text!templates/facebook/fb_comments_tpl.html',
   'DEM',
   'Paginator',
-  'mysession',
-], function($, bootstrap, jcrypt, _, Backbone, carousel, Playlist_m, Content_m, main_tpl, main_page_tpl, content_tpl, DEM, Paginator, session){
+  'mysession'
+], function($, bootstrap, jcrypt, _, Backbone, carousel, Playlist_m, Content_m, main_tpl, main_page_tpl, content_tpl, fb_og_tpl, fb_comments, DEM, Paginator, session){
 	var Playlist = {
 		View : function () {
 			return Backbone.View.extend({
 				events: {
 					'click a[alt=pl_name_list]': 'show_playlist_content',
-					'click a[name=playlist_details]': 'redir',
+					//'click a[name=playlist_details]': 'redir',
 					'click a[class=thumbnail]': 'redir2',	
 					'click #show_more_button': 'paginate',
 					'click #scrollToTop': 'scrollToTop',
@@ -155,7 +157,7 @@ define([
 					Backbone.history.navigate(url, true);;
 				},
 				redir2: function (e) {
-					e.preventDefault();
+					//e.preventDefault();
 					var clickedEl = $(e.currentTarget); // which element was clicked?
 					var ids = clickedEl.attr("id");
 					ids = ids.split("_");
@@ -176,7 +178,7 @@ define([
 			return Backbone.View.extend({
 				events: {
 					'click .pull-right': 'hider',
-					'click .thumbnail': 'redir',
+					//'click .thumbnail': 'redir',
 					'click a[name=linktags]' : 'redir2',
 				},
 				render: function () {
@@ -211,6 +213,7 @@ define([
 					data.data = this.json();
 					data.website = DEM.website;
 					data.vid_uniq = this.model.get('vid_uniq');
+					data.uniq_id = this.model.get('uniq_id');
 					data.detectEmbed = this.detectEmbedType();
 					
 					// check if vid_uniq is in the URL.
@@ -229,10 +232,14 @@ define([
 					
 					data.createTagLinks = this._createTagLinks();
 					
+					// load the fb comments plugin js sdk code
+					var fbTemplate = _.template( fb_comments );
+					$("#fb_sdk").html( fbTemplate );
+					
 					var template = _.template( content_tpl, data );
 					//render the template
 					this.$el.html( template );
-					
+
 					// enable the tooltips plugin
 					$('.thumbnail').tooltip({
 						selector: "input[rel=tooltip]",
@@ -259,6 +266,7 @@ define([
 				hider: function(e) {
 					var clickedEl = $(e.currentTarget);
 					var axion = clickedEl.attr("id");
+					var uniq_id = this.model.get('uniq_id');
 					
 					// hide the sidebar
 					if (axion === 'sidebar_hide') {
@@ -273,6 +281,11 @@ define([
 						$('#sidebar_is_visible').fadeIn();
 						$('#sidebar_is_hidden').hide();
 					};
+					
+					setTimeout(function() {
+						var myhtml = '<div class="fb-like" data-href="' + DEM.website + 'playlist/' + uniq_id + '" data-send="true" data-layout="button_count" data-width="450" data-show-faces="false"></div>';
+						$('#fb-likey').html(myhtml);
+					}, 2000);
 				},
 				_createTagLinks: function () {
 					return function (tagsArr) {
@@ -288,7 +301,7 @@ define([
 					}
 				},
 				redir: function (e) {
-					e.preventDefault();
+					//e.preventDefault();
 					var clickedEl = $(e.currentTarget);
 					var vid_uniq = clickedEl.attr("id");
 					if (vid_uniq === this.model.get('vid_uniq')) {

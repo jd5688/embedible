@@ -155,14 +155,14 @@ define([
 				redir: function (e) {
 					// make sure e is defined
 					if (typeof e !== "undefined") {
-						e.preventDefault();
+						//e.preventDefault();
 						var clickedEl = $(e.currentTarget); // which element was clicked?
 						var uri = decodeURIComponent(clickedEl.attr("value")); // get the value
 						// check if uri was literally assigned the value 'undefined'
 						// most probably default behaviour of decodeURIComponent if attribute does not exist
 						if (uri === "undefined") {
-							// check in the href
-							uri = decodeURIComponent(clickedEl.attr("href"));
+							// check in the name
+							uri = decodeURIComponent(clickedEl.attr("name"));
 						};
 						Backbone.history.navigate(uri, true);
 					}
