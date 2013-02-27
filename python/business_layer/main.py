@@ -198,33 +198,67 @@ def contents(param):
 		}
 	return dat
 
-def contentsByTag(tag):
+def contentsByTag(param):
 	x = Videos()
 	p = Playlists()
-	data = x.allPublicByTag(tag)
-	data2 = p.getPublicPlaylistsByTag(tag)
 	
-	obj = {}
-	obj2 = {}
-	i = 0
-	if data:
-		for item in data:
-			obj[i] = {
-				'id' : item[0],
-				'category' : item[1],
-				'tags' : item[2],
-				'data' : item[3]
-				#'date_added': item[4]
-			}
-			i = i + 1
-	else:
-		obj = data
+	hash = param['hash']
+	publc = param['publc']
+	
+	# create a hash
+	m = md5.new(publc + _private_key())
+
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
+		data = x.allPublicByTag(param)
 		
-	dat = {
-		'id': 1234, # just a random id
-		'data': obj,
-		'data2': data2
-	}
+		obj = {}
+		obj2 = {}
+		i = 0
+		if data:
+			for item in data:
+				obj[i] = {
+					'id' : item[0],
+					'category' : item[1],
+					'tags' : item[2],
+					'data' : item[3]
+					#'date_added': item[4]
+				}
+				i = i + 1
+		else:
+			obj = data
+		
+		dat = {
+			'id': 1234, # just a random id
+			'data': obj,
+			'records': x.allPublicByTagCount(param),
+		}
+	return dat
+
+def contentsByTagPl(param):
+	x = Videos()
+	p = Playlists()
+	
+	hash = param['hash']
+	publc = param['publc']
+	
+	# create a hash
+	m = md5.new(publc + _private_key())
+	
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
+		data = p.getPublicPlaylistsByTag(param)
+		dat = {
+			'id': 1234, # just a random id
+			'data': data,
+			'records': p.getPublicPlaylistsByTagCount(param)
+		}
+	else:
+		dat = {
+			'id': 1234, # just a random id
+			'data': False,
+			'records': 0
+		}
 	return dat
 
 def _private_key():

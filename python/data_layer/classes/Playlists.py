@@ -338,19 +338,29 @@ class Playlists:
 		return records
 			
 		
-	def getPublicPlaylistsByTag(self, tag):
-		param = {
-			'tag' : '%' + str(tag) + '%',
-			'username' : ''
-		}
+	def getPublicPlaylistsByTag(self, param):
+		if param['tag'] == '':
+			return False
 		
 		db = Db.con()
 		cur = db.cursor()
 		robj = {}
 		
+		tag = param['tag']
+		tag = '%' + str(tag) + '%'
+		param['tag'] = tag
+		
+		limit = param['limit'] # 20 per page
+		curPage = param['curPage'] # 1
+		endAt = int(curPage) * int(limit) # 20
+		startAt = endAt - int(limit) # 20 - 20 = 0
+		
+		param['startAt'] = startAt
+		param['limit'] = int(limit)
+		
 		i = 0
 		
-		qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and playlist.is_public = 1 AND playlist.tags like %(tag)s GROUP BY playlist.id"
+		qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and playlist.is_public = 1 AND playlist.tags like %(tag)s GROUP BY playlist.id LIMIT %(startAt)s, %(limit)s"
 			
 		cur.execute(qry, param)
 		# playlists exist
@@ -440,6 +450,28 @@ class Playlists:
 		db.close()
 		return robj
 
+	def getPublicPlaylistsByTagCount(self, param):
+		param['username'] = ''
+		if param['tag'] == '':
+			return False
+		
+		db = Db.con()
+		cur = db.cursor()
+		
+		tag = param['tag']
+		tag = '%' + str(tag) + '%'
+		param['tag'] = tag
+		
+		qry = "SELECT playlist.* FROM playlist, playlist_contents WHERE playlist_contents.pl_id = playlist.id and playlist.is_public = 1 AND playlist.tags like %(tag)s GROUP BY playlist.id"
+			
+		cur.execute(qry, param)
+		# playlists exist
+		if cur.rowcount > 0:
+			db.close()
+			return cur.rowcount
+		else:
+			return 0
+	
 	def add_playlist(self, param):
 		db = Db.con()
 		cur = db.cursor()

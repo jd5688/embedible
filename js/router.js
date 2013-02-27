@@ -12,6 +12,7 @@ define([
 	'views/login/login_v',
 	'views/index/index_v',
 	'views/contents/contents_v',
+	'views/contents/contents_pl_v',
 	'views/contents/content_v',
 	'views/dashboard/dashboard_v',
 	'views/dashboard/playlists/playlist_v',
@@ -19,7 +20,7 @@ define([
 	'views/heading_v',
 	'views/footer_v',
 	'DEM',
-], function($, _, Backbone, session, Embed, Login, Index, Contents, Content, Dashboard, Playlist, MainPlaylist, Head, Foot, DEM){
+], function($, _, Backbone, session, Embed, Login, Index, Contents, Contents_pl, Content, Dashboard, Playlist, MainPlaylist, Head, Foot, DEM){
 	// create a close function on the view prototype
 	Backbone.View.prototype.close = function(){
 		this.remove();
@@ -38,6 +39,7 @@ define([
 			"dashboard/:page/"				: "dashboard",
 			"dashboard/:page"				: "dashboard",
 			"dashboard/:page/:option"		: "dashboard",
+			"dashboard/:page/:option/"		: "dashboard",
 			"dashboard/:page"				: "dashboard",
 			"dashboard/:page/"				: "dashboard",
 			"embed"							: "embed",
@@ -52,22 +54,31 @@ define([
 			"video"							: "video",
 			"video/"						: "video",
 			"video/:id"						: "video",
+			"video/:id/"						: "video",
 			"photo"							: "photo",
 			"photo/"						: "photo",
 			"photo/:id"						: "photo",
+			"photo/:id/"						: "photo",
 			"rich"							: "rich",
 			"rich/"							: "rich",
 			"rich/:id"						: "rich",
+			"rich/:id/"						: "rich",
 			"link"							: "link",
 			"link/"							: "link",
 			"link/:id"						: "link",
+			"link/:id/"						: "link",
 			"tags"							: "tags",
 			"tags/"							: "tags",
 			"tags/:id"						: "tags",
+			"tags/:id/"						: "tags",
+			"tags/:id/:playlists"			: "tagsPlaylists",
+			"tags/:id/:playlists/"			: "tagsPlaylists",
 			"playlist"						: "playlist",
 			"playlist/"						: "playlist",
 			"playlist/:uniq_id"				: "playlist",
 			"playlist/:uniq_id/:vid_uniq"	: "playlist",
+			"playlist/:uniq_id/"			: "playlist",
+			"playlist/:uniq_id/:vid_uniq/"	: "playlist",
 			"logout"						: "logout",
 			"404"							: "fourfour",
 			"*anything"						: "defaultRoute"
@@ -96,7 +107,7 @@ define([
 		index: function () {
 			this._renderHead('home');
 			var indexMain = Index.Main(); // create the model
-			indexMain.set({ uri : '' });
+			indexMain.set({ uri : '', tag: '' });
             var IndexView = Index.View();
 			var indexView = new IndexView({ model: indexMain });
 			this.AppView.showView(indexView);
@@ -296,14 +307,34 @@ define([
 			this._renderHead();
 			if (id) {
 				var contentsModel = Contents.Model();
-				contentsModel.set({ type: 'tag'});
-				contentsModel.fetch({ url : DEM.domain + "contents?tag=" + id + "&callback=?"}); // fetch data from the server
+				contentsModel.set({ uri: 'Tags', type: '', tag: id});
+				//contentsModel.fetch({ url : DEM.domain + "contents?tag=" + id + "&callback=?"}); // fetch data from the server
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);
 			} else {
 				this.fourfour();
 			}	
+		},
+		
+		tagsPlaylists: function (id, playlists) {
+			id = decodeURIComponent(id);
+			id = id.replace(/\+/g, " ");
+			
+			this._renderHead();
+			if (id) {
+				if (playlists === 'playlists') {
+					var contentsModel = Contents_pl.Model();
+					contentsModel.set({ uri: 'Tags', type: '', tag: id});
+					var ContentsView = Contents_pl.View(); // the view constructor
+					var contentsView = new ContentsView({ model: contentsModel });
+					this.AppView.showView(contentsView);
+				} else {
+					this.fourfour('tags' + id + '/' + playlists);
+				}
+			} else {
+				this.fourfour('tags' + id + '/' + playlists);
+			};
 		},
 		
 		playlists: function(activ) {

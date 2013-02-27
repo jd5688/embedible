@@ -201,13 +201,22 @@ class Videos:
 			db.close()
 			return False;
 	
-	def allPublicByTag(self,tag):
+	def allPublicByTag(self,param):
+		tag = param['tag'];
 		db = Db.con()
 		cur = db.cursor()
+		
+		limit = param['limit'] # 20 per page
+		curPage = param['curPage'] # 1 is the current page
+		endAt = int(curPage) * int(limit) # 20 is the record number to end at
+		startAt = endAt - int(limit) # 20 - 20 = 0 is the record number to start at
+		
 		obj = {
-			'tag' : '%' + str(tag) + '%'
+			'tag' : '%' + str(tag) + '%',
+			'startAt' : startAt,
+			'limit' : int(limit)
 		}
-		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = 1 AND tags like %(tag)s"
+		qry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = 1 AND tags like %(tag)s LIMIT %(startAt)s, %(limit)s"
 		cur.execute(qry, obj)
 		if cur.rowcount > 0:
 			rows = cur.fetchall()
@@ -216,6 +225,21 @@ class Videos:
 		else:
 			db.close()
 			return False;
+	def allPublicByTagCount(self,param):
+		tag = param['tag'];
+		db = Db.con()
+		cur = db.cursor()
+		obj = {
+			'tag' : '%' + str(tag) + '%'
+		}
+		qry = "SELECT uniq FROM videos WHERE is_public = 1 AND tags like %(tag)s"
+		cur.execute(qry, obj)
+		if cur.rowcount > 0:
+			db.close()
+			return cur.rowcount
+		else:
+			db.close()
+			return 0;
 	
 	def countRecords(self, dbtable, type, isPublic):
 		db = Db.con()

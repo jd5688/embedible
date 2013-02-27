@@ -114,6 +114,8 @@ def application(environ, start_response):
 			publc = d.get('publc', [''])[0]
 			curPage = d.get('curPage', [''])[0]
 			limit = d.get('limit', [''])[0]
+			isPlaylist = d.get('isPlaylist', [''])[0]
+			username = d.get('username', [''])[0]
 			
 			param = {
 				'id' : id,
@@ -122,7 +124,8 @@ def application(environ, start_response):
 				'hash' : hash,
 				'publc' : publc,
 				'curPage' : curPage,
-				'limit' : limit
+				'limit' : limit,
+				'username': username
 			}
 			
 			if param['id']:
@@ -130,7 +133,10 @@ def application(environ, start_response):
 			elif param['type']:
 				response = b_main.contents(param);
 			else:
-				response = b_main.contentsByTag(param);
+				if isPlaylist:
+					response = b_main.contentsByTagPl(param);
+				else:
+					response = b_main.contentsByTag(param);
 		
 			response = callback + "(" + json.dumps(response) + ");"
         elif requested_resource == 'content':

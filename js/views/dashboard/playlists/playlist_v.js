@@ -30,8 +30,9 @@ define([
 					'click .remplay': 'show_modal',
 					'click #modal_confirm': 'do_remove',
 					'click .del_playlist': 'modal_delete_playlist',
-					'click #propu': 'propu'
-					
+					'click #propu': 'propu',
+					'click a[class=thumbnail]': 'redirToDetails',
+					'click .redirToDetails' : 'redirToDetails'
 				},
 				//initialize: function () {
 				//	this.render();
@@ -281,6 +282,13 @@ define([
 						e.preventDefault();
 						Backbone.history.navigate(uri, true);
 					}
+				},
+				redirToDetails: function (e) {
+					var clickedEl = $(e.currentTarget);
+					var ids = clickedEl.attr("id");
+					var uriSplit = ids.split('xdemx');
+					var uri = 'playlist/' + uriSplit[0] + '/' + uriSplit[1];
+					Backbone.history.navigate(uri, true);
 				},
 				show_modal: function (e) {
 					var clickedEl = $(e.currentTarget);

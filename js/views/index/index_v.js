@@ -52,6 +52,7 @@ define([
 					data.data = this.json();
 					data.website = DEM.website;
 					data.uri = this.model.get('uri');
+					data.tag = this.model.get('tag');
 					
 					// for seo
 					data.meta_desc = "All your favorites videos, music, photos, and links embedded in one place.";

@@ -9,15 +9,16 @@ define([
   'models/content_m',
   'DEM',
   'Paginator',
-  'text!templates/index/main_body_tpl.html',
-  'text!templates/index/main_body_page_tpl.html',
-  'text!templates/index/detail_tpl.html'
-], function($, bootstrap, jcrypt, tooltip, _, Backbone, Contents_m, Content_m, DEM, Paginator, body_tpl, body_page_tpl, detail_tpl ){
+  'text!templates/index/main_body_playlists_tpl.html',
+  'text!templates/index/main_body_playlists_page_tpl.html',
+  'text!templates/index/detail_tpl.html',
+  'mysession'
+], function($, bootstrap, jcrypt, tooltip, _, Backbone, Contents_m, Content_m, DEM, Paginator, body_tpl, body_page_tpl, detail_tpl, session ){
 	var Contents = {
 		'View'	: function () { 
 			return Backbone.View.extend({
 				events: {
-					'click input[type=image]':  'redir',
+					//'click input[type=image]':  'redir',
 					'click a[id=goToDetail]': 'redir',
 					'click a[alt=pl_name_list]': 'show_playlist_content',
 					'click a[name=playlist_details]': 'playlist_details',
@@ -28,6 +29,7 @@ define([
 				},
 				render: function () {
 					Paginator.initialize();
+					var username = session.checkCookie();
 					var publc = DEM.ux();
 					var ckey = publc + DEM.key();		
 					// use jcrypt to encrypt
@@ -37,7 +39,7 @@ define([
 					);
 					var type = this.model.get('type');
 					var tag = this.model.get('tag');
-					this.model.fetch({ url : DEM.domain + "contents?hash=" + hash + "&publc=" + publc + "&limit=" + Paginator.limit + "&type=" + type + "&tag=" + tag + "&curPage=1&callback=?" }); // fetch data from the server
+					this.model.fetch({ url : DEM.domain + "contents?hash=" + hash + "&publc=" + publc + "&limit=" + Paginator.limit + "&type=" + type + "&tag=" + tag + "&username=" + username + "&curPage=1&isPlaylist=1&callback=?" }); // fetch data from the server
 					
 					if (this.model.has("id")) {
 						// if model has attribute named 'id', load main_body immediately.
@@ -83,6 +85,7 @@ define([
 						source: ckey}
 					);
 					Paginator.curPage += 1; // increment
+					var username = session.checkCookie();
 					var type = this.model.get('type');
 					var tag = this.model.get('tag');
 					
@@ -91,7 +94,7 @@ define([
 					// we need to use another model.
 					Contents = new Content_m();
 					Contents.fetch({
-						url : DEM.domain + "contents?hash=" + hash + "&publc=" + publc + "&limit=" + Paginator.limit + "&type=" + type + "&curPage=" + Paginator.curPage + "&tag=" + tag + "&callback=?",
+						url : DEM.domain + "contents?hash=" + hash + "&publc=" + publc + "&limit=" + Paginator.limit + "&type=" + type + "&curPage=" + Paginator.curPage + "&tag=" + tag + "&username=" + username + "&isPlaylist=1&callback=?",
 						success: function (model, response) {
 							data.data = model.toJSON();
 							data.website = DEM.website;
