@@ -1,0 +1,37 @@
+<div class="row-fluid">
+
+<% if (tag) { %>
+	<h2><%= uri + ': ' + tag %></h2>
+	Embedibles &nbsp;&nbsp;<button id="embedibles" value="<%= tag %>/playlists" class="btn btn-small">Playlists</button>
+	<hr/>
+<% } else if (uri) { %>
+	<h2><%= uri %></h2>
+	<hr/>
+<% } %>
+
+<div class="row-fluid">
+	<div class="span12 thumbnails">
+<%
+if (data.data) {
+	var i = 0;
+	_.each(data.data, function(c) {
+		if (i === 6) {
+			i = 0;
+%>
+			</div>
+			<div class="span12 thumbnails">
+<%
+		}
+%>
+		<div class="span2 thumbnail" style="text-align:center">
+			<input type="button" class="btn btn-small btn-info" value="<%= c %>" id="<%= encodeURIComponent(c) %>"/>
+		</div>
+<%	
+		i += 1;
+	});
+} else {
+%>
+	There's no tags to display.
+<% } %>
+	</div>
+</div>

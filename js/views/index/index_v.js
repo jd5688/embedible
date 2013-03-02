@@ -55,11 +55,11 @@ define([
 					data.tag = this.model.get('tag');
 					
 					// for seo
-					data.meta_desc = "All your favorites videos, music, photos, and links embedded in one place.";
-					data.page_title = "Embed, create a playlist, then share -- Embedible.com";
-					data.thumbnail = DEM.website + 'images/embedible_small.jpg';
-					var template = _.template( seo_tpl, data );
-					$('#meta_desc-title').html( template );
+					//data.meta_desc = "All your favorites videos, music, photos, and links embedded in one place.";
+					//data.page_title = "Embed, create a playlist, then share -- Embedible.com";
+					//data.thumbnail = DEM.website + 'images/embedible_small.jpg';
+					//var template = _.template( seo_tpl, data );
+					//$('#meta_desc-title').html( template );
 					
 					Paginator.curPage = (Paginator.curPage) ? Paginator.curPage : 1; 
 					Paginator.totalRec = data.data.records

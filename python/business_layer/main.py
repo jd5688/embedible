@@ -261,6 +261,26 @@ def contentsByTagPl(param):
 		}
 	return dat
 
+def tagscloud(hash, publc):
+	x = Videos()
+	
+	# create a hash
+	m = md5.new(publc + _private_key())
+	
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
+		data = x.getAllTags()
+		dat = {
+			'id': 1234, # just a random id
+			'data': data
+		}
+	else:
+		dat = {
+			'id': 1234, # just a random id
+			'data': False
+		}
+	return dat
+	
 def _private_key():
 	return 'ph1li9sVAi0'
 	

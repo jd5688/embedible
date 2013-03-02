@@ -20,8 +20,9 @@ define([
 	'views/heading_v',
 	'views/footer_v',
 	'views/register/register_v',
+	'views/contents/tags_v',
 	'DEM',
-], function($, _, Backbone, session, Embed, Login, Index, Contents, Contents_pl, Content, Dashboard, Playlist, MainPlaylist, Head, Foot, Register, DEM){
+], function($, _, Backbone, session, Embed, Login, Index, Contents, Contents_pl, Content, Dashboard, Playlist, MainPlaylist, Head, Foot, Register, Tags, DEM){
 	// create a close function on the view prototype
 	Backbone.View.prototype.close = function(){
 		this.remove();
@@ -99,7 +100,9 @@ define([
 			var HeadView = Head.View();
 			var headView = new HeadView({ model: headModel });
 			this.AppView.showHeadView(headView);
-			
+		},
+		
+		_renderFoot: function () {
 			// render the footer
 			var FootView = Foot.View();
 			var footView = new FootView();
@@ -114,6 +117,7 @@ define([
             var IndexView = Index.View();
 			var indexView = new IndexView({ model: indexMain });
 			this.AppView.showView(indexView);
+			this._renderFoot();
 		},
 		
 		// logged in users go here
@@ -155,6 +159,7 @@ define([
 				Backbone.history.navigate('', true); // redirect to the main page
 				return true;
 			}
+			this._renderFoot();
 		},
 		
 		defaultRoute: function(anything) {
@@ -178,6 +183,7 @@ define([
 					that.AppView.showView(embedView);
 				}
 			});
+			this._renderFoot();
 		},
 		
 		// saving the user-submitted content to the db
@@ -222,7 +228,8 @@ define([
 				this.AppView.showViewNoClose(saveEmbed);
 			} else {
 				Backbone.history.navigate('404', true);
-			}
+			};
+			this._renderFoot();
 		},
 		
 		video: function (id) {
@@ -241,9 +248,9 @@ define([
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);
-			}
+			};
 			
-			
+			this._renderFoot();
 		},
 		
 		photo: function (id) {
@@ -263,7 +270,8 @@ define([
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);
-			}	
+			};
+			this._renderFoot();
 		},
 		
 		rich: function (id) {
@@ -282,7 +290,8 @@ define([
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);
-			}	
+			};
+			this._renderFoot();
 		},
 		
 		link: function (id) {
@@ -300,24 +309,36 @@ define([
 				var ContentsView = Contents.View(); // the view constructor
 				var contentsView = new ContentsView({ model: contentsModel });
 				this.AppView.showView(contentsView);
-			}	
+			};
+			this._renderFoot();
 		},
 		
 		tags: function (id) {
-			id = decodeURIComponent(id);
-			id = id.replace(/\+/g, " ");
-
-			this._renderHead();
 			if (id) {
-				var contentsModel = Contents.Model();
-				contentsModel.set({ uri: 'Tags', type: '', tag: id});
-				//contentsModel.fetch({ url : DEM.domain + "contents?tag=" + id + "&callback=?"}); // fetch data from the server
-				var ContentsView = Contents.View(); // the view constructor
-				var contentsView = new ContentsView({ model: contentsModel });
-				this.AppView.showView(contentsView);
+				id = decodeURIComponent(id);
+				id = id.replace(/\+/g, " ");
+	
+				this._renderHead();
+				if (id) {
+					var contentsModel = Contents.Model();
+					contentsModel.set({ uri: 'Tags', type: '', tag: id});
+					//contentsModel.fetch({ url : DEM.domain + "contents?tag=" + id + "&callback=?"}); // fetch data from the server
+					var ContentsView = Contents.View(); // the view constructor
+					var contentsView = new ContentsView({ model: contentsModel });
+					this.AppView.showView(contentsView);
+				} else {
+					this.fourfour();
+				}
 			} else {
-				this.fourfour();
-			}	
+				this._renderHead();
+				// show all the tags
+				var tagsModel = Tags.Model();
+				tagsModel.set({ uri: 'Tags', type: '', tag: ''});
+				var TagsView = Tags.View(); // the view constructor
+				var tagsView = new TagsView({ model: tagsModel });
+				this.AppView.showView(tagsView);
+			};
+			this._renderFoot();
 		},
 		
 		tagsPlaylists: function (id, playlists) {
@@ -338,6 +359,7 @@ define([
 			} else {
 				this.fourfour('tags' + id + '/' + playlists);
 			};
+			this._renderFoot();
 		},
 		
 		playlists: function(activ) {
@@ -349,6 +371,7 @@ define([
 			var playlistView = new PlaylistView({ model: playlistModel });
 			
 			this.AppView.showView(playlistView);
+			this._renderFoot();
 		},
 		
 		playlist: function (uniq_id, vid_uniq) {
@@ -370,7 +393,8 @@ define([
 				var PlaylistContentView = MainPlaylist.ContentView();
 				var playlistContentView = new PlaylistContentView( { model: playlistModel } );
 				this.AppView.showView(playlistContentView);
-			}
+			};
+			this._renderFoot();
 		},
 		
 		// it's very important to close events that are no longer being used.
@@ -447,6 +471,7 @@ define([
 			var RegisterView = Register.View();
 			var registerView = new RegisterView({ model: registerModel });
 			this.AppView.showView(registerView);
+			this._renderFoot();
 		},
 		
 		//login page
@@ -461,7 +486,8 @@ define([
 				var LoginView = Login.View();
 				var loginView = new LoginView({ model : login });
 				this.AppView.showView(loginView);
-			}
+			};
+			this._renderFoot();
 		},
 		
 		logout: function() {

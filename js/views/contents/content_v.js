@@ -65,8 +65,16 @@ define([
 						
 						// render the facebook open graph template
 						// as well as the meta title and description for SEO purpose
-						var fbOg_tpl = _.template( fb_og_tpl, data );
-						$('#meta_desc-title').html( fbOg_tpl )
+						//var fbOg_tpl = _.template( fb_og_tpl, data );
+						//$('#meta_desc-title').html( fbOg_tpl )
+						
+						//  for SEO
+						var dat = JSON.parse(data.data.data);
+						var origin = location.protocol + '//' + location.hostname + location.pathname
+						$('meta#ogtitle').attr('content', dat.title);
+						$('meta#ogurl').attr('content', origin);
+						$('meta#ogimage').attr('content', dat.thumbnail_url);
+						// for SEO
 						
 						// load the fb comments plugin js sdk code
 						var fbTemplate = _.template( fb_comments );

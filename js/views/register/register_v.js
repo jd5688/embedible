@@ -17,7 +17,8 @@ define([
 				events: {
 					'click #register': 'doRegister',
 					'click #toLogin': 'redir',
-					'click #reTry': 'reTry'
+					'click #reTry': 'reTry',
+					'click #tos': 'redirToTerms'
 				},
 				render: function () {
 					var template = _.template( register_tpl );
@@ -107,6 +108,10 @@ define([
 				reTry: function (e) {
 					e.preventDefault();
 					Backbone.history.navigate('register', true);
+				},
+				redirToTerms: function (e) {
+					e.preventDefault();
+					Backbone.history.navigate('terms', true);
 				},
 				onClose: function(){
 					this.model.unbind("change", this.render);

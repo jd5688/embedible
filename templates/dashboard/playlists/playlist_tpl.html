@@ -28,7 +28,11 @@
 			<div class="row-fluid" id="<%= playlist_id %>">
 				<div class="span10">
 					<blockquote>
+					<% if (typeof c.embeds[0] !== 'undefined') { %>
 						<a class="redirToDetails" href="" id="<%= c.uniq %>xdemx"><%= c.playlist_name %></a>
+					<% } else { %>
+						<%= c.playlist_name %>
+					<% } %>
 						<span class="pull-right" style="vertical-align:top">&nbsp;
 							<a href="" class="btn" alt="pl_name_list" id="<%= playlist_id %>xpl_name_show_list" title="Show list"><i class="icon-folder-close"></i></a>
 							<a href="" class="btn" alt="pl_name_list" id="<%= playlist_id %>xpl_name_hide_list" style="display:none" title="Hide list"><i class="icon-folder-open"></i></a>

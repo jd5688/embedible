@@ -365,5 +365,24 @@ class Videos:
 	    else:
 			return False
 			
+	def getAllTags(self):
+		db = Db.con()
+		cur = db.cursor()
+		i = 0
+		data = {}
+		cur.execute("SELECT tags FROM videos WHERE tags <> '' AND is_public = 1 GROUP BY id DESC")
+		if cur.rowcount > 0:
+			rows = cur.fetchall()
+			for row in rows:
+				tags = row[0]
+				rArr = tags.split(',')
+				for item in rArr:
+					data[i] = item.strip()
+					i += 1
+			db.close()
+			return data
+		else:
+			return False
+			
 	def embedlyKey(self):
 		return 'c08c28b368a34012a555be062cd495c4'

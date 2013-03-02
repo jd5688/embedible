@@ -282,7 +282,15 @@ def application(environ, start_response):
 			jbody = json.loads(r""" %s """ % (data))
 			response = b_user.add_playlist(jbody)
 			response = callback + "(" + json.dumps(response) + ");"
-			
+        elif requested_resource == 'tagscloud':
+			status = '200 OK'
+			headers = [('Content-type', 'text/plain; charset=utf-8')]
+			start_response(status, headers)
+			hash = d.get('hash', [''])[0]
+			publc = d.get('publc', [''])[0]
+			response = b_main.tagscloud(hash, publc)
+			response = callback + "(" + json.dumps(response) + ");"
+	
 	elif method == 'OPTIONS':
 		#somehow, OPTIONS requests are not getting in here but at the 'else' statement
 		
