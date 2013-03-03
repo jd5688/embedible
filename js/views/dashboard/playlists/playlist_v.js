@@ -126,21 +126,21 @@ define([
 					}
 					
 					// prevent special characters
-					if (/[^a-zA-Z 0-9,'()"]+/.test(pl_name)){
+					if (/[^a-zA-Z 0-9,'()"-=:]+/.test(pl_name)){
 						// show the alerter
 						$('#alerter_add').fadeIn();
 						$('#playlist_name').val('');
 						setTimeout(function () {
 							$('#alerter_add').fadeOut();
 						},3000);
-					} else if (/[^a-zA-Z 0-9,'()"]+/.test(pl_desc)){
+					} else if (/[^a-zA-Z 0-9,'()"-=:]+/.test(pl_desc)){
 						// show the alerter
 						$('#alerter_desc').fadeIn();
 						$('#playlist_description').val('');
 						setTimeout(function () {
 							$('#alerter_desc').fadeOut();
 						},3000);
-					} else if (/[^a-zA-Z 0-9,'()"]+/.test(pl_tags)){
+					} else if (/[^a-zA-Z 0-9,'()"-=:]+/.test(pl_tags)){
 						// show the alerter
 						$('#alerter_tags').fadeIn();
 						$('#playlist_tags').val('');

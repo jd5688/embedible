@@ -118,6 +118,7 @@ define([
 				},
 				redir: function (e) {
 					if (typeof e !== "undefined") {	
+						// Facebook comments and like don't work very well when e.preventDefault() is enabled
 						//e.preventDefault();
 						var clickedEl = $(e.currentTarget); // which element was clicked?
 						var uri = decodeURIComponent(clickedEl.attr("value")); // get the value

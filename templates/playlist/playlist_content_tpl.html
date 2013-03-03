@@ -51,8 +51,8 @@ if (data.data) {
 				<h4>
 					<%= playlist_name %>
 					<span>
-					<% if (browser.mozilla) { %>
-						<div class="btn pull-right" title="Show the sidebar"><a href="<%= website + 'playlist/' + uniq_id%>"><i class="icon-chevron-left"></i></a>&nbsp;</div>
+					<% if (browser.mozilla || browser.msie) { %>
+						<div class="btn pull-right" id="sidebar_reveal" title="Show the sidebar"><a href="<%= website + 'playlist/' + uniq_id%>"><i class="icon-chevron-left"></i></a>&nbsp;</div>
 					<% } else { %>
 						<div class="btn pull-right" id="sidebar_reveal" title="Show the sidebar"><i class="icon-chevron-left"></i>&nbsp;</div>
 					<% } %>
@@ -128,14 +128,14 @@ if (data.data) {
 %>
 				<li class="span2">
 					<span style="text-align:center">
-						<!--
 						<a class="thumbnail" id="<%= d.uniq %>">
 							<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
 						</a>
-						-->
+						<!--
 						<a class="thumbnail" href="<%= website + 'playlist/' + uniq_id + '/' + d.uniq %>">
 							<input rel="tooltip" type="image" title="<%= dat.type %>: <%= title %>" src="<%= dat.thumbnail_url %>" width="75" height="75" value="<%= encodeURIComponent(dat.type + "/" + d.id) %>" />
 						</a>
+						-->
 					</span>
 				</li>
 <%
