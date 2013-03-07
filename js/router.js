@@ -12,6 +12,7 @@ define([
 	'views/login/login_v',
 	'views/index/index_v',
 	'views/contents/contents_v',
+	'views/search/search_v',
 	'views/contents/contents_pl_v',
 	'views/contents/content_v',
 	'views/dashboard/dashboard_v',
@@ -22,7 +23,7 @@ define([
 	'views/register/register_v',
 	'views/contents/tags_v',
 	'DEM',
-], function($, _, Backbone, session, Embed, Login, Index, Contents, Contents_pl, Content, Dashboard, Playlist, MainPlaylist, Head, Foot, Register, Tags, DEM){
+], function($, _, Backbone, session, Embed, Login, Index, Contents, Search, Contents_pl, Content, Dashboard, Playlist, MainPlaylist, Head, Foot, Register, Tags, DEM){
 	// create a close function on the view prototype
 	Backbone.View.prototype.close = function(){
 		this.remove();
@@ -75,6 +76,12 @@ define([
 			"tags/:id/"						: "tags",
 			"tags/:id/:playlists"			: "tagsPlaylists",
 			"tags/:id/:playlists/"			: "tagsPlaylists",
+			"search"						: "search",
+			"search/"						: "search",
+			"search/:id"					: "search",
+			"search/:id/"					: "search",
+			"search/:id/:playlists"			: "search",
+			"search/:id/:playlists/"		: "search",
 			"playlist"						: "playlist",
 			"playlist/"						: "playlist",
 			"playlist/:uniq_id"				: "playlist",
@@ -326,6 +333,34 @@ define([
 					var ContentsView = Contents.View(); // the view constructor
 					var contentsView = new ContentsView({ model: contentsModel });
 					this.AppView.showView(contentsView);
+				} else {
+					this.fourfour();
+				}
+			} else {
+				this._renderHead();
+				// show all the tags
+				var tagsModel = Tags.Model();
+				tagsModel.set({ uri: 'Tags', type: '', tag: ''});
+				var TagsView = Tags.View(); // the view constructor
+				var tagsView = new TagsView({ model: tagsModel });
+				this.AppView.showView(tagsView);
+			};
+			this._renderFoot();
+		},
+		
+		search: function (id) {
+			// id is the search query
+			if (id) {
+				id = decodeURIComponent(id);
+				id = id.replace(/\+/g, " ");
+	
+				this._renderHead();
+				if (id) {
+					var searchModel = Search.Model();
+					searchModel.set({ uri: 'Search', type: '', qry: id});
+					var SearchView = Search.View(); // the view constructor
+					var searchView = new SearchView({ model: searchModel });
+					this.AppView.showView(searchView);
 				} else {
 					this.fourfour();
 				}

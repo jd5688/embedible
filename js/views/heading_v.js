@@ -31,6 +31,7 @@ define([
 					'click #register': 'register',
 					'click #login': 'login',
 					'click #logout': 'logout',
+					'keypress input[type=text]': 'filterOnEnter'
 				},
 				render: function () {
 					var username = session.checkCookie() || '';
@@ -127,6 +128,18 @@ define([
 					e.preventDefault();
 					Backbone.history.navigate(uri, true);
 				},
+				filterOnEnter: function(e) {
+					if (e.keyCode !== 13) {
+						return;
+					} else {
+						this.search(e);
+					}
+				},
+				search: function(e) {
+					e.preventDefault();
+					var txt = $('.search-query').val();
+					Backbone.history.navigate('search/' + encodeURIComponent(txt), true);
+				}
 			});
 		},
 		Model: function () {

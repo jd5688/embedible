@@ -290,6 +290,32 @@ def application(environ, start_response):
 			publc = d.get('publc', [''])[0]
 			response = b_main.tagscloud(hash, publc)
 			response = callback + "(" + json.dumps(response) + ");"
+        elif requested_resource == 'search':
+			status = '200 OK'
+			headers = [('Content-type', 'application/json')]
+			start_response(status, headers)
+			id = d.get('id', [''])[0]
+			qry = d.get('qry', [''])[0]
+			
+			hash = d.get('hash', [''])[0]
+			publc = d.get('publc', [''])[0]
+			curPage = d.get('curPage', [''])[0]
+			limit = d.get('limit', [''])[0]
+			isPlaylist = d.get('isPlaylist', [''])[0]
+			username = d.get('username', [''])[0]
+			
+			param = {
+				'id' : id,
+				'qry': qry,
+				'hash' : hash,
+				'publc' : publc,
+				'curPage' : curPage,
+				'limit' : limit,
+				'username': username
+			}
+			
+			response = b_main.search(param);		
+			response = callback + "(" + json.dumps(response) + ");"
 	
 	elif method == 'OPTIONS':
 		#somehow, OPTIONS requests are not getting in here but at the 'else' statement

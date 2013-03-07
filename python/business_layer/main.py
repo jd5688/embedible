@@ -213,7 +213,6 @@ def contentsByTag(param):
 		data = x.allPublicByTag(param)
 		
 		obj = {}
-		obj2 = {}
 		i = 0
 		if data:
 			for item in data:
@@ -278,6 +277,42 @@ def tagscloud(hash, publc):
 		dat = {
 			'id': 1234, # just a random id
 			'data': False
+		}
+	return dat
+
+def search(param):
+	x = Videos()
+	p = Playlists()
+	
+	hash = param['hash']
+	publc = param['publc']
+	
+	# create a hash
+	m = md5.new(publc + _private_key())
+
+	# check if this hash is equal to the one transmitted
+	if m.hexdigest() == hash:
+		data = x.allPublicBySearch(param)
+		
+		obj = {}
+		i = 0
+		if data:
+			for item in data:
+				obj[i] = {
+					'id' : item[0],
+					'category' : item[1],
+					'tags' : item[2],
+					'data' : item[3]
+					#'date_added': item[4]
+				}
+				i = i + 1
+		else:
+			obj = data
+		
+		dat = {
+			'id': 1234, # just a random id
+			'data': obj,
+			'records': x.allPublicBySearchCount(param),
 		}
 	return dat
 	

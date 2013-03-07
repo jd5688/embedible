@@ -225,6 +225,30 @@ class Videos:
 		else:
 			db.close()
 			return False;
+	def allPublicBySearch(self,param):
+		query = param['qry'];
+		db = Db.con()
+		cur = db.cursor()
+		
+		limit = param['limit'] # 20 per page
+		curPage = param['curPage'] # 1 is the current page
+		endAt = int(curPage) * int(limit) # 20 is the record number to end at
+		startAt = endAt - int(limit) # 20 - 20 = 0 is the record number to start at
+		
+		obj = {
+			'qry' : query,
+			'startAt' : startAt,
+			'limit' : int(limit)
+		}
+		sqry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = 1 AND (tags REGEXP %(qry)s OR category REGEXP %(qry)s OR data REGEXP %(qry)s) ORDER BY id DESC LIMIT %(startAt)s, %(limit)s"
+		cur.execute(sqry, obj)
+		if cur.rowcount > 0:
+			rows = cur.fetchall()
+			db.close()
+			return rows
+		else:
+			db.close()
+			return False;
 	def allPublicByTagCount(self,param):
 		tag = param['tag'];
 		db = Db.con()
@@ -234,6 +258,21 @@ class Videos:
 		}
 		qry = "SELECT uniq FROM videos WHERE is_public = 1 AND tags like %(tag)s"
 		cur.execute(qry, obj)
+		if cur.rowcount > 0:
+			db.close()
+			return cur.rowcount
+		else:
+			db.close()
+			return 0;
+	def allPublicBySearchCount(self,param):
+		query = param['qry'];
+		db = Db.con()
+		cur = db.cursor()
+		obj = {
+			'qry' : query
+		}
+		sqry = "SELECT uniq,category,tags,data,date_added FROM videos WHERE is_public = 1 AND (tags REGEXP %(qry)s OR category REGEXP %(qry)s OR data REGEXP %(qry)s)"
+		cur.execute(sqry, obj)
 		if cur.rowcount > 0:
 			db.close()
 			return cur.rowcount
