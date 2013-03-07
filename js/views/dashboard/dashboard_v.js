@@ -16,8 +16,9 @@ define([
   'text!templates/dashboard/main_body_tpl.html',
   'text!templates/modal_tpl.html',
   'text!templates/modalAddToPlaylist_tpl.html',
+  'text!templates/page_loading_tpl.html',
   'mysession'
-], function($, bootstrap, jcrypt, tooltip, modal, _, Backbone, Index_m, Puborpriv_m, Dembed_m, Atpl_m, DEM, Paginator, d_nav, body_tpl, modal_template, modalAddToPlaylist_tpl, session){
+], function($, bootstrap, jcrypt, tooltip, modal, _, Backbone, Index_m, Puborpriv_m, Dembed_m, Atpl_m, DEM, Paginator, d_nav, body_tpl, modal_template, modalAddToPlaylist_tpl, page_loading_tpl, session){
 	var Dashboard = {
 		View : function () {
 			return Backbone.View.extend({
@@ -42,6 +43,10 @@ define([
 						method: "md5",
 						source: ckey}
 					);
+					
+					// render loading gif image
+					var template = _.template( page_loading_tpl );
+					this.$el.html( template );
 					
 					// no pagination for now
 					//this.model.fetch({ url: DEM.domain + "getembed?hash=" + hash + "&publc=" + publc + "&limit=" + Paginator.limit + "&curPage=1&username=" + username + "&callback=?" });

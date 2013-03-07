@@ -12,8 +12,9 @@ define([
   'text!templates/modalAddToPlaylist_tpl.html',
   'text!templates/index/detail_recommend_tpl.html',
   'text!templates/facebook/fb_og_tpl.html',
+  'text!templates/page_loading_tpl.html',
   'mysession',
-], function($, bootstrap, jcrypt, _, Backbone, Content_m, Atpl_m, DEM, detail_tpl, fb_comments, modalAddToPlaylist_tpl, recommend_tpl, fb_og_tpl, session){
+], function($, bootstrap, jcrypt, _, Backbone, Content_m, Atpl_m, DEM, detail_tpl, fb_comments, modalAddToPlaylist_tpl, recommend_tpl, fb_og_tpl, page_loading_tpl, session){
 	var Content = {
 		'View'	: function () { 
 			return Backbone.View.extend({
@@ -41,7 +42,10 @@ define([
 						method: "md5",
 						source: ckey}
 					);
-				
+					
+					// render loading gif image
+					var template = _.template( page_loading_tpl );
+					this.$el.html( template );
 					this.model.fetch({ url : DEM.domain + "content?hash=" + hash + "&publc=" + publc + "&id=" + id +"&username=" + username + "&callback=?"}); // fetch data from the server
 					if (this.model.has("id")) {
 						if (this.model.hasChanged) {

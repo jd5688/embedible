@@ -13,8 +13,9 @@ define([
   'text!templates/dashboard/playlists/playlist_tpl.html',
   'text!templates/dashboard/playlists/playlist_nav_tpl.html',
   'text!templates/dashboard/playlists/playlist_alert_success_tpl.html',
+  'text!templates/page_loading_tpl.html',
   'text!templates/modal_tpl.html'
-], function($, bootstrap, jcrypt, _, Backbone, Playlists, AddPlaylist, Dembed_m, Puborpriv_m, DEM, session, main_tpl, nav_tpl, alert_tpl, modal_template){
+], function($, bootstrap, jcrypt, _, Backbone, Playlists, AddPlaylist, Dembed_m, Puborpriv_m, DEM, session, main_tpl, nav_tpl, alert_tpl, page_loading_tpl, modal_template){
 	var Playlist = {
 		View : function () {
 			return Backbone.View.extend({
@@ -51,6 +52,10 @@ define([
 							source: ckey}
 						);
 					
+						// render loading gif image
+						var template = _.template( page_loading_tpl );
+						this.$el.html( template );
+						
 						// get the playlists from the server
 						this.model.fetch({ url : DEM.domain + "playlists?hash=" + hash + "&u=" + username + "&public=" + publc + "&callback=?"});
 						

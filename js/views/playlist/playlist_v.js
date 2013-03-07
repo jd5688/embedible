@@ -10,12 +10,13 @@ define([
   'text!templates/playlist/playlist_tpl.html',
   'text!templates/playlist/playlist_page_tpl.html',
   'text!templates/playlist/playlist_content_tpl.html',
+   'text!templates/playlist/playlist_content2_tpl.html',
   'text!templates/facebook/fb_og_tpl.html',
   'text!templates/facebook/fb_comments_tpl.html',
   'DEM',
   'Paginator',
   'mysession'
-], function($, bootstrap, jcrypt, _, Backbone, carousel, Playlist_m, Content_m, main_tpl, main_page_tpl, content_tpl, fb_og_tpl, fb_comments, DEM, Paginator, session){
+], function($, bootstrap, jcrypt, _, Backbone, carousel, Playlist_m, Content_m, main_tpl, main_page_tpl, content_tpl, content2_tpl, fb_og_tpl, fb_comments, DEM, Paginator, session){
 	var Playlist = {
 		View : function () {
 			return Backbone.View.extend({
@@ -230,6 +231,7 @@ define([
 						data.sidebar = '';
 					};
 					
+					// tags need to be linked to ../tags
 					data.createTagLinks = this._createTagLinks();
 					
 					// load the fb comments plugin js sdk code
@@ -281,11 +283,12 @@ define([
 						$('#sidebar_is_visible').fadeIn();
 						$('#sidebar_is_hidden').hide();
 					};
-					
+					/*
 					setTimeout(function() {
 						var myhtml = '<div class="fb-like" data-href="' + DEM.website + 'playlist/' + uniq_id + '" data-send="true" data-layout="button_count" data-width="450" data-show-faces="false"></div>';
 						$('#fb-likey').html(myhtml);
 					}, 2000);
+					*/
 				},
 				_createTagLinks: function () {
 					return function (tagsArr) {
@@ -301,7 +304,7 @@ define([
 					}
 				},
 				redir: function (e) {
-					//e.preventDefault();
+					e.preventDefault();
 					var clickedEl = $(e.currentTarget);
 					var vid_uniq = clickedEl.attr("id");
 					/*
@@ -312,9 +315,29 @@ define([
 					}
 					*/
 					
-					pl_uniq = this.model.get('uniq_id');
-					var url = 'playlist/' + pl_uniq + '/' + vid_uniq;
-					Backbone.history.navigate(url, true);;
+					var data = {};
+					data.data = this.json();
+					data.website = DEM.website;
+					data.vid_uniq = vid_uniq;
+					data.uniq_id = this.model.get('uniq_id');
+					data.detectEmbed = this.detectEmbedType();
+					
+					// user clicked another embed so we need to show its embed code
+					// we need to hide the sidebar
+					//data.sidebar_is_visible = 'style="display:none"';
+					$('#sidebar_is_visible').hide();
+					//data.sidebar_is_hidden = '';
+					$('#sidebar_is_hidden').fadeIn();
+					//data.sidebar = 'style="display:none"';
+					$('#sidebar').hide();
+
+					var template = _.template( content2_tpl, data );
+					//render the template
+					$('#content2_render').html( template );
+					
+					//pl_uniq = this.model.get('uniq_id');
+					//var url = 'playlist/' + pl_uniq + '/' + vid_uniq;
+					//Backbone.history.navigate(url, true);;
 				},
 				redir2: function (e) {
 					var clickedEl = $(e.currentTarget); // which element was clicked?

@@ -11,8 +11,9 @@ define([
   'Paginator',
   'text!templates/index/main_body_tpl.html',
   'text!templates/index/main_body_page_tpl.html',
-  'text!templates/index/detail_tpl.html'
-], function($, bootstrap, jcrypt, tooltip, _, Backbone, Contents_m, Content_m, DEM, Paginator, body_tpl, body_page_tpl, detail_tpl ){
+  'text!templates/index/detail_tpl.html',
+  'text!templates/page_loading_tpl.html'
+], function($, bootstrap, jcrypt, tooltip, _, Backbone, Contents_m, Content_m, DEM, Paginator, body_tpl, body_page_tpl, detail_tpl, page_loading_tpl ){
 	var Contents = {
 		'View'	: function () { 
 			return Backbone.View.extend({
@@ -37,6 +38,10 @@ define([
 					);
 					var type = this.model.get('type');
 					var tag = this.model.get('tag');
+					
+					// render loading gif image
+					var template = _.template( page_loading_tpl );
+					this.$el.html( template );
 					this.model.fetch({ url : DEM.domain + "contents?hash=" + hash + "&publc=" + publc + "&limit=" + Paginator.limit + "&type=" + type + "&tag=" + tag + "&curPage=1&callback=?" }); // fetch data from the server
 					
 					if (this.model.has("id")) {
@@ -86,6 +91,9 @@ define([
 					var type = this.model.get('type');
 					var tag = this.model.get('tag');
 					
+					var load_tpl = '<p style="text-align:center"><img src="' + DEM.website + '/images/icons/loading_horizontal.gif"/></p>';
+					$('#showMore').html( load_tpl );
+					
 					// we cannot use the same model (this.model). appending on the same model proves to be
 					// buggy -- unexpected behaviour happens.
 					// we need to use another model.
@@ -99,6 +107,9 @@ define([
 							 
 							Paginator.totalRec = data.data.records
 							data.showNextButton = Paginator.showMore();
+							
+							var load_tpl = '<button id="show_more_button" class="btn btn-large btn-block btn-primary" type="button">Show more</button><br/>';
+							$('#showMore').html( load_tpl );
 							
 							var tpl = _.template( body_page_tpl, data );
 							//render the template

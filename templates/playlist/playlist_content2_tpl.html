@@ -1,0 +1,74 @@
+<%
+if (data.data) {
+	_.each(data.data, function(c) {
+	var playlist_id = c.id;
+	var is_public = c.is_public;
+	var playlist_name = c.playlist_name;
+	var playlist_desc = c.description;
+	var showThis;
+	var zTitle;
+	var browser = $.browser;
+	
+	if (typeof c.embeds[0] !== 'undefined') {
+		i = 0;
+
+		_.each(c.embeds, function(d) {
+			var dat = JSON.parse(d.data);
+			var title = dat.title;
+			title = title.replace(/"/g, '\\"');
+			var description = dat.description;
+			description = description.replace(/"/g, "'");
+			
+			if (vid_uniq === d.uniq || !i) {
+				var showThis = detectEmbed(dat);
+				var zTitle = title;
+			}
+			if (showThis && zTitle) {
+		
+					// detect if using a mobile device
+					if (dat.type === 'video' || dat.type === 'rich') {
+						if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+							// get the resolution of the device display less 25%
+							var devWidth = $(window).width() * .75;
+						
+							// this is the new width with surrounding text -- width="xxx" --
+							newWidth = 'width="' + devWidth + '"';
+								
+							// match the width value of showThis
+							var myReg = showThis.match(/width=(".*?"|'.*?'|[^"'][^\s]*)/)
+							var widthVal = myReg[0];
+							
+							// get the width without the surrounding text -width="xxx"-
+							var xW = myReg[1];
+							xW = xW.replace(/"/g, "");
+							myReg = showThis.match(/height=(".*?"|'.*?'|[^"'][^\s]*)/)
+							var heightVal = myReg[0];
+						
+							// get the height without the surrounding text -width="xxx"-
+							var xH = myReg[1];
+							xH = xH.replace(/"/g, "");
+							
+							newHeight = 'height="' + devWidth + '"';
+							
+							// if device's half of its max width width is less than the width of the embed
+							if (devWidth < xW) {
+								// convert the width to that of the device's half width
+								var re = new RegExp(widthVal,"g");
+								var reH = new RegExp(heightVal,"g");
+								showThis = showThis.replace(re, newWidth);
+								showThis = showThis.replace(reH, newHeight);
+							}
+						};
+					}
+				
+					// show the content
+					$('#content_title').html(zTitle);
+					$('#content_description').html(description);
+					$('#embedible').html(showThis);
+			}
+			i += 1;
+		}) // each
+	} // if
+	}) // each data.data
+}
+%>
